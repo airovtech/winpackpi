@@ -1,0 +1,13 @@
+
+public class ArrayWs {
+	
+	
+	public String[] getArrayValue(String arg) throws Exception {
+		
+		if (arg != null && arg.length() != 0) {
+			return new String[] {arg, "hello", "world", "welcome"};
+		}
+			return new String[] {"success! but arg is null"};
+		}
+
+}

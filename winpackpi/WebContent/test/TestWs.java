@@ -1,0 +1,46 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class TestWS {
+	
+	// MSSQL
+	public static final String SQL_DRIVER="com.microsoft.sqlserver.jdbc.SQLServerDriver";
+	public static final String URL="jdbc:sqlserver://localhost:1433;SelectMethod=cursor;DatabaseName=Semiteq_1018;";
+	public static final String USER = "sa";
+	public static final String PASS = "mis";
+	
+	
+	public TestWS() {
+		try {
+			Class.forName(SQL_DRIVER);
+			System.out.println("**mssql driver loading...**");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String setData(String id, String name, String email, String empNo) {
+		String sql = "insert into TESTTABLE (id, name, email, empNo) values (?, ?, ?, ?)";
+		PreparedStatement pstmt = null;
+		Connection conn = null;
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASS);
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			pstmt.setString(2, name);
+			pstmt.setString(3, email);
+			pstmt.setString(4, empNo);
+			int result = pstmt.executeUpdate();
+			if(result < 1)
+			  System.out.println("데이터 입력 실패");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			pstmt.close();
+			conn.close();
+		}
+		return "success";
+	}
+}

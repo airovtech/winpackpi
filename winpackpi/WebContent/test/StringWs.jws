@@ -1,0 +1,13 @@
+
+public class StringWs {
+
+	public String getStringValue(String arg) throws Exception {
+		
+		System.out.println("String Webservice is well done! arg : " + arg);
+		if (arg != null && arg.length() != 0) {
+			return "success! arg is " + arg;
+		}
+		return "success! but arg is null";
+	}
+	public 
+}

@@ -1,0 +1,11 @@
+
+public class getDILIG {
+
+
+//ERP °í°´»ç 
+	public String[] getDILIG(String test) throws Exception{
+		String[] list = new String[1];
+		list[0] = "test";
+		return list; 
+	}
+}

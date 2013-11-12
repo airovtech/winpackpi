@@ -1,0 +1,19 @@
+
+public class UserWs {
+	public String getUserIdByUserName(String userName) throws Exception {
+		System.out.println(userName + "++++++++++++++++++++++++");
+		if (userName.equalsIgnoreCase("¿Ø±§πŒ")) {
+			return "kmyu@maninsoft.co.kr";
+		} else if (userName.equalsIgnoreCase("ø∞« »£")) {
+			return "phyeom@maninsoft.co.kr";
+		} else if (userName.equalsIgnoreCase("¿Ø¡æ±π")) {
+			return "jkyoon@maninsoft.co.kr";
+		} else if (userName.equalsIgnoreCase("¿”ªÛπŒ")) {
+			return "smlim@maninsoft.co.kr";
+		} else if (userName.equalsIgnoreCase("¿Ã«¸¡§")) {
+			return "hjlee@maninsoft.co.kr";
+		} else {
+			throw new Exception("user not found");
+		}
+	}
+}

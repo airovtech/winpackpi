@@ -1,0 +1,201 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TestDbcp2 {
+	 //ORACLE
+	 public static final String SQL_DRIVER="oracle.jdbc.driver.OracleDriver";
+	 public static final String URL="jdbc:oracle:thin:@222.116.101.211:1521:SEMITEQ1";
+	 public static final String USER = "mighty";
+	 public static final String PASS = "mighty";
+	 //MSSQL
+	// public static final String SQL_DRIVER="com.microsoft.sqlserver.jdbc.SQLServerDriver";
+	// public static final String URL="jdbc:sqlserver://192.168.50.153:1433;SelectMethod=cursor;DatabaseName=semiteqDb;";
+	// public static final String USER = "sa";
+	// public static final String PASS = "mis";
+	 //MYSQL
+//		public static final String SQL_DRIVER="com.mysql.jdbc.Driver";
+//		public static final String URL="jdbc:mysql://192.168.50.155:3306/rush";
+//		public static final String USER = "root";
+//		public static final String PASS = "apmsetup"; 
+
+		private static Connection con = null;
+		 public TestDbcp2(){
+		  try {
+		   Class.forName(SQL_DRIVER);
+		   System.out.println("**mssql driver loading...**");
+		   con = DriverManager.getConnection(URL,USER,PASS);
+		  } catch (ClassNotFoundException e) {
+		   e.printStackTrace();
+		  } catch (SQLException e) {
+		   e.printStackTrace();
+		  }
+		 }
+	 private String getTestVo(String id){
+	     String sql = "select name from test where id=? and name =?";
+	     PreparedStatement pstmt;
+	     String name = "";
+	  try {
+	   pstmt = con.prepareStatement(sql);
+	   pstmt.setString(1, id);
+	      ResultSet rs = pstmt.executeQuery();
+	      if(rs.next()){
+	       name = rs.getString(1);
+	      }     
+	  } catch (SQLException e) {
+	   e.printStackTrace();
+	  }
+	  return name; 
+	 }
+	 
+	 private String[] getTestVoList(String name){
+	     String sql = "select name from test where name like ?";
+	     PreparedStatement pstmt;
+	     String[] list = null;
+	     List<String> tempList = null;
+	  try {
+	   pstmt = con.prepareStatement(sql);
+	   pstmt.setString(1, "%"+name+"%");
+	      ResultSet rs = pstmt.executeQuery();
+	      int idx = 0;
+	      
+	      while(rs.next()){
+	       if(tempList==null) tempList = new ArrayList<String>();
+	       tempList.add(rs.getString(1));
+	      }     
+	      
+	      if(tempList!=null){
+	       for(String str : tempList){
+	        if(list==null) list = new String[tempList.size()];
+	        list[idx++] = str;
+	       }
+	      }
+	      //list[idx++] = rs.getString(1);
+	  } catch (SQLException e) {
+	   e.printStackTrace();
+	  }
+	  return list; 
+	 }
+
+	 private String[] getCustomerList(){
+	     String sql = "select syscode_name || ':' || syscode_desc from syscodedata where plant = 'SEMITEQ' and systable_name = 'CUSTOMER'";
+	     
+	     PreparedStatement pstmt;
+	     String[] list = null;
+	     List<String> tempList = null;
+	  try {
+	   pstmt = con.prepareStatement(sql);
+	 //  pstmt.setString(1, "%"+name+"%");
+	      ResultSet rs = pstmt.executeQuery();
+	      int idx = 0;
+	      
+	      while(rs.next()){
+	       if(tempList==null) tempList = new ArrayList<String>();
+	       tempList.add(rs.getString(1));
+	      }     
+	      
+	      if(tempList!=null){
+	       for(String str : tempList){
+	        if(list==null) list = new String[tempList.size()];
+	        list[idx++] = str;
+	       }
+	      }
+	      //list[idx++] = rs.getString(1);
+	  } catch (SQLException e) {
+	   e.printStackTrace();
+	  }
+	  return list; 
+	 }
+
+	 private String[] getPKGTYPEList(String customer){
+	     String sql = "select a.syscode_name from syscodedata a, partspec b where a.plant = b.plant and a.plant = 'SEMITEQ' and a.syscode_name = b.pkg_type  and a.systable_name like 'PKG_TYPE%' and b.customer = ? group by a.syscode_name";
+	     PreparedStatement pstmt;
+	     String[] list = null;
+	     List<String> tempList = null;
+	  try {
+	   pstmt = con.prepareStatement(sql);
+	   pstmt.setString(1, "%"+customer+"%");
+	      ResultSet rs = pstmt.executeQuery();
+	      int idx = 0;
+	      
+	      while(rs.next()){
+	       if(tempList==null) tempList = new ArrayList<String>();
+	       tempList.add(rs.getString(1));
+	      }     
+	      
+	      if(tempList!=null){
+	       for(String str : tempList){
+	        if(list==null) list = new String[tempList.size()];
+	        list[idx++] = str;
+	       }
+	      }
+	      //list[idx++] = rs.getString(1);
+	  } catch (SQLException e) {
+	   e.printStackTrace();
+	  }
+	  return list; 
+	 }
+
+	 private String[] getPartIdList(String customer, String pkgtype){
+	     String sql = "select part_id from partspec where plant = 'SEMITEQ' and customer = ? and pkg_type = ? ";
+
+	     PreparedStatement pstmt;
+	     String[] list = null;
+	     List<String> tempList = null;
+	  try {
+	   pstmt = con.prepareStatement(sql);
+	   pstmt.setString(1, "%"+customer+"%");
+	   pstmt.setString(2, "%"+pkgtype+"%");   
+	      ResultSet rs = pstmt.executeQuery();
+	      int idx = 0;
+	      
+	      while(rs.next()){
+	       if(tempList==null) tempList = new ArrayList<String>();
+	       tempList.add(rs.getString(1));
+	      }     
+	      
+	      if(tempList!=null){
+	       for(String str : tempList){
+	        if(list==null) list = new String[tempList.size()];
+	        list[idx++] = str;
+	       }
+	      }
+	      //list[idx++] = rs.getString(1);
+	  } catch (SQLException e) {
+	   e.printStackTrace();
+	  }
+	  return list; 
+	 }
+	 
+	 private void insert(String id, String name){
+	  String sql = "insert into test(id,name) values(?,?)";
+	  PreparedStatement pstmt;
+	  try {
+	   pstmt = con.prepareStatement(sql);
+	   pstmt.setString(1, id);
+	   pstmt.setString(2, name);
+	   int result = pstmt.executeUpdate();
+	   if(result < 1){
+	    System.out.println("데이터 입력 실패");
+	   }
+	  } catch (SQLException e) {
+	   // TODO Auto-generated catch block
+	   e.printStackTrace();
+	  }
+	 }
+	 
+	public void runWs(String args) {
+		// TODO Auto-generated method stub
+		TestDbcp2 tdb = new TestDbcp2();
+		String[] sRtn = tdb.getCustomerList();
+		for(int i=0;i<sRtn.length;i++){
+			System.out.println(sRtn[i]);
+		}
+		
+	} 
+
+}

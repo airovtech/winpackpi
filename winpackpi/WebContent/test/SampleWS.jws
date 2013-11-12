@@ -1,0 +1,73 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+/*	
+ * $Id$
+ * created by    : SHIN HYUN SEONG
+ * creation-date : 2011. 8. 17.
+ * =========================================================
+ * Copyright (c) 2011 ManinSoft, Inc. All rights reserved.
+ */
+
+public class SampleWS {
+
+	// MSSQL
+	 public static final String SQL_DRIVER="com.microsoft.sqlserver.jdbc.SQLServerDriver";
+	 public static final String URL="jdbc:sqlserver://localhost:1433;SelectMethod=cursor;DatabaseName=SmartWine2;";
+	 public static final String USER = "sa";
+	 public static final String PASS = "maninsoft";
+
+	private static Connection con = null;
+
+	public SampleWS() {
+		try {
+			Class.forName(SQL_DRIVER);
+			System.out.println("**mssql driver loading...**");
+			con = DriverManager.getConnection(URL, USER, PASS);
+			if(con != null) {
+				con.close();
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String[] getUsers() {
+		String sql = "select pos, name from sworguser where id like '%@%' order by name desc";
+
+		PreparedStatement pstmt;
+		String[] list = null;
+		List<String> tempList = null;
+		try {
+			pstmt = con.prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();
+			int idx = 0;
+
+			while (rs.next()) {
+				if (tempList == null)
+					tempList = new ArrayList<String>();
+				tempList.add(rs.getString(1) + " " + rs.getString(2));
+			}
+
+			if (tempList != null) {
+				for (String str : tempList) {
+					if (list == null)
+						list = new String[tempList.size()];
+					list[idx++] = str;
+				}
+			}
+			// list[idx++] = rs.getString(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+}

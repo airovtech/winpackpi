@@ -1,0 +1,38 @@
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+						http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <beans:bean id="dataJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<beans:property name="jobClass" value="schedule.dailyCollectingMonthDataJob" />
+	</beans:bean>	
+	
+ 	<beans:bean id="eventAlarmTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<beans:property name="jobDetail" >
+			<beans:ref bean="dataJob" />
+		</beans:property>
+		<beans:property name="cronExpression">
+			<beans:value>0 0 * * * ?</beans:value>
+		</beans:property>
+	</beans:bean>
+	<beans:bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" destroy-method="destroy">
+		<beans:property name="triggers">
+			<beans:list>
+				<beans:ref local="eventAlarmTrigger" />
+			</beans:list>
+		</beans:property>
+	
+	<beans:property name="quartzProperties">
+		<beans:props>
+			<beans:prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</beans:prop>
+    			<beans:prop key="org.quartz.threadPool.threadCount">5</beans:prop>
+    			<beans:prop key="org.quartz.threadPool.threadPriority">4</beans:prop>
+    			<beans:prop key="org.quartz.jobStore.class">org.quartz.simpl.RAMJobStore</beans:prop>
+    			<beans:prop key="org.quartz.jobStore.misfireThreshold">60000</beans:prop>
+		</beans:props>
+	</beans:property>
+	</beans:bean>
+</beans:beans>

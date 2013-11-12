@@ -1,0 +1,20 @@
+
+public class finalTestWS {
+	
+	public String getAssigneeByCode(String code) {
+	
+		if (code.equals("¿Ø±§πŒ")) {
+			return "kmyu@maninsoft.co.kr";	
+		
+		} else if (code.equals("¿±¡æ±π")) {
+		
+			return "jkyoon@maninsoft.co.kr";
+		
+		} else if (code.equals("¿”ªÛπŒ")) {
+		
+			return "smlim@maninsoft.co.kr";
+		} else {
+			return "kmyu@maninsoft.co.kr";
+		}
+	}
+}
