@@ -40,6 +40,7 @@ function ReportInfo()
 		this.width = 1024/2;
 		this.height = 768/2;
 		this.columnSpans =  1;
+		this.title = null;
 		this.xFieldName = null;
 		this.yValueName = null;
 		this.xGroupName = null;
@@ -47,6 +48,7 @@ function ReportInfo()
 		this.groupNames = null;
 		this.chart2FieldName = null;
 		this.chart2Type = null;
+		this.y2FieldName = null;
 		this.values = null;
 		this.labelRotate = null;	
 };
@@ -111,12 +113,14 @@ Ext.onReady(function () {
 				swReportInfo = smartChart.reportInfos[target];
 			}
 			var yAxisPosition = "left";
+			var y2AxisPosition = "right";
 			var xAxisPosition = "bottom";
 			var yAxisGrid = true;
 			if(chartType === swChartType.AREA)
 				yAxisGrid = false;
 			if(chartType === swChartType.BAR){
 				yAxisPosition = "bottom";
+				y2AxisPosition = "top";
 				xAxisPosition = "left";
 			}
 			
@@ -182,23 +186,52 @@ Ext.onReady(function () {
 			}else if(chartType === swChartType.LINE 
 					|| chartType === swChartType.AREA
 					|| chartType === swChartType.BAR
-					|| chartType === swChartType.COLUMN){ 
-				return [{
-					type : 'Numeric',
-					minimum : 0,
-					position : yAxisPosition,
-					grid : yAxisGrid,
-					fields : groupNames,
-					title : swReportInfo.yValueName,
-					minorTickSteps : 1,
-					label: numericLabel
-				}, {
-					type : 'Category',
-					position : xAxisPosition,
-					fields : [ swReportInfo.xFieldName ],
-					title : swReportInfo.xFieldName,
-					label: swReportInfo.labelRotate
-				} ];
+					|| chartType === swChartType.COLUMN){
+				if(isEmpty(swReportInfo.y2FieldName)){
+					return [{
+						type : 'Numeric',
+						minimum : 0,
+						position : yAxisPosition,
+						grid : yAxisGrid,
+						fields : groupNames,
+						title : swReportInfo.yValueName,
+						minorTickSteps : 1,
+						label: numericLabel
+					}, {
+						type : 'Category',
+						position : xAxisPosition,
+						fields : [ swReportInfo.xFieldName ],
+						title : swReportInfo.xFieldName,
+						label: swReportInfo.labelRotate
+					} ];
+				}else{
+					return [{
+						type : 'Numeric',
+						minimum : 0,
+						position : yAxisPosition,
+						grid : yAxisGrid,
+						fields : groupNames,
+						title : swReportInfo.yValueName,
+						minorTickSteps : 1,
+						label: numericLabel
+					},{
+						type : 'Numeric',
+						minimum : 0,
+						position : y2AxisPosition,
+						grid : false,
+						fields : groupNames,//[swReportInfo.y2FieldName],
+						title : swReportInfo.y2FieldName,
+						minorTickSteps : 1,
+						label: numericLabel
+					}, {
+						type : 'Category',
+						position : xAxisPosition,
+						fields : [ swReportInfo.xFieldName ],
+						title : swReportInfo.xFieldName,
+						label: swReportInfo.labelRotate
+					} ];
+
+				}
 			}
 		},
 	
@@ -442,7 +475,7 @@ Ext.onReady(function () {
 			}
 		},
 	
-		loadWithData : function(data, chartType, isStacked, target, chart2Field, chart2Type) {
+		loadWithData : function(data, chartType, isStacked, target, chart2Field, chart2Type, y2Field) {
 			if(isEmpty(swReportInfo)){
 				reportInfo = new ReportInfo();
 				smartChart.reportInfos[target] = reportInfo;
@@ -463,6 +496,7 @@ Ext.onReady(function () {
 				swReportInfo.groupNames = data.groupNames;
 				swReportInfo.chart2FieldName = chart2Field;
 				swReportInfo.chart2Type = chart2Type;
+				swReportInfo.y2FieldName = y2Field;
 				swReportInfo.values = data.values;
 				if((swReportInfo.stringLabelRotation === "auto" && (swReportInfo.values.length>12 || swReportInfo.width<600)) || swReportInfo.stringLabelRotation === "rotated" ){
 					swReportInfo.labelRotate = {
@@ -658,6 +692,7 @@ Ext.onReady(function () {
 			}
 			$(".js_work_report_view_page text[text='" + swReportInfo.xFieldName + "']").css("font-size", "14px");
 			$(".js_work_report_view_page text[text='" + swReportInfo.yValueName + "']").css("font-size", "14px");
+			$(".js_work_report_view_page text[text='" + swReportInfo.y2FieldName + "']").css("font-size", "14px");
 		    
 		}
 	};

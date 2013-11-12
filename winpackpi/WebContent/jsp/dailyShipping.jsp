@@ -23,58 +23,63 @@
 
 var method = 'getDailyShipping';
 
- $(document).ready( function() {
-	 
-<<<<<<< HEAD
+var reportData = null;
+var chartData = null;
+var chart2FieldName = "합계";
 
-	 var reportData = null;
-	 var chartData = null;
-	 var chart2FieldName = "합계"
+var getReportData = function(data){
+	reportData = data.rows;
+	console.log('reportData=', reportData);
+
+	var chartValues = Array();
+	for(var i=0; i<31; i++){
+		var pktSum = 0;
+		var pkgSum = 0;
+		var nbizSum = 0;
+		var sum = 0;
+		for(var j=0; j<reportData.length; j++){
+			if(reportData[j].DIVISION == "pkt"){
+				pktSum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
+			}else if(reportData[j].DIVISION == "pkg"){
+				pkgSum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
+			}else if(reportData[j].DIVISION == "nbiz"){
+				nbizSum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
+			}
+			sum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
+		}
+		chartValues[i] = {  일별: (i+1) + "", 
+				pkt: pktSum,
+				pkg: pkgSum,
+				nbiz: nbizSum,
+				합계: sum};					
+	}
+	
+	console.log('chartValues=', chartValues);
+	
+	chartData = {
+			values : chartValues,
+			xFieldName : "일별",
+			yValueName : "생산 실적",
+			groupNames : ["pkt", "pkg", "nbiz"]
+	};
+
+};
+
+$(document).ready( function() {
+	 
+	 Ext.onReady(function () {
 	 
 	 $.ajax({
 			url : '../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),
 			data : {},
 			dataType: 'json',
 			success : function(data, status, jqXHR) {
-				reportData = data.rows;
-				console.log('reportData=', reportData);
-
-				var chartValues = Array();
-				for(var i=0; i<31; i++){
-					var pktSum = 0;
-					var pkgSum = 0;
-					var nbizSum = 0;
-					var sum = 0;
-					for(var j=0; j<reportData.length; j++){
-						if(reportData[j].DIVISION == "pkt"){
-							pktSum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
-						}else if(reportData[j].DIVISION == "pkg"){
-							pkgSum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
-						}else if(reportData[j].DIVISION == "nbiz"){
-							nbizSum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
-						}
-						sum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
-					}
-					chartValues[i] = {  일별: (i+1) + "", 
-							pkt: pktSum,
-							pkg: pkgSum,
-							nbiz: nbizSum,
-							합계: sum};					
-				}
-				
-				console.log('chartValues=', chartValues);
-				
-				chartData = {
-						values : chartValues,
-						xFieldName : "일별",
-						yValueName : "생산 실적",
-						groupNames : ["pkt", "pkg", "nbiz"]
-				};
+				getReportData(data);
 				  jQuery("#list").jqGrid({
 				   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 				         datatype: "json",      //json형태로 데이터 받음.  
 //						datatype: 'local',
-				         height: 400,
+				         height: 'auto',
 				         caption: "일별 생산 실적 현황",
 				         footerrow:false,
 				         grouping:true, //그룹화 하기위한 옵션
@@ -174,11 +179,29 @@ var method = 'getDailyShipping';
 				
 			}
 		});
+		});
  });
  
  
  	$(function() { 
 	   $('#sel_month').change(function() {
+		   $.ajax({
+					url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $(this).val() ,
+					data : {},
+					dataType: 'json',
+					success : function(data, status, jqXHR) {
+						getReportData(data);
+						for(var i=0; i<reportData.length; i++){
+							$('#list').jqGrid('addRowData', i+1, reportData[i]);
+						}
+						
+						smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldName, "line");
+					},
+					error : function(xhr, ajaxOptions, thrownError){
+						
+					}
+				});
+
 			$("#list").setGridParam(
 			{
 				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $(this).val() ,
@@ -187,6 +210,23 @@ var method = 'getDailyShipping';
 	}); 
  	$(function() { 
  	   $('#sel_year').change(function() {
+ 			 $.ajax({
+					url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $(this).val() + $('#sel_month').val() ,
+					data : {},
+					dataType: 'json',
+					success : function(data, status, jqXHR) {
+						getReportData(data);
+						for(var i=0; i<reportData.length; i++){
+							$('#list').jqGrid('addRowData', i+1, reportData[i]);
+						}
+						
+						smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldName, "line");
+					},
+					error : function(xhr, ajaxOptions, thrownError){
+						
+					}
+				});
+			 
  			$("#list").setGridParam(
  			{
  				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $(this).val() + $('#sel_month').val() ,
