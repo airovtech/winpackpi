@@ -17,7 +17,7 @@
 
 <script type="text/javascript">
 
-var method = 'monthlySalesForYear';
+var method = 'getMonthlySalesForYear';
 
 function reloadGrid() {
 	 $.ajax({

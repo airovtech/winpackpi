@@ -17,15 +17,15 @@
 
 <script type="text/javascript">
 
-var method = 'getDailyShipping';
+var method = 'getDailyTat';
 
  $(document).ready( function() { 
 	 
 	  jQuery("#list").jqGrid({
 	   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 	         datatype: "json",      //json형태로 데이터 받음.  
-	         height: 400,
-	         caption: "일별 생산 실적 현황",
+	         height: "auto",
+	         caption: "일별 TAT 현황",
 	         footerrow:false,
 	         grouping:true, //그룹화 하기위한 옵션
 	         autowidth:true,
@@ -36,16 +36,14 @@ var method = 'getDailyShipping';
 	             groupText : ['<span style="color:blue"><b>{0}</b></span>'] //그룹화된 이름에 <b> 태그를 추가했다.
 	         },
 	         
-	         colNames:['사업부','구분','금월', '일평균','MIT', '일평균','달성률(%)', 'WIP', '1일', '2일','3일', '4일', '5일', '6일'	, '7일'	, '8일'	, '9일'	, '10일', '11일', '12일', '13일', '14일', '15일', '16일', '17일', '18일', '19일', '20일', '21일', '22일', '23일', '24일', '25일', '26일', '27일', '28일', '29일', '30일', '31일'],
+	         colNames:['사업부','구분','고객TAT', '목표TAT','전월평균','금월평균', '1일', '2일','3일', '4일', '5일', '6일', '7일'	, '8일'	, '9일'	, '10일', '11일', '12일', '13일', '14일', '15일', '16일', '17일', '18일', '19일', '20일', '21일', '22일', '23일', '24일', '25일', '26일', '27일', '28일', '29일', '30일', '31일'],
 	         colModel:[                  
 	             {name:'DIVISION', index:'DIVISION', align: 'center',  sortable:false },
 	             {name:'DEVICEGROUP', index:'DEVICEGROUP',  sortable:false},
-	             {name:'PLANOFSHIPPING', index:'PLANOFSHIPPING', summaryType: 'sum',  sortable:false},
-	             {name:'AVGPLANOFDAY', index:'AVGPLANOFDAY', summaryType: 'sum',  sortable:false},
-	             {name:'TOTALSUM', index:'TOTALSUM', summaryType: 'sum',  sortable:false},
-	             {name:'AVGOFDAY', index:'AVGOFDAY', summaryType: 'sum',  sortable:false},
-	             {name:'PERSHIPPING', index:'PERSHIPPING', summaryType: 'sum',  sortable:false},
-	             {name:'WIP',width:'100', index:'WIP', summaryType: 'sum',  sortable:false},
+	             {name:'CUSTOMERTAT', index:'CUSTOMERTAT', summaryType: 'sum',  sortable:false},
+	             {name:'TARGETTAT', index:'TARGETTAT', summaryType: 'sum',  sortable:false},
+	             {name:'LASTMONTHAVGTAT', index:'LASTMONTHAVGTAT', summaryType: 'sum',  sortable:false},
+	             {name:'MONTHAVGTAT', index:'MONTHAVGTAT', summaryType: 'sum',  sortable:false},
 	             {name:'C01', index:'C01', summaryType: 'sum',  sortable:false},
 	             {name:'C02', index:'C02', summaryType: 'sum',  sortable:false},
 	             {name:'C03', index:'C03', summaryType: 'sum',  sortable:false},
@@ -105,13 +103,6 @@ var method = 'getDailyShipping';
 	        // caption: "" //"Manipulating Array Data"    //caption을 달겠다는 거겠지. 
 	     });
   
-	  jQuery("#list").jqGrid('setGroupHeaders', {
-		  useColSpanStyle: true, 
-		  groupHeaders:[
-			{startColumnName: 'PLANOFSHIPPING', numberOfColumns: 2, titleText: '실행계획'},
-			{startColumnName: 'TOTALSUM', numberOfColumns: 3, titleText: '출하실적'},
-		  ]
-		});
  });
  
  

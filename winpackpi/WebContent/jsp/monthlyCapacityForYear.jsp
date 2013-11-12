@@ -17,11 +17,11 @@
 
 <script type="text/javascript">
 
-var method = 'getMonthlyShippingForYear';
+var method = 'getMonthlyCapacityPkgForYear';
 
 function reloadGrid() {
 	 $.ajax({
-  		 	url:'../getKpiColumnInfo.jsp?method=getMonthlyShippingNSalesForYearColumnName&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),
+  		 	url:'../getKpiColumnInfo.jsp?method=getMonthlyCapacityPkgForYearColumnName&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),
 			contentType : 'application/json',
 			type : 'POST',
 			dataType : "json",
@@ -35,35 +35,37 @@ function reloadGrid() {
 				
 				var item = data.colName;
 				for (var i = 0; i < item.length; i++) {
-					colNames[0] = (item[i].C_0);
-					colNames[1] = (item[i].C_1);
-					colNames[2] = (item[i].C_2);
-					colNames[3] = (item[i].C_3);
-					colNames[4] = (item[i].C_4);
-					colNames[5] = (item[i].C_5);
-					colNames[6] = (item[i].C_6);
-					colNames[7] = (item[i].C_7);
-					colNames[8] = (item[i].C_8);
-					colNames[9] = (item[i].C_9);
-					colNames[10] = (item[i].C_10);
-					colNames[11] = (item[i].C_11);
-					colNames[12] = (item[i].C_12);
-					colNames[13] = (item[i].C_13);
+					colNames[0] = "사업부";
+					colNames[1] = "구분";
+					colNames[2] = (item[i].C_1);
+					colNames[3] = (item[i].C_2);
+					colNames[4] = (item[i].C_3);
+					colNames[5] = (item[i].C_4);
+					colNames[6] = (item[i].C_5);
+					colNames[7] = (item[i].C_6);
+					colNames[8] = (item[i].C_7);
+					colNames[9] = (item[i].C_8);
+					colNames[10] = (item[i].C_9);
+					colNames[11] = (item[i].C_10);
+					colNames[12] = (item[i].C_11);
+					colNames[13] = (item[i].C_12);
+					colNames[14] = (item[i].C_13);
 					
-					colModels[0] = {name:item[i].C_0, index:item[i].C_0, align: 'center',  sortable:false };
-					colModels[1] = {name:'C'+item[i].C_1 + '01', index:item[i].C_1, align: 'center',  sortable:false };
-					colModels[2] = {name:'C'+item[i].C_2 + '01', index:item[i].C_2, align: 'center',  sortable:false };
-					colModels[3] = {name:'C'+item[i].C_3 + '01', index:item[i].C_3, align: 'center',  sortable:false };
-					colModels[4] = {name:'C'+item[i].C_4 + '01', index:item[i].C_4, align: 'center',  sortable:false };
-					colModels[5] = {name:'C'+item[i].C_5 + '01', index:item[i].C_5, align: 'center',  sortable:false };
-					colModels[6] = {name:'C'+item[i].C_6 + '01', index:item[i].C_6, align: 'center',  sortable:false };
-					colModels[7] = {name:'C'+item[i].C_7 + '01', index:item[i].C_7, align: 'center',  sortable:false };
-					colModels[8] = {name:'C'+item[i].C_8 + '01', index:item[i].C_8, align: 'center',  sortable:false };
-					colModels[9] = {name:'C'+item[i].C_9 + '01', index:item[i].C_9, align: 'center',  sortable:false };
-					colModels[10] = {name:'C'+item[i].C_10 + '01', index:item[i].C_10, align: 'center',  sortable:false };
-					colModels[11] = {name:'C'+item[i].C_11 + '01', index:item[i].C_11, align: 'center',  sortable:false };
-					colModels[12] = {name:'C'+item[i].C_12 + '01', index:item[i].C_12, align: 'center',  sortable:false };
-					colModels[13] = {name:item[i].C_13, index:item[i].C_13, align: 'center',  sortable:false };
+					colModels[0] = {name:item[i].C_DIVISION, index:item[i].C_DIVISION, align: 'center',  sortable:false };
+					colModels[1] = {name:item[i].C_GUBUN, index:item[i].C_GUBUN, align: 'center',  sortable:false };
+					colModels[2] = {name:'C'+item[i].C_1 + '01', index:item[i].C_1, align: 'center',  sortable:false };
+					colModels[3] = {name:'C'+item[i].C_2 + '01', index:item[i].C_2, align: 'center',  sortable:false };
+					colModels[4] = {name:'C'+item[i].C_3 + '01', index:item[i].C_3, align: 'center',  sortable:false };
+					colModels[5] = {name:'C'+item[i].C_4 + '01', index:item[i].C_4, align: 'center',  sortable:false };
+					colModels[6] = {name:'C'+item[i].C_5 + '01', index:item[i].C_5, align: 'center',  sortable:false };
+					colModels[7] = {name:'C'+item[i].C_6 + '01', index:item[i].C_6, align: 'center',  sortable:false };
+					colModels[8] = {name:'C'+item[i].C_7 + '01', index:item[i].C_7, align: 'center',  sortable:false };
+					colModels[9] = {name:'C'+item[i].C_8 + '01', index:item[i].C_8, align: 'center',  sortable:false };
+					colModels[10] = {name:'C'+item[i].C_9 + '01', index:item[i].C_9, align: 'center',  sortable:false };
+					colModels[11] = {name:'C'+item[i].C_10 + '01', index:item[i].C_10, align: 'center',  sortable:false };
+					colModels[12] = {name:'C'+item[i].C_11 + '01', index:item[i].C_11, align: 'center',  sortable:false };
+					colModels[13] = {name:'C'+item[i].C_12 + '01', index:item[i].C_12, align: 'center',  sortable:false };
+					colModels[14] = {name:item[i].C_13, index:item[i].C_13, align: 'center',  sortable:false };
 					
 				};
 
@@ -88,7 +90,7 @@ function reloadGrid() {
  $(document).ready( function() { 
 	 
 	 $.ajax({
-	 	url:'../getKpiColumnInfo.jsp?method=getMonthlyShippingNSalesForYearColumnName&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),
+	 	url:'../getKpiColumnInfo.jsp?method=getMonthlyCapacityPkgForYearColumnName&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),
 		contentType : 'application/json',
 		type : 'POST',
 		dataType : "json",
@@ -102,43 +104,45 @@ function reloadGrid() {
 			
 			var item = data.colName;
 			for (var i = 0; i < item.length; i++) {
-				colNames[0] = (item[i].C_0);
-				colNames[1] = (item[i].C_1);
-				colNames[2] = (item[i].C_2);
-				colNames[3] = (item[i].C_3);
-				colNames[4] = (item[i].C_4);
-				colNames[5] = (item[i].C_5);
-				colNames[6] = (item[i].C_6);
-				colNames[7] = (item[i].C_7);
-				colNames[8] = (item[i].C_8);
-				colNames[9] = (item[i].C_9);
-				colNames[10] = (item[i].C_10);
-				colNames[11] = (item[i].C_11);
-				colNames[12] = (item[i].C_12);
-				colNames[13] = (item[i].C_13);
+				colNames[0] = "사업부";
+				colNames[1] = "구분";
+				colNames[2] = (item[i].C_1);
+				colNames[3] = (item[i].C_2);
+				colNames[4] = (item[i].C_3);
+				colNames[5] = (item[i].C_4);
+				colNames[6] = (item[i].C_5);
+				colNames[7] = (item[i].C_6);
+				colNames[8] = (item[i].C_7);
+				colNames[9] = (item[i].C_8);
+				colNames[10] = (item[i].C_9);
+				colNames[11] = (item[i].C_10);
+				colNames[12] = (item[i].C_11);
+				colNames[13] = (item[i].C_12);
+				colNames[14] = (item[i].C_13);
 				
-				colModels[0] = {name:item[i].C_0, index:item[i].C_0, align: 'center',  sortable:false };
-				colModels[1] = {name:'C'+item[i].C_1 + '01', index:item[i].C_1, align: 'center',  sortable:false };
-				colModels[2] = {name:'C'+item[i].C_2 + '01', index:item[i].C_2, align: 'center',  sortable:false };
-				colModels[3] = {name:'C'+item[i].C_3 + '01', index:item[i].C_3, align: 'center',  sortable:false };
-				colModels[4] = {name:'C'+item[i].C_4 + '01', index:item[i].C_4, align: 'center',  sortable:false };
-				colModels[5] = {name:'C'+item[i].C_5 + '01', index:item[i].C_5, align: 'center',  sortable:false };
-				colModels[6] = {name:'C'+item[i].C_6 + '01', index:item[i].C_6, align: 'center',  sortable:false };
-				colModels[7] = {name:'C'+item[i].C_7 + '01', index:item[i].C_7, align: 'center',  sortable:false };
-				colModels[8] = {name:'C'+item[i].C_8 + '01', index:item[i].C_8, align: 'center',  sortable:false };
-				colModels[9] = {name:'C'+item[i].C_9 + '01', index:item[i].C_9, align: 'center',  sortable:false };
-				colModels[10] = {name:'C'+item[i].C_10 + '01', index:item[i].C_10, align: 'center',  sortable:false };
-				colModels[11] = {name:'C'+item[i].C_11 + '01', index:item[i].C_11, align: 'center',  sortable:false };
-				colModels[12] = {name:'C'+item[i].C_12 + '01', index:item[i].C_12, align: 'center',  sortable:false };
-				colModels[13] = {name:item[i].C_13, index:item[i].C_13, align: 'center',  sortable:false };
+				colModels[0] = {name:item[i].C_DIVISION, index:item[i].C_DIVISION, align: 'center',  sortable:false };
+				colModels[1] = {name:item[i].C_GUBUN, index:item[i].C_GUBUN, align: 'center',  sortable:false };
+				colModels[2] = {name:'C'+item[i].C_1 + '01', index:item[i].C_1, align: 'center',  sortable:false };
+				colModels[3] = {name:'C'+item[i].C_2 + '01', index:item[i].C_2, align: 'center',  sortable:false };
+				colModels[4] = {name:'C'+item[i].C_3 + '01', index:item[i].C_3, align: 'center',  sortable:false };
+				colModels[5] = {name:'C'+item[i].C_4 + '01', index:item[i].C_4, align: 'center',  sortable:false };
+				colModels[6] = {name:'C'+item[i].C_5 + '01', index:item[i].C_5, align: 'center',  sortable:false };
+				colModels[7] = {name:'C'+item[i].C_6 + '01', index:item[i].C_6, align: 'center',  sortable:false };
+				colModels[8] = {name:'C'+item[i].C_7 + '01', index:item[i].C_7, align: 'center',  sortable:false };
+				colModels[9] = {name:'C'+item[i].C_8 + '01', index:item[i].C_8, align: 'center',  sortable:false };
+				colModels[10] = {name:'C'+item[i].C_9 + '01', index:item[i].C_9, align: 'center',  sortable:false };
+				colModels[11] = {name:'C'+item[i].C_10 + '01', index:item[i].C_10, align: 'center',  sortable:false };
+				colModels[12] = {name:'C'+item[i].C_11 + '01', index:item[i].C_11, align: 'center',  sortable:false };
+				colModels[13] = {name:'C'+item[i].C_12 + '01', index:item[i].C_12, align: 'center',  sortable:false };
+				colModels[14] = {name:item[i].C_13, index:item[i].C_13, align: 'center',  sortable:false };
 				
 			};
 			
 			jQuery("#list").jqGrid({
 		   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 		         datatype: "json",      //json형태로 데이터 받음.  
-		         height: 100,
-		         caption: "1년간 월별 생산 실적 TREND",
+		         height: "auto",
+		         caption: "1년간 Capacity 대비 실적",
 		         footerrow:false,
 		         grouping:false, //그룹화 하기위한 옵션
 		         autowidth:true,

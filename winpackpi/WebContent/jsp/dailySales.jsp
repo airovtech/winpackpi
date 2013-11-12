@@ -12,12 +12,12 @@
 <script src="../js/jqgrid/js/jquery.jqGrid.min.js" type="text/javascript"></script>
 
 <script type="text/javascript">
- var method = 'dailySales';
+ var method = 'getDailySales';
  $(document).ready( function() { 
 	  jQuery("#list").jqGrid({
 	   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 	         datatype: "json",      //json형태로 데이터 받음.  
-	         height: 400,
+	         height: "auto",
 	         caption: "일별 매출 실적 현황",
 	         footerrow:false,
 	         grouping:true, //그룹화 하기위한 옵션
@@ -25,7 +25,7 @@
 	         groupingView : {
 	             groupField : ['DIVISION'], //그룹화 기준이 되는 컬럼명
 	             groupSummary : [false], //소계를 보인다.
-	             groupColumnShow : [true], //그룹화된 컬럼을 컬럼안에서 다시 표기한다.
+	             groupColumnShow : [false], //그룹화된 컬럼을 컬럼안에서 다시 표기한다.
 	             groupText : ['<span style="color:blue"><b>{0}</b></span>'] //그룹화된 이름에 <b> 태그를 추가했다.
 	         },
 	         
