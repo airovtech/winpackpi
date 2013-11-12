@@ -48,6 +48,40 @@
 			resultListMap.add(0, colNameMap);
 			json.put("colName", resultListMap);
 			
+		} else if (method.equalsIgnoreCase("getMonthlyCapacityPkgForYearColumnName")) {
+			
+			String yearMonth = (String)request.getParameter("yearMonth");
+			
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.YEAR, Integer.parseInt(yearMonth.substring(0, 4)));
+			cal.set(Calendar.MONTH, Integer.parseInt(yearMonth.substring(4, 6)) -1);
+			cal.set(Calendar.DATE, Integer.parseInt(yearMonth.substring(6,8)));
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			String toDateStr = sdf.format(cal.getTime());
+			cal.add(Calendar.MONTH, -12);
+			String fromDateStr = sdf.format(cal.getTime());
+			
+			LinkedList<Map> resultListMap = new LinkedList<Map>();
+			
+			Map colNameMap = new HashMap();
+			
+			colNameMap.put("C_DIVISION", "DIVISION");			
+			colNameMap.put("C_GUBUN", "GUBUN");			
+			
+			Calendar fromDateCal = Calendar.getInstance();
+			fromDateCal.set(Calendar.YEAR, Integer.parseInt(fromDateStr.substring(0, 4)));
+			fromDateCal.set(Calendar.MONTH, Integer.parseInt(fromDateStr.substring(4, 6)) -1);
+			fromDateCal.set(Calendar.DATE, Integer.parseInt(fromDateStr.substring(6,8)));
+			
+			for (int i = 0; i < 12; i++) {
+				fromDateCal.add(Calendar.MONTH, 1);
+				String dateStr = sdf.format(fromDateCal.getTime());
+				colNameMap.put("C_"+(i+1), dateStr.substring(0,6));
+			}
+			colNameMap.put("C_13", "TOTAL");
+			resultListMap.add(0, colNameMap);
+			json.put("colName", resultListMap);
 		}
 		out.print(json.toString());
 	} catch (Exception e) {

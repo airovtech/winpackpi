@@ -21,10 +21,11 @@
 
 <script type="text/javascript">
 
-var method = 'dailyShipping';
+var method = 'getDailyShipping';
 
  $(document).ready( function() {
 	 
+<<<<<<< HEAD
 
 	 var reportData = null;
 	 var chartData = null;
@@ -73,17 +74,17 @@ var method = 'dailyShipping';
 				   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 				         datatype: "json",      //json형태로 데이터 받음.  
 //						datatype: 'local',
-						height: 'auto',
-				       	caption: "일별 생산 실적 현황",
-				      	footerrow:false,
-				      	grouping:true, //그룹화 하기위한 옵션
-				       	autowidth:true,
-				      	groupingView : {
-				      		groupField : ['DIVISION'], //그룹화 기준이 되는 컬럼명
-				     		groupSummary : [false], //소계를 보인다.
-				    		groupColumnShow : [true], //그룹화된 컬럼을 컬럼안에서 다시 표기한다.
-				     		groupText : ['<span style="color:blue"><b>{0}</b></span>'] //그룹화된 이름에 <b> 태그를 추가했다.
-				    	},
+				         height: 400,
+				         caption: "일별 생산 실적 현황",
+				         footerrow:false,
+				         grouping:true, //그룹화 하기위한 옵션
+				         autowidth:true,
+				         groupingView : {
+				             groupField : ['DIVISION'], //그룹화 기준이 되는 컬럼명
+				             groupSummary : [false], //소계를 보인다.
+				             groupColumnShow : [false], //그룹화된 컬럼을 컬럼안에서 다시 표기한다.
+				             groupText : ['<span style="color:blue"><b>{0}</b></span>'] //그룹화된 이름에 <b> 태그를 추가했다.
+				         },
 				         
 				         colNames:['사업부','구분','금월', '일평균','MIT', '일평균','달성률(%)', 'WIP', '1일', '2일','3일', '4일', '5일', '6일'	, '7일'	, '8일'	, '9일'	, '10일', '11일', '12일', '13일', '14일', '15일', '16일', '17일', '18일', '19일', '20일', '21일', '22일', '23일', '24일', '25일', '26일', '27일', '28일', '29일', '30일', '31일'],
 				         colModel:[                  

@@ -11,6 +11,7 @@ package util;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,93 @@ import net.sf.json.JSONObject;
 
 public class ResultsetConverter {
 
+	public static String convertToJson(String operation, ResultSet rs, String month) throws Exception {
+
+		List<Map> resultListMap = new ArrayList<Map>();
+		List columnNameList = new ArrayList();
+
+		JSONObject json = new JSONObject();
+		
+		int columnCount = rs.getMetaData().getColumnCount();
+		for (int i = 1; i <= columnCount; i++) {
+			columnNameList.add(rs.getMetaData().getColumnName(i));
+		}
+		while (rs.next()) {
+			Map rowMap = new HashMap();
+			for (int i = 0; i < columnNameList.size(); i++) {
+				String columnName = (String) columnNameList.get(i);
+				String value = rs.getString(columnName);
+				rowMap.put(columnName, value);
+			}
+			resultListMap.add(rowMap);
+		}
+		addSummeryRow(operation, resultListMap);
+		json.put("rows", resultListMap);
+		return json.toString();
+	}
+	
+	public static void addSummeryRow(String method, List<Map> resultListMap) throws Exception {
+		
+		if (resultListMap == null)
+			return;
+		
+		if (method.equalsIgnoreCase("getMonthlyCapacityPkgForYear")) {
+			Map capacityMap = null;
+			Map shippingMap = null;
+			for (int i = 0; i < resultListMap.size(); i++) {
+				Map<String, String> resultMap = resultListMap.get(i);
+				Iterator itr = resultMap.keySet().iterator();
+				String key = null;
+				String value = null;
+				while (itr.hasNext()) {
+					key = (String)itr.next();
+					value = resultMap.get(key);
+					if (key.equalsIgnoreCase("GUBUN")) {
+						break;
+					}
+				}
+				if (value.equalsIgnoreCase("Capacity")) {
+					capacityMap = resultMap;
+				} else if (value.equalsIgnoreCase("积魂角利")) {
+					shippingMap = resultMap;
+				}
+			}
+			if (capacityMap == null)
+				return;
+			Map acheMap = new HashMap();
+			Iterator capaItr = capacityMap.keySet().iterator();
+			while (capaItr.hasNext()) {
+				String capaKey = (String)capaItr.next();
+				String capaValue = (String)capacityMap.get(capaKey);
+				if (capaKey.equalsIgnoreCase("division")) {
+					acheMap.put(capaKey, capaValue);
+					continue;
+				} else if (capaKey.equalsIgnoreCase("gubun")) {
+					acheMap.put(capaKey, "崔己啦");
+					continue;
+				}
+				String result = null;
+				if (shippingMap != null && shippingMap.get(capaKey) != null && capaValue != null) {
+					result = ((Float.parseFloat((String)shippingMap.get(capaKey)) / Float.parseFloat(capaValue))*100) + "";
+				}
+				acheMap.put(capaKey, result);
+			}
+			resultListMap.add(acheMap);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public static final Map<String, String> dayColumnMapper = new HashMap<String, String>() {
 		{
 			put("C01","1老");put("C02","2老");put("C03","3老");put("C04","4老");put("C05","5老");	put("C06","6老");put("C07","7老");
@@ -312,29 +400,6 @@ public class ResultsetConverter {
 		
 		return data;
 		
-	}
-	public static String convertToJson(String operation, ResultSet rs, String month) throws Exception {
-
-		List<Map> resultListMap = new ArrayList<Map>();
-		List columnNameList = new ArrayList();
-
-		JSONObject json = new JSONObject();
-		
-		int columnCount = rs.getMetaData().getColumnCount();
-		for (int i = 1; i <= columnCount; i++) {
-			columnNameList.add(rs.getMetaData().getColumnName(i));
-		}
-		while (rs.next()) {
-			Map rowMap = new HashMap();
-			for (int i = 0; i < columnNameList.size(); i++) {
-				String columnName = (String) columnNameList.get(i);
-				String value = rs.getString(columnName);
-				rowMap.put(columnName, value);
-			}
-			resultListMap.add(rowMap);
-		}
-		json.put("rows", resultListMap);
-		return json.toString();
 	}
 	private static String toNotNull(Object value) {
 		if (value == null)

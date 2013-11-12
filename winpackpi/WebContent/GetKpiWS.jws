@@ -70,7 +70,7 @@ public class GetKpiWS {
 		return executeQuery("getMonthlySalesForYear", sql, month);
 	}
 	//1년간월별Capacity대비실적
-	public String getMonthlyCapacityForYear(String month) throws Exception {
+	public String getMonthlyCapacityPkgForYear(String month) throws Exception {
 		String sql = makeQueryString("getMonthlyCapacityPkgForYear", month);
 		return executeQuery("getMonthlyCapacityPkgForYear", sql, month);
 	}
@@ -484,37 +484,65 @@ public class GetKpiWS {
 			
 		} else if (method.equalsIgnoreCase("getMonthlyCapacityPkgForYear")) {
 			
-			sqlBuff.append("SELECT * ");
-			sqlBuff.append("FROM   (SELECT division, ");
-			sqlBuff.append("               'Capacity'                                                    AS gubun, ");
-			sqlBuff.append("               Max(Decode(collectingmonth, '20130101', monthlycapashipping)) AS c20130101, ");
-			sqlBuff.append("               Max(Decode(collectingmonth, '20130201', monthlycapashipping)) AS c20130201 ");
-			sqlBuff.append("        FROM   (SELECT division, ");
-			sqlBuff.append("                       collectingmonth, ");
-			sqlBuff.append("                       SUM(planofshipping) monthlyCapaShipping ");
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.YEAR, Integer.parseInt(month.substring(0, 4)));
+			cal.set(Calendar.MONTH, Integer.parseInt(month.substring(4, 6)) -1);
+			cal.set(Calendar.DATE, Integer.parseInt(month.substring(6,8)));
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			String toDateStr = sdf.format(cal.getTime());
+			cal.add(Calendar.MONTH, -12);
+			String fromDateStr = sdf.format(cal.getTime());
+			
+			sqlBuff.append(" select ");
+			sqlBuff.append(" division  ");
+			
+			Calendar fromDateCal = Calendar.getInstance();
+			fromDateCal.set(Calendar.YEAR, Integer.parseInt(fromDateStr.substring(0, 4)));
+			fromDateCal.set(Calendar.MONTH, Integer.parseInt(fromDateStr.substring(4, 6)) -1);
+			fromDateCal.set(Calendar.DATE, Integer.parseInt(fromDateStr.substring(6,8)));
+			Calendar fromDateCal2 = Calendar.getInstance();
+			fromDateCal2.set(Calendar.YEAR, Integer.parseInt(fromDateStr.substring(0, 4)));
+			fromDateCal2.set(Calendar.MONTH, Integer.parseInt(fromDateStr.substring(4, 6)) -1);
+			fromDateCal2.set(Calendar.DATE, Integer.parseInt(fromDateStr.substring(6,8)));
+			
+			sqlBuff.append("               ,'Capacity'                                                    AS gubun ");
+			
+			for (int i = 0; i < 12; i++) {
+				fromDateCal.add(Calendar.MONTH, 1);
+				String dateStr = sdf.format(fromDateCal.getTime());
+				sqlBuff.append(" ,max(decode(collectingMonth, ").append(dateStr).append(", monthlycapashipping)) as \"C").append(dateStr).append("\" ");
+			}
+			
+			sqlBuff.append("        ,SUM(monthlyCapaShipping) as TOTAL ");
+			sqlBuff.append("        FROM   (SELECT division ");
+			sqlBuff.append("                       ,collectingmonth ");
+			sqlBuff.append("                       ,SUM(planofshipping) monthlyCapaShipping ");
 			sqlBuff.append("                FROM   planofmonthlycapacity ");
 			sqlBuff.append("                WHERE  division = 'pkg' ");
-			sqlBuff.append("                       AND collectingmonth >= '20130101' ");
-			sqlBuff.append("                       AND collectingmonth <= '20131231' ");
+			sqlBuff.append("     			AND collectingMonth >= '").append(fromDateStr).append("' AND collectingMonth <= '").append(toDateStr).append("' ");
 			sqlBuff.append("                GROUP  BY division, ");
 			sqlBuff.append("                          collectingmonth) ");
 			sqlBuff.append("        GROUP  BY division ");
 			sqlBuff.append("        UNION ALL ");
-			sqlBuff.append("        SELECT division, ");
-			sqlBuff.append("               '생산실적'                                                  AS gubun, ");
-			sqlBuff.append("               Max(Decode(collectingmonth, '20130101', sumofshipping)) AS C20130101, ");
-			sqlBuff.append("               Max(Decode(collectingmonth, '20130201', sumofshipping)) AS C20130201 ");
-			sqlBuff.append("        FROM   (SELECT division, ");
-			sqlBuff.append("                       collectingmonth, ");
-			sqlBuff.append("                       SUM(sumofshipping) sumOfShipping ");
+			sqlBuff.append("        SELECT division ");
+			sqlBuff.append("               ,'생산실적'                                                  AS gubun ");
+			
+			for (int i = 0; i < 12; i++) {
+				fromDateCal2.add(Calendar.MONTH, 1);
+				String dateStr = sdf.format(fromDateCal2.getTime());
+				sqlBuff.append(" 				,max(decode(collectingMonth, ").append(dateStr).append(", sumofshipping)) as \"C").append(dateStr).append("\" ");
+			}
+			sqlBuff.append("        ,SUM(sumofshipping) as TOTAL  ");
+			sqlBuff.append("        FROM   (SELECT division ");
+			sqlBuff.append("                       ,collectingmonth ");
+			sqlBuff.append("                       ,SUM(sumofshipping) sumOfShipping ");
 			sqlBuff.append("                FROM   monthlyshippingnsales ");
 			sqlBuff.append("                WHERE  division = 'pkg' ");
-			sqlBuff.append("                       AND collectingmonth >= '20130101' ");
-			sqlBuff.append("                       AND collectingmonth <= '20131231' ");
+			sqlBuff.append("     			AND collectingMonth >= '").append(fromDateStr).append("' AND collectingMonth <= '").append(toDateStr).append("' ");
 			sqlBuff.append("                GROUP  BY division, ");
 			sqlBuff.append("                          collectingmonth) ");
-			sqlBuff.append("        GROUP  BY division) tbl ");
-			
+			sqlBuff.append("        GROUP  BY division ");
 			
 		}
 		return sqlBuff.toString();

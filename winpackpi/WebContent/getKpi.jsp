@@ -13,7 +13,7 @@
 		String operation = null;
 		String[] inputParams = null; 
 		
-		if (method.equalsIgnoreCase("dailyShippingNSales")) {
+		if (method.equalsIgnoreCase("getDailyShippingNSales")) {
 			
 			operation = "getDailyShippingNSales";
 			
@@ -22,43 +22,50 @@
 				inputParams = new String[]{yearMonth};	
 			}
 			
-		} else if (method.equalsIgnoreCase("dailyShipping")) {
+		} else if (method.equalsIgnoreCase("getDailyShipping")) {
 			operation = "getDailyShipping";
 			
 			String yearMonth = (String)request.getParameter("yearMonth");
 			if (yearMonth != null) {
 				inputParams = new String[]{yearMonth};	
 			}
-		} else if (method.equalsIgnoreCase("dailySales")) {
+		} else if (method.equalsIgnoreCase("getDailySales")) {
 			operation = "getDailySales";
 			
 			String yearMonth = (String)request.getParameter("yearMonth");
 			if (yearMonth != null) {
 				inputParams = new String[]{yearMonth};	
 			}
-		} else if (method.equalsIgnoreCase("operationRatio")) {
+		} else if (method.equalsIgnoreCase("getDailyOperationRatio")) {
 			operation = "getDailyOperationRatio";
 			
 			String yearMonth = (String)request.getParameter("yearMonth");
 			if (yearMonth != null) {
 				inputParams = new String[]{yearMonth};	
 			}
-		} else if (method.equalsIgnoreCase("dailyTat")) {
+		} else if (method.equalsIgnoreCase("getDailyTat")) {
 			operation = "getDailyTat";
 			
 			String yearMonth = (String)request.getParameter("yearMonth");
 			if (yearMonth != null) {
 				inputParams = new String[]{yearMonth};	
 			}
-		} else if (method.equalsIgnoreCase("monthlyShippingForYear")) {
+		} else if (method.equalsIgnoreCase("getMonthlyShippingForYear")) {
 			operation = "getMonthlyShippingForYear";
 			
 			String yearMonth = (String)request.getParameter("yearMonth");
 			if (yearMonth != null) {
 				inputParams = new String[]{yearMonth};	
 			}
-		} else if (method.equalsIgnoreCase("monthlySalesForYear")) {
+		} else if (method.equalsIgnoreCase("getMonthlySalesForYear")) {
 			operation = "getMonthlySalesForYear";
+			
+			String yearMonth = (String)request.getParameter("yearMonth");
+			if (yearMonth != null) {
+				inputParams = new String[]{yearMonth};	
+			}
+		} else if (method.equalsIgnoreCase("getMonthlyCapacityPkgForYear")) {
+			operation = "getMonthlyCapacityPkgForYear";
 			
 			String yearMonth = (String)request.getParameter("yearMonth");
 			if (yearMonth != null) {

@@ -11,14 +11,21 @@
 <script src="../js/jqgrid/js/i18n/grid.locale-en.js" type="text/javascript"></script>
 <script src="../js/jqgrid/js/jquery.jqGrid.min.js" type="text/javascript"></script>
 
+
+<link rel="stylesheet" type="text/css" href="../css/jquery.jqChart.css" />
+<script src="../js/jquery.jqChart.min.js" type="text/javascript"></script>
+
 <script type="text/javascript">
- var method = 'getDailySales';
+
+var method = 'getDailyOperationRatio';
+
  $(document).ready( function() { 
+	 
 	  jQuery("#list").jqGrid({
 	   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 	         datatype: "json",      //json형태로 데이터 받음.  
 	         height: "auto",
-	         caption: "일별 매출 실적 현황",
+	         caption: "일별 가동율 현황",
 	         footerrow:false,
 	         grouping:true, //그룹화 하기위한 옵션
 	         autowidth:true,
@@ -29,50 +36,49 @@
 	             groupText : ['<span style="color:blue"><b>{0}</b></span>'] //그룹화된 이름에 <b> 태그를 추가했다.
 	         },
 	         
-	         colNames:['사업부','구분','금월', '일평균','MIT', '일평균','달성률(%)', 'WIP', '1일', '2일','3일', '4일', '5일', '6일'	, '7일'	, '8일'	, '9일'	, '10일', '11일', '12일', '13일', '14일', '15일', '16일', '17일', '18일', '19일', '20일', '21일', '22일', '23일', '24일', '25일', '26일', '27일', '28일', '29일', '30일', '31일'],
+	         colNames:['사업부','구분','목표가동율', '전월가동율','금월누적가동율', '1일', '2일','3일', '4일', '5일', '6일', '7일'	, '8일'	, '9일'	, '10일', '11일', '12일', '13일', '14일', '15일', '16일', '17일', '18일', '19일', '20일', '21일', '22일', '23일', '24일', '25일', '26일', '27일', '28일', '29일', '30일', '31일'],
 	         colModel:[                  
-	             {name:'DIVISION', width:'70', index:'DIVISION', align: 'center' },
-	             {name:'DEVICEGROUP', width:'70', index:'DEVICEGROUP'},
-	             {name:'PLANOFSALES', width:'70', index:'PLANOFSALES', summaryType: 'sum'},
-	             {name:'AVGPLANOFDAY', width:'70', index:'AVGPLANOFDAY', summaryType: 'sum'},
-	             {name:'TOTALSUM', width:'70', index:'TOTALSUM', summaryType: 'sum'},
-	             {name:'AVGOFDAY', width:'70', index:'AVGOFDAY', summaryType: 'sum'},
-	             {name:'PERSALES', width:'70', index:'PERSALES', summaryType: 'sum'},
-	             {name:'WIP', width:'50', index:'WIP', summaryType: 'sum'},
-	             {name:'C01', width:'50', index:'C01', summaryType: 'sum'},
-	             {name:'C02', width:'50', index:'C02', summaryType: 'sum'},
-	             {name:'C03', width:'50', index:'C03', summaryType: 'sum'},
-	             {name:'C04', width:'50', index:'C04', summaryType: 'sum'},
-	             {name:'C05', width:'50', index:'C05', summaryType: 'sum'},
-	             {name:'C06', width:'50', index:'C06', summaryType: 'sum'},
-	             {name:'C07', width:'50', index:'C07', summaryType: 'sum'},
-	             {name:'C08', width:'50', index:'C08', summaryType: 'sum'},
-	             {name:'C09', width:'50', index:'C09', summaryType: 'sum'},
-	             {name:'C10', width:'50', index:'C10', summaryType: 'sum'},
-	             {name:'C11', width:'50', index:'C11', summaryType: 'sum'},
-	             {name:'C12', width:'50', index:'C12', summaryType: 'sum'},
-	             {name:'C13', width:'50', index:'C13', summaryType: 'sum'},
-	             {name:'C14', width:'50', index:'C14', summaryType: 'sum'},
-	             {name:'C15', width:'50', index:'C15', summaryType: 'sum'},
-	             {name:'C16', width:'50', index:'C16', summaryType: 'sum'},
-	             {name:'C17', width:'50', index:'C17', summaryType: 'sum'},
-	             {name:'C18', width:'50', index:'C18', summaryType: 'sum'},
-	             {name:'C19', width:'50', index:'C19', summaryType: 'sum'},
-	             {name:'C20', width:'50', index:'C20', summaryType: 'sum'},
-	             {name:'C21', width:'50', index:'C21', summaryType: 'sum'},
-	             {name:'C22', width:'50', index:'C22', summaryType: 'sum'},
-	             {name:'C23', width:'50', index:'C23', summaryType: 'sum'},
-	             {name:'C24', width:'50', index:'C24', summaryType: 'sum'},
-	             {name:'C25', width:'50', index:'C25', summaryType: 'sum'},
-	             {name:'C26', width:'50', index:'C26', summaryType: 'sum'},
-	             {name:'C27', width:'50', index:'C27', summaryType: 'sum'},
-	             {name:'C28', width:'50', index:'C28', summaryType: 'sum'},
-	             {name:'C29', width:'50', index:'C29', summaryType: 'sum'},
-	             {name:'C30', width:'50', index:'C30', summaryType: 'sum'},
-	             {name:'C31', width:'50', index:'C31', summaryType: 'sum'}
+	             {name:'DIVISION', index:'DIVISION', align: 'center',  sortable:false },
+	             {name:'GUBUN', index:'GUBUN',  sortable:false},
+	             {name:'TARGETOR', index:'TARGETOR', summaryType: 'sum',  sortable:false},
+	             {name:'LASTMONTHAVG', index:'LASTMONTHAVG', summaryType: 'sum',  sortable:false},
+	             {name:'MONTHAVG', index:'MONTHAVG', summaryType: 'sum',  sortable:false},
+	             {name:'C01', index:'C01', summaryType: 'sum',  sortable:false},
+	             {name:'C02', index:'C02', summaryType: 'sum',  sortable:false},
+	             {name:'C03', index:'C03', summaryType: 'sum',  sortable:false},
+	             {name:'C04', index:'C04', summaryType: 'sum',  sortable:false},
+	             {name:'C05', index:'C05', summaryType: 'sum',  sortable:false},
+	             {name:'C06', index:'C06', summaryType: 'sum',  sortable:false},
+	             {name:'C07', index:'C07', summaryType: 'sum',  sortable:false},
+	             {name:'C08', index:'C08', summaryType: 'sum',  sortable:false},
+	             {name:'C09', index:'C09', summaryType: 'sum',  sortable:false},
+	             {name:'C10', index:'C10', summaryType: 'sum',  sortable:false},
+	             {name:'C11', index:'C11', summaryType: 'sum',  sortable:false},
+	             {name:'C12', index:'C12', summaryType: 'sum',  sortable:false},
+	             {name:'C13', index:'C13', summaryType: 'sum',  sortable:false},
+	             {name:'C14', index:'C14', summaryType: 'sum',  sortable:false},
+	             {name:'C15', index:'C15', summaryType: 'sum',  sortable:false},
+	             {name:'C16', index:'C16', summaryType: 'sum',  sortable:false},
+	             {name:'C17', index:'C17', summaryType: 'sum',  sortable:false},
+	             {name:'C18', index:'C18', summaryType: 'sum',  sortable:false},
+	             {name:'C19', index:'C19', summaryType: 'sum',  sortable:false},
+	             {name:'C20', index:'C20', summaryType: 'sum',  sortable:false},
+	             {name:'C21', index:'C21', summaryType: 'sum',  sortable:false},
+	             {name:'C22', index:'C22', summaryType: 'sum',  sortable:false},
+	             {name:'C23', index:'C23', summaryType: 'sum',  sortable:false},
+	             {name:'C24', index:'C24', summaryType: 'sum',  sortable:false},
+	             {name:'C25', index:'C25', summaryType: 'sum',  sortable:false},
+	             {name:'C26', index:'C26', summaryType: 'sum',  sortable:false},
+	             {name:'C27', index:'C27', summaryType: 'sum',  sortable:false},
+	             {name:'C28', index:'C28', summaryType: 'sum',  sortable:false},
+	             {name:'C29', index:'C29', summaryType: 'sum',  sortable:false},
+	             {name:'C30', index:'C30', summaryType: 'sum',  sortable:false},
+	             {name:'C31', index:'C31', summaryType: 'sum',  sortable:false}
 	         ],
 	         //객체에 담긴 이름값과 name이 같은 지 확인 잘하길... 나는 대소문자 구별 때문에 행은 늘어나는데 데이터가 나타나지 않아서 한참 헤맴...
-	          gridComplete : function() {        //---데이터를 성공적으로 가져오면 실행 됨
+	          gridComplete : function() { 
+	        	  
+	        	  //---데이터를 성공적으로 가져오면 실행 됨
             	/* var sumOfSales = $("#list").jqGrid('getCol', 'SUMOFSALES', false, 'sum');
             	var shippingPlan = $("#list").jqGrid('getCol', 'SHIPPINGPLAN', false, 'sum');
             	var salesPlan = $("#list").jqGrid('getCol', 'SALESPLAN', false, 'sum');
@@ -96,13 +102,6 @@
 	        // caption: "" //"Manipulating Array Data"    //caption을 달겠다는 거겠지. 
 	     });
   
-	  jQuery("#list").jqGrid('setGroupHeaders', {
-		  useColSpanStyle: true, 
-		  groupHeaders:[
-			{startColumnName: 'PLANOFSALES', numberOfColumns: 2, titleText: '실행계획'},
-			{startColumnName: 'TOTALSUM', numberOfColumns: 3, titleText: '매출실적'}
-		  ]
-		});
  });
  
  
