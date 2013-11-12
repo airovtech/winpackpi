@@ -32,7 +32,7 @@ public class GetKpiWS {
 	public final String userId = "swuser";
 	public final String pass = "smartworks";
 	public final String driverClassName = "oracle.jdbc.driver.OracleDriver";
-	public final String returnType = "data";//"data"
+	public final String returnType = "json";//"data"
 	
 	//당월생산매출실적
 	public String getDailyShippingNSales(String month) throws Exception {

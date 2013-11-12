@@ -32,7 +32,7 @@ public class GetKpiWS {
 	public final String userId = "swuser";
 	public final String pass = "smartworks";
 	public final String driverClassName = "oracle.jdbc.driver.OracleDriver";
-	public final String returnType = "data";//"data"
+	public final String returnType = "json";//"data"
 	
 	//당월생산매출실적
 	public String getDailyShippingNSales(String month) throws Exception {
@@ -68,6 +68,11 @@ public class GetKpiWS {
 	public String getMonthlySalesForYear(String month) throws Exception {
 		String sql = makeQueryString("getMonthlySalesForYear", month);
 		return executeQuery("getMonthlySalesForYear", sql, month);
+	}
+	//1년간월별Capacity대비실적
+	public String getMonthlyCapacityForYear(String month) throws Exception {
+		String sql = makeQueryString("getMonthlyCapacityPkgForYear", month);
+		return executeQuery("getMonthlyCapacityPkgForYear", sql, month);
 	}
 	public String getTestChartData(String date) throws Exception {
 		Data data = ResultsetConverter.convertToData(null, null, null);
@@ -476,6 +481,40 @@ public class GetKpiWS {
 			sqlBuff.append("     group by division, collectingMonth ");
 			sqlBuff.append(" ) ");
 			sqlBuff.append(" group by division ");
+			
+		} else if (method.equalsIgnoreCase("getMonthlyCapacityPkgForYear")) {
+			
+			sqlBuff.append("SELECT * ");
+			sqlBuff.append("FROM   (SELECT division, ");
+			sqlBuff.append("               'Capacity'                                                    AS gubun, ");
+			sqlBuff.append("               Max(Decode(collectingmonth, '20130101', monthlycapashipping)) AS c20130101, ");
+			sqlBuff.append("               Max(Decode(collectingmonth, '20130201', monthlycapashipping)) AS c20130201 ");
+			sqlBuff.append("        FROM   (SELECT division, ");
+			sqlBuff.append("                       collectingmonth, ");
+			sqlBuff.append("                       SUM(planofshipping) monthlyCapaShipping ");
+			sqlBuff.append("                FROM   planofmonthlycapacity ");
+			sqlBuff.append("                WHERE  division = 'pkg' ");
+			sqlBuff.append("                       AND collectingmonth >= '20130101' ");
+			sqlBuff.append("                       AND collectingmonth <= '20131231' ");
+			sqlBuff.append("                GROUP  BY division, ");
+			sqlBuff.append("                          collectingmonth) ");
+			sqlBuff.append("        GROUP  BY division ");
+			sqlBuff.append("        UNION ALL ");
+			sqlBuff.append("        SELECT division, ");
+			sqlBuff.append("               '생산실적'                                                  AS gubun, ");
+			sqlBuff.append("               Max(Decode(collectingmonth, '20130101', sumofshipping)) AS C20130101, ");
+			sqlBuff.append("               Max(Decode(collectingmonth, '20130201', sumofshipping)) AS C20130201 ");
+			sqlBuff.append("        FROM   (SELECT division, ");
+			sqlBuff.append("                       collectingmonth, ");
+			sqlBuff.append("                       SUM(sumofshipping) sumOfShipping ");
+			sqlBuff.append("                FROM   monthlyshippingnsales ");
+			sqlBuff.append("                WHERE  division = 'pkg' ");
+			sqlBuff.append("                       AND collectingmonth >= '20130101' ");
+			sqlBuff.append("                       AND collectingmonth <= '20131231' ");
+			sqlBuff.append("                GROUP  BY division, ");
+			sqlBuff.append("                          collectingmonth) ");
+			sqlBuff.append("        GROUP  BY division) tbl ");
+			
 			
 		}
 		return sqlBuff.toString();
