@@ -79,6 +79,11 @@ public class GetKpiWS {
 		String sql = makeQueryString("getMonthlyShipping", month);
 		return executeQuery("getMonthlyShipping", sql, month);
 	}
+	//월별매출실적현황
+	public String getMonthlySales(String month) throws Exception {
+		String sql = makeQueryString("getMonthlySales", month);
+		return executeQuery("getMonthlySales", sql, month);
+	}
 	public String getTestChartData(String date) throws Exception {
 		Data data = ResultsetConverter.convertToData(null, null, null);
 		return data.toString();
@@ -601,6 +606,70 @@ public class GetKpiWS {
 			sqlBuff.append("                                               ,Substr(collectingdate, 0, 6) ");
 			sqlBuff.append("                                                || '01' collectingMonth ");
 			sqlBuff.append("                                               ,shipping ");
+			sqlBuff.append("                                        FROM   dailyshippingnsales ");
+			sqlBuff.append("                                        ) ");
+		
+			sqlBuff.append("                                WHERE collectingMonth >= '").append(fromDateStr).append("' AND collectingMonth <= '").append(toDateStr).append("'");
+			
+			sqlBuff.append("                                GROUP  BY division ");
+			sqlBuff.append("                                          ,collectingmonth) ship ");
+			sqlBuff.append("                            ON pln.division = ship.division ");
+			sqlBuff.append("                               AND pln.collectingmonth = ship.collectingmonth ");
+			sqlBuff.append("        ORDER  BY pln.collectingmonth) tbl ");
+			sqlBuff.append("GROUP  BY division ");
+			
+		} else if (method.equalsIgnoreCase("getMonthlySales")) {
+			
+			int fromDateStr = Integer.parseInt(month.substring(0, 4) + "0101");
+			int toDateStr = Integer.parseInt(month.substring(0, 4) + "1201");
+			
+			sqlBuff.append("SELECT division ");
+			
+			for (int i = fromDateStr; i <= toDateStr; i = i + 100) {
+				sqlBuff.append("       ,NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.collectingmonth)), 0) ");
+				sqlBuff.append("        ||'_' ");
+				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.plansales)), 0) ");
+				sqlBuff.append("        ||'_' ");
+				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.focplansales)), 0) ");
+				sqlBuff.append("        ||'_' ");
+				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.sumofsales)), 0) ");
+				sqlBuff.append("        ||'_' ");
+				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.perwithplan)), 0) ");
+				sqlBuff.append("        ||'_' ");
+				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.perwithfocplan)), 0) AS C").append((i+"").substring(4, 6)).append(" ");
+			}
+			
+			sqlBuff.append("FROM   (SELECT pln.* ");
+			sqlBuff.append("               ,foc.focsales                                               AS focPlansales ");
+			sqlBuff.append("               ,ship.sumofsales ");
+			sqlBuff.append("               ,Round(( ( ship.sumofsales / pln.plansales ) * 100 ), 2) perWithPlan ");
+			sqlBuff.append("               ,Round(( ( ship.sumofsales / foc.focsales ) * 100 ), 2)  perWithFocPlan ");
+			sqlBuff.append("        FROM   (SELECT division ");
+			sqlBuff.append("                       ,collectingmonth ");
+			sqlBuff.append("                       ,SUM(salesplanofmonth) plansales ");
+			sqlBuff.append("                FROM   sw_planofmanagement ");
+			sqlBuff.append("                WHERE collectingMonth >= '").append(fromDateStr).append("' AND collectingMonth <= '").append(toDateStr).append("'");
+			
+			sqlBuff.append("                GROUP  BY division ");
+			sqlBuff.append("                          ,collectingmonth) pln ");
+			sqlBuff.append("               left outer join (SELECT division ");
+			sqlBuff.append("                                       ,collectingmonth ");
+			sqlBuff.append("                                       ,SUM(salesplanofmonth) focsales ");
+			sqlBuff.append("                                FROM   sw_planofforecast ");
+
+			sqlBuff.append("                                WHERE collectingMonth >= '").append(fromDateStr).append("' AND collectingMonth <= '").append(toDateStr).append("'");
+			
+			sqlBuff.append("                                GROUP  BY division ");
+			sqlBuff.append("                                          ,collectingmonth) foc ");
+			sqlBuff.append("                            ON pln.division = foc.division ");
+			sqlBuff.append("                               AND pln.collectingmonth = foc.collectingmonth ");
+			sqlBuff.append("               left outer join (SELECT division ");
+			sqlBuff.append("                                       ,collectingmonth ");
+			sqlBuff.append("                                       ,SUM(salesOfDay) AS sumOfsales ");
+			sqlBuff.append("                                FROM   (SELECT division ");
+			sqlBuff.append("                                               ,Substr(collectingdate, 0, 6) ");
+			sqlBuff.append("                                                || '01' collectingMonth ");
+			sqlBuff.append("                                               ,salesOfDay ");
 			sqlBuff.append("                                        FROM   dailyshippingnsales ");
 			sqlBuff.append("                                        ) ");
 		

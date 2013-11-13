@@ -78,6 +78,13 @@
 			if (yearMonth != null) {
 				inputParams = new String[]{yearMonth};	
 			}
+		} else if (method.equalsIgnoreCase("getMonthlySales")) {
+			operation = "getMonthlySales";
+			
+			String yearMonth = (String)request.getParameter("yearMonth");
+			if (yearMonth != null) {
+				inputParams = new String[]{yearMonth};	
+			}
 		} else if (method.equalsIgnoreCase("getQuery")) {
 			String queryType = (String)request.getParameter("queryType");
 			operation = "makeQueryString";		

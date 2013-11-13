@@ -9,7 +9,10 @@
 package util;
 
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -103,7 +106,27 @@ public class ResultsetConverter {
 		} else if (method.equalsIgnoreCase("getMonthlyShipping")) {
 			
 			
+			Calendar cal = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+			int thisMonth = Integer.parseInt(sdf.format(cal.getTime()) + "01");
+			
 			List<Map> returnList = new ArrayList<Map>();
+			
+			Map planTotalMap = new HashMap();
+			Map forecastTotalMap = new HashMap();
+			Map shippingTotalMap = new HashMap();
+			Map perWithPlanTotalMap = new HashMap();
+			Map perWithForecastTotalMap = new HashMap();
+			
+			//사업부 전체 YTD를 구하기 위한
+			int allDivisionPlanYtdSum = 0;
+			int allDivisionForecastYtdSum = 0;
+			int allDivisionShippingYtdSum = 0;
+			
+			//사업부 전체 TOTAL을 구하기 위한
+			int allDivisionPlanTotalSum = 0;
+			int allDivisionForecastTotalSum = 0;
+			int allDivisionShippingTotalSum = 0;
 			
 			for (int i = 0; i < resultListMap.size(); i++) {
 
@@ -116,6 +139,16 @@ public class ResultsetConverter {
 				Map perWithPlanMap = new HashMap();
 				Map perWithForecastMap = new HashMap();
 				
+				//사업부별 YTD를 구하기위한
+				int planYtdSum = 0;
+				int forecastYtdSum = 0;
+				int shippingYtdSum = 0;
+				
+				//사업부별 TOTAL을 구하기 위한
+				int planTotalSum = 0;
+				int forecastTotalSum = 0;
+				int shippingTotalSum = 0;
+				
 				while (itr.hasNext()) {
 					String key = (String)itr.next();
 					String value = (String)resultMap.get(key);
@@ -123,35 +156,364 @@ public class ResultsetConverter {
 					if (key.equals("DIVISION")) {
 						planMap.put(key, value);
 						planMap.put("GUBUN", "PLAN");
+						if (!planTotalMap.containsKey(key)) {
+							planTotalMap.put("DIVISION", "TOTAL");
+							planTotalMap.put("GUBUN", "PLAN");
+						}
 						
 						forecastMap.put(key, value);
 						forecastMap.put("GUBUN", "Forecast");
+						if (!forecastTotalMap.containsKey(key)) {
+							forecastTotalMap.put("DIVISION", "TOTAL");
+							forecastTotalMap.put("GUBUN", "Forecast");
+						}
 						
 						shippingMap.put(key, value);
 						shippingMap.put("GUBUN", "생산실적");
+						if (!shippingTotalMap.containsKey(key)) {
+							shippingTotalMap.put("DIVISION", "TOTAL");
+							shippingTotalMap.put("GUBUN", "생산실적");
+						}
 						
 						perWithPlanMap.put(key, value);
 						perWithPlanMap.put("GUBUN", "PLAN vs 실적(%)");
+						if (!perWithPlanTotalMap.containsKey(key)) {
+							perWithPlanTotalMap.put("DIVISION", "TOTAL");
+							perWithPlanTotalMap.put("GUBUN", "PLAN vs 실적(%)");
+						}
 						
 						perWithForecastMap.put(key, value);
 						perWithForecastMap.put("GUBUN", "Forecast vs 실적(%)");
+						if (!perWithForecastTotalMap.containsKey(key)) {
+							perWithForecastTotalMap.put("DIVISION", "TOTAL");
+							perWithForecastTotalMap.put("GUBUN", "Forecast vs 실적(%)");
+						}
 						
 					} else {
 						String[] values = StringUtils.tokenizeToStringArray(value, "_");
+						
+						//YTD를 계산하기 위하여...
+						if (Integer.parseInt(values[0]) <= thisMonth) {
+							planYtdSum = planYtdSum + Integer.parseInt(values[1]);
+							forecastYtdSum = forecastYtdSum + Integer.parseInt(values[2]);
+							shippingYtdSum = shippingYtdSum + Integer.parseInt(values[3]);
+						}
+						
+						planTotalSum = planTotalSum + Integer.parseInt(values[1]);
+						forecastTotalSum = forecastTotalSum + Integer.parseInt(values[2]);
+						shippingTotalSum = shippingTotalSum + Integer.parseInt(values[3]);
+						
 						planMap.put(key, values[1]);
 						forecastMap.put(key, values[2]);
 						shippingMap.put(key, values[3]);
 						perWithPlanMap.put(key, values[4]);
 						perWithForecastMap.put(key, values[5]);
 						
+						if (!planTotalMap.containsKey(key)) {
+							planTotalMap.put(key, values[1]);
+						} else {
+							int intValue = Integer.parseInt((String)planTotalMap.get(key));
+							planTotalMap.remove(key);
+							planTotalMap.put(key, (intValue + Integer.parseInt(values[1])) + "");
+						}
+						if (!forecastTotalMap.containsKey(key)) {
+							forecastTotalMap.put(key, values[2]);
+						} else {
+							int intValue = Integer.parseInt((String)forecastTotalMap.get(key));
+							forecastTotalMap.remove(key);
+							forecastTotalMap.put(key, (intValue + Integer.parseInt(values[2])) + "");
+						}
+						if (!shippingTotalMap.containsKey(key)) {
+							shippingTotalMap.put(key, values[3]);
+						} else {
+							int intValue = Integer.parseInt((String)shippingTotalMap.get(key));
+							shippingTotalMap.remove(key);
+							shippingTotalMap.put(key, (intValue + Integer.parseInt(values[3])) + "");
+						}
+						
+						
+						int planTotal = planTotalMap.get(key) == null ? 0 : Integer.parseInt((String)planTotalMap.get(key));
+						int forecastTotal = forecastTotalMap.get(key) == null ? 0 : Integer.parseInt((String)forecastTotalMap.get(key));
+						int shippingTotal = shippingTotalMap.get(key) == null ? 0 : Integer.parseInt((String)shippingTotalMap.get(key));
+						
+						if (planTotal == 0 || shippingTotal == 0) {
+							perWithPlanTotalMap.remove(key);
+							perWithPlanTotalMap.put(key, "0");
+						} else {
+							DecimalFormat df = new DecimalFormat("#.##");
+							perWithPlanTotalMap.remove(key);
+							perWithPlanTotalMap.put(key, (df.format(((float)shippingTotal/(float)planTotal) * 100)) + "");
+						}
+						
+						if (forecastTotal == 0 || shippingTotal == 0) {
+							perWithForecastTotalMap.remove(key);
+							perWithForecastTotalMap.put(key, "0");
+						} else {
+							DecimalFormat df = new DecimalFormat("#.##");
+							perWithForecastTotalMap.remove(key);
+							perWithForecastTotalMap.put(key, (df.format(((float)shippingTotal/(float)forecastTotal) * 100)) + "");
+						}
 					}
 				}
+				//사업부별 YTD, TOTAL을 계산하여 삽입한다
+				planMap.put("YTD", planYtdSum + "");
+				forecastMap.put("YTD", forecastYtdSum + "");
+				shippingMap.put("YTD", shippingYtdSum + "");
+				
+				DecimalFormat df = new DecimalFormat("#.##");
+				perWithPlanMap.put("YTD", (df.format(((float)shippingYtdSum/(float)planYtdSum) * 100)) + "");
+				perWithForecastMap.put("YTD", (df.format(((float)shippingYtdSum/(float)forecastYtdSum) * 100)) + "");
+				
+				planMap.put("TOTAL", planTotalSum + "");
+				forecastMap.put("TOTAL", forecastTotalSum + "");
+				shippingMap.put("TOTAL", shippingTotalSum + "");
+				perWithPlanMap.put("TOTAL", (df.format(((float)shippingTotalSum/(float)planTotalSum) * 100)) + "");
+				perWithForecastMap.put("TOTAL", (df.format(((float)shippingTotalSum/(float)forecastTotalSum) * 100)) + "");
+				
+				//사업부 전체 YTD값을 구하기 위한
+				allDivisionPlanYtdSum = allDivisionPlanYtdSum + planYtdSum;
+				allDivisionForecastYtdSum = allDivisionForecastYtdSum + forecastYtdSum;
+				allDivisionShippingYtdSum = allDivisionShippingYtdSum + shippingYtdSum;
+				//사업부 전체 TOTAL값을 구하기 위한
+				allDivisionPlanTotalSum = allDivisionPlanTotalSum + planTotalSum;
+				allDivisionForecastTotalSum = allDivisionForecastTotalSum + forecastTotalSum;
+				allDivisionShippingTotalSum = allDivisionShippingTotalSum + shippingTotalSum;
+				
 				returnList.add(planMap);
 				returnList.add(forecastMap);
 				returnList.add(shippingMap);
 				returnList.add(perWithPlanMap);
 				returnList.add(perWithForecastMap);
 			}
+			
+			
+			DecimalFormat df = new DecimalFormat("#.##");
+			
+			planTotalMap.put("YTD", allDivisionPlanYtdSum);
+			forecastTotalMap.put("YTD", allDivisionForecastYtdSum);
+			shippingTotalMap.put("YTD", allDivisionShippingYtdSum);
+			perWithPlanTotalMap.put("YTD", (df.format(((float)allDivisionShippingYtdSum/(float)allDivisionPlanYtdSum) * 100)) + "");
+			perWithForecastTotalMap.put("YTD", (df.format(((float)allDivisionShippingYtdSum/(float)allDivisionForecastYtdSum) * 100)) + "");
+			
+
+			planTotalMap.put("TOTAL", allDivisionPlanTotalSum);
+			forecastTotalMap.put("TOTAL", allDivisionForecastTotalSum);
+			shippingTotalMap.put("TOTAL", allDivisionShippingTotalSum);
+			perWithPlanTotalMap.put("TOTAL", (df.format(((float)allDivisionShippingTotalSum/(float)allDivisionPlanTotalSum) * 100)) + "");
+			perWithForecastTotalMap.put("TOTAL", (df.format(((float)allDivisionShippingTotalSum/(float)allDivisionForecastTotalSum) * 100)) + "");
+			
+			returnList.add(planTotalMap);
+			returnList.add(forecastTotalMap);
+			returnList.add(shippingTotalMap);
+			returnList.add(perWithPlanTotalMap);
+			returnList.add(perWithForecastTotalMap);
+			
+			return returnList;
+		} else if (method.equalsIgnoreCase("getMonthlySales")) {
+			
+			
+			Calendar cal = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+			int thisMonth = Integer.parseInt(sdf.format(cal.getTime()) + "01");
+			
+			List<Map> returnList = new ArrayList<Map>();
+			
+			Map planTotalMap = new HashMap();
+			Map forecastTotalMap = new HashMap();
+			Map salesTotalMap = new HashMap();
+			Map perWithPlanTotalMap = new HashMap();
+			Map perWithForecastTotalMap = new HashMap();
+			
+			//사업부 전체 YTD를 구하기 위한
+			int allDivisionPlanYtdSum = 0;
+			int allDivisionForecastYtdSum = 0;
+			int allDivisionsalesYtdSum = 0;
+			
+			//사업부 전체 TOTAL을 구하기 위한
+			int allDivisionPlanTotalSum = 0;
+			int allDivisionForecastTotalSum = 0;
+			int allDivisionsalesTotalSum = 0;
+			
+			for (int i = 0; i < resultListMap.size(); i++) {
+
+				Map<String, String> resultMap = resultListMap.get(i);
+				Iterator itr = resultMap.keySet().iterator();
+				
+				Map planMap = new HashMap();
+				Map forecastMap = new HashMap();
+				Map salesMap = new HashMap();
+				Map perWithPlanMap = new HashMap();
+				Map perWithForecastMap = new HashMap();
+				
+				//사업부별 YTD를 구하기위한
+				int planYtdSum = 0;
+				int forecastYtdSum = 0;
+				int salesYtdSum = 0;
+				
+				//사업부별 TOTAL을 구하기 위한
+				int planTotalSum = 0;
+				int forecastTotalSum = 0;
+				int salesTotalSum = 0;
+				
+				while (itr.hasNext()) {
+					String key = (String)itr.next();
+					String value = (String)resultMap.get(key);
+					
+					if (key.equals("DIVISION")) {
+						planMap.put(key, value);
+						planMap.put("GUBUN", "PLAN");
+						if (!planTotalMap.containsKey(key)) {
+							planTotalMap.put("DIVISION", "TOTAL");
+							planTotalMap.put("GUBUN", "PLAN");
+						}
+						
+						forecastMap.put(key, value);
+						forecastMap.put("GUBUN", "Forecast");
+						if (!forecastTotalMap.containsKey(key)) {
+							forecastTotalMap.put("DIVISION", "TOTAL");
+							forecastTotalMap.put("GUBUN", "Forecast");
+						}
+						
+						salesMap.put(key, value);
+						salesMap.put("GUBUN", "생산실적");
+						if (!salesTotalMap.containsKey(key)) {
+							salesTotalMap.put("DIVISION", "TOTAL");
+							salesTotalMap.put("GUBUN", "매출실적");
+						}
+						
+						perWithPlanMap.put(key, value);
+						perWithPlanMap.put("GUBUN", "PLAN vs 실적(%)");
+						if (!perWithPlanTotalMap.containsKey(key)) {
+							perWithPlanTotalMap.put("DIVISION", "TOTAL");
+							perWithPlanTotalMap.put("GUBUN", "PLAN vs 실적(%)");
+						}
+						
+						perWithForecastMap.put(key, value);
+						perWithForecastMap.put("GUBUN", "Forecast vs 실적(%)");
+						if (!perWithForecastTotalMap.containsKey(key)) {
+							perWithForecastTotalMap.put("DIVISION", "TOTAL");
+							perWithForecastTotalMap.put("GUBUN", "Forecast vs 실적(%)");
+						}
+						
+					} else {
+						String[] values = StringUtils.tokenizeToStringArray(value, "_");
+						
+						//YTD를 계산하기 위하여...
+						if (Integer.parseInt(values[0]) <= thisMonth) {
+							planYtdSum = planYtdSum + Integer.parseInt(values[1]);
+							forecastYtdSum = forecastYtdSum + Integer.parseInt(values[2]);
+							salesYtdSum = salesYtdSum + Integer.parseInt(values[3]);
+						}
+						
+						planTotalSum = planTotalSum + Integer.parseInt(values[1]);
+						forecastTotalSum = forecastTotalSum + Integer.parseInt(values[2]);
+						salesTotalSum = salesTotalSum + Integer.parseInt(values[3]);
+						
+						planMap.put(key, values[1]);
+						forecastMap.put(key, values[2]);
+						salesMap.put(key, values[3]);
+						perWithPlanMap.put(key, values[4]);
+						perWithForecastMap.put(key, values[5]);
+						
+						if (!planTotalMap.containsKey(key)) {
+							planTotalMap.put(key, values[1]);
+						} else {
+							int intValue = Integer.parseInt((String)planTotalMap.get(key));
+							planTotalMap.remove(key);
+							planTotalMap.put(key, (intValue + Integer.parseInt(values[1])) + "");
+						}
+						if (!forecastTotalMap.containsKey(key)) {
+							forecastTotalMap.put(key, values[2]);
+						} else {
+							int intValue = Integer.parseInt((String)forecastTotalMap.get(key));
+							forecastTotalMap.remove(key);
+							forecastTotalMap.put(key, (intValue + Integer.parseInt(values[2])) + "");
+						}
+						if (!salesTotalMap.containsKey(key)) {
+							salesTotalMap.put(key, values[3]);
+						} else {
+							int intValue = Integer.parseInt((String)salesTotalMap.get(key));
+							salesTotalMap.remove(key);
+							salesTotalMap.put(key, (intValue + Integer.parseInt(values[3])) + "");
+						}
+						
+						
+						int planTotal = planTotalMap.get(key) == null ? 0 : Integer.parseInt((String)planTotalMap.get(key));
+						int forecastTotal = forecastTotalMap.get(key) == null ? 0 : Integer.parseInt((String)forecastTotalMap.get(key));
+						int salesTotal = salesTotalMap.get(key) == null ? 0 : Integer.parseInt((String)salesTotalMap.get(key));
+						
+						if (planTotal == 0 || salesTotal == 0) {
+							perWithPlanTotalMap.remove(key);
+							perWithPlanTotalMap.put(key, "0");
+						} else {
+							DecimalFormat df = new DecimalFormat("#.##");
+							perWithPlanTotalMap.remove(key);
+							perWithPlanTotalMap.put(key, (df.format(((float)salesTotal/(float)planTotal) * 100)) + "");
+						}
+						
+						if (forecastTotal == 0 || salesTotal == 0) {
+							perWithForecastTotalMap.remove(key);
+							perWithForecastTotalMap.put(key, "0");
+						} else {
+							DecimalFormat df = new DecimalFormat("#.##");
+							perWithForecastTotalMap.remove(key);
+							perWithForecastTotalMap.put(key, (df.format(((float)salesTotal/(float)forecastTotal) * 100)) + "");
+						}
+					}
+				}
+				//사업부별 YTD, TOTAL을 계산하여 삽입한다
+				planMap.put("YTD", planYtdSum + "");
+				forecastMap.put("YTD", forecastYtdSum + "");
+				salesMap.put("YTD", salesYtdSum + "");
+				
+				DecimalFormat df = new DecimalFormat("#.##");
+				perWithPlanMap.put("YTD", (df.format(((float)salesYtdSum/(float)planYtdSum) * 100)) + "");
+				perWithForecastMap.put("YTD", (df.format(((float)salesYtdSum/(float)forecastYtdSum) * 100)) + "");
+				
+				planMap.put("TOTAL", planTotalSum + "");
+				forecastMap.put("TOTAL", forecastTotalSum + "");
+				salesMap.put("TOTAL", salesTotalSum + "");
+				perWithPlanMap.put("TOTAL", (df.format(((float)salesTotalSum/(float)planTotalSum) * 100)) + "");
+				perWithForecastMap.put("TOTAL", (df.format(((float)salesTotalSum/(float)forecastTotalSum) * 100)) + "");
+				
+				//사업부 전체 YTD값을 구하기 위한
+				allDivisionPlanYtdSum = allDivisionPlanYtdSum + planYtdSum;
+				allDivisionForecastYtdSum = allDivisionForecastYtdSum + forecastYtdSum;
+				allDivisionsalesYtdSum = allDivisionsalesYtdSum + salesYtdSum;
+				//사업부 전체 TOTAL값을 구하기 위한
+				allDivisionPlanTotalSum = allDivisionPlanTotalSum + planTotalSum;
+				allDivisionForecastTotalSum = allDivisionForecastTotalSum + forecastTotalSum;
+				allDivisionsalesTotalSum = allDivisionsalesTotalSum + salesTotalSum;
+				
+				returnList.add(planMap);
+				returnList.add(forecastMap);
+				returnList.add(salesMap);
+				returnList.add(perWithPlanMap);
+				returnList.add(perWithForecastMap);
+			}
+			
+			
+			DecimalFormat df = new DecimalFormat("#.##");
+			
+			planTotalMap.put("YTD", allDivisionPlanYtdSum);
+			forecastTotalMap.put("YTD", allDivisionForecastYtdSum);
+			salesTotalMap.put("YTD", allDivisionsalesYtdSum);
+			perWithPlanTotalMap.put("YTD", (df.format(((float)allDivisionsalesYtdSum/(float)allDivisionPlanYtdSum) * 100)) + "");
+			perWithForecastTotalMap.put("YTD", (df.format(((float)allDivisionsalesYtdSum/(float)allDivisionForecastYtdSum) * 100)) + "");
+			
+
+			planTotalMap.put("TOTAL", allDivisionPlanTotalSum);
+			forecastTotalMap.put("TOTAL", allDivisionForecastTotalSum);
+			salesTotalMap.put("TOTAL", allDivisionsalesTotalSum);
+			perWithPlanTotalMap.put("TOTAL", (df.format(((float)allDivisionsalesTotalSum/(float)allDivisionPlanTotalSum) * 100)) + "");
+			perWithForecastTotalMap.put("TOTAL", (df.format(((float)allDivisionsalesTotalSum/(float)allDivisionForecastTotalSum) * 100)) + "");
+			
+			returnList.add(planTotalMap);
+			returnList.add(forecastTotalMap);
+			returnList.add(salesTotalMap);
+			returnList.add(perWithPlanTotalMap);
+			returnList.add(perWithForecastTotalMap);
+			
 			return returnList;
 		}
 		return null;

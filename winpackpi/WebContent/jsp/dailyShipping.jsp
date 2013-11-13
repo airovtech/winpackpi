@@ -25,8 +25,6 @@ var method = 'getDailyShipping';
 
  $(document).ready( function() {
 	 
-<<<<<<< HEAD
-
 	 var reportData = null;
 	 var chartData = null;
 	 var chart2FieldName = "합계"

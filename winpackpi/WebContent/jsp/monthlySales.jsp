@@ -17,7 +17,7 @@
 
 <script type="text/javascript">
 
-var method = 'getMonthlyShipping';
+var method = 'getMonthlySales';
 
  $(document).ready( function() { 
 	 
@@ -25,7 +25,7 @@ var method = 'getMonthlyShipping';
 	   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 	         datatype: "json",      //json형태로 데이터 받음.  
 	         height: 'auto',
-	         caption: "월별 생산 실적 현황",
+	         caption: "월별 매출 실적 현황",
 	         footerrow:false,
 	         grouping:true, //그룹화 하기위한 옵션
 	         autowidth:true,
