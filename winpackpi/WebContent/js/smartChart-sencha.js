@@ -124,6 +124,11 @@ Ext.onReady(function () {
 				xAxisPosition = "left";
 			}
 			
+			var xAxisTitle = swReportInfo.xfieldName;
+			if(!isEmpty(swReportInfo.title)){
+				xAxisTitle = swReportInfo.title;
+			}
+			
 			var groupNames = new Array();
 			for(var idx=0; idx<swReportInfo.groupNames.length; idx++)
 				groupNames[idx] = swReportInfo.groupNames[idx];
@@ -161,7 +166,7 @@ Ext.onReady(function () {
 				return [{
 	                type: 'gauge',
 	                position: 'gauge',
-	                title: swReportInfo.xfieldName,
+	                title: xAxisTitle,
 	                minimum: 0,
 	                maximum: 100,
 	                steps: 10,
@@ -180,7 +185,7 @@ Ext.onReady(function () {
 					        type: 'Category',
 					        position: 'bottom',
 					        fields: [ swReportInfo.xFieldName ],
-					        title: swReportInfo.xFieldName,
+					        title: xAxisTitle,
 					        label: swReportInfo.labelRotate
 					    }];
 			}else if(chartType === swChartType.LINE 
@@ -201,7 +206,7 @@ Ext.onReady(function () {
 						type : 'Category',
 						position : xAxisPosition,
 						fields : [ swReportInfo.xFieldName ],
-						title : swReportInfo.xFieldName,
+						title : xAxisTitle,
 						label: swReportInfo.labelRotate
 					} ];
 				}else{
@@ -219,7 +224,7 @@ Ext.onReady(function () {
 						minimum : 0,
 						position : y2AxisPosition,
 						grid : false,
-						fields : groupNames,//[swReportInfo.y2FieldName],
+						fields : [swReportInfo.y2FieldName],
 						title : swReportInfo.y2FieldName,
 						minorTickSteps : 1,
 						label: numericLabel
@@ -227,7 +232,7 @@ Ext.onReady(function () {
 						type : 'Category',
 						position : xAxisPosition,
 						fields : [ swReportInfo.xFieldName ],
-						title : swReportInfo.xFieldName,
+						title : xAxisTitle,
 						label: swReportInfo.labelRotate
 					} ];
 
@@ -280,6 +285,11 @@ Ext.onReady(function () {
 					radius: 3,
 					size: 3,							
 				}; 
+			var markerConfigNone = {
+					type: 'circle',
+					radius: 0,
+					size: 0,							
+				}; 
 			var highlight = {
                     size: 7,
                     radius: 7
@@ -318,19 +328,11 @@ Ext.onReady(function () {
 						xField : swReportInfo.xFieldName,
 						yField : swReportInfo.chart2FieldName,
 						showInLegend: swReportInfo.is3Dimension,
-		                highlight: highlight,
-		                markerConfig: markerConfig,
+		                highlight: false,
+		                markerConfig: markerConfigNone,
 		                style:{
 							'stroke-width': 0		                	
 		                },
-		                tips: {
-		                    trackMouse: true,
-		                    height : 32,
-		                    width : 100,
-		                    renderer: function(storeItem, item) {
-		                    	this.setTitle(item.series.yField + "<br>" + item.value[1]);
-		                    }
-		                }
 					});					
 				}
 				return series;
@@ -438,19 +440,8 @@ Ext.onReady(function () {
 							xField : swReportInfo.xFieldName,
 							yField : swReportInfo.chart2FieldName,
 							showInLegend: swReportInfo.is3Dimension,
-			                highlight: highlight,
-			                markerConfig: markerConfig,
-			                style:{
-								'stroke-width': 0		                	
-			                },
-			                tips: {
-			                    trackMouse: true,
-			                    height : 32,
-			                    width : 100,
-			                    renderer: function(storeItem, item) {
-			                    	this.setTitle(item.series.yField + "<br>" + item.value[1]);
-			                    }
-			                }
+			                highlight: false,
+			                smooth: true
 						});
 					}else if(swReportInfo.chart2Type == swChartType.AREA){
 						series.push({
@@ -489,6 +480,7 @@ Ext.onReady(function () {
 			$('#'+target).html('');
 			swReportInfo.width = $('#' + target).width();
 			if(data){
+				swReportInfo.title = data.title;
 				swReportInfo.xFieldName = data.xFieldName;
 				swReportInfo.yValueName = data.yValueName;
 				swReportInfo.xGroupName = data.xGroupName;

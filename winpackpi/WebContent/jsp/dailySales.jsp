@@ -186,6 +186,11 @@
 						$('#list').jqGrid('addRowData', i+1, reportData[i]);
 					}
 					
+					$("#list").setGridParam(
+							{
+								url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $(this).val() ,
+							}).trigger("reloadGrid");
+					
 					smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldName, "line");
 				},
 				error : function(xhr, ajaxOptions, thrownError){
@@ -193,10 +198,6 @@
 				}
 			});
 
-			$("#list").setGridParam(
-			{
-				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $(this).val() ,
-			}).trigger("reloadGrid");
 	   }); 
 	}); 
  	$(function() { 
@@ -211,16 +212,17 @@
 							$('#list').jqGrid('addRowData', i+1, reportData[i]);
 						}
 						
+			 			$("#list").setGridParam(
+			 		 			{
+			 		 				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $(this).val() + $('#sel_month').val() ,
+			 		 			}).trigger("reloadGrid");
+			 			
 						smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldName, "line");
 					},
 					error : function(xhr, ajaxOptions, thrownError){
 						
 					}
 				});
- 			$("#list").setGridParam(
- 			{
- 				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $(this).val() + $('#sel_month').val() ,
- 			}).trigger("reloadGrid");
  	   }); 
  	}); 
 </script>

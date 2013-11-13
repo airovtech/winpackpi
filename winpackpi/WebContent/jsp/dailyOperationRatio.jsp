@@ -23,6 +23,11 @@
 
 var method = 'getDailyOperationRatio';
 
+var testData = {rows : [
+                {DIVISION : 'pkg', GUBUN: 'G1', TARGETOR: '90', LASTMONTHAVG: '80', MONTHAVG: '75', C01: '77', C02: '67', C03: '79', C04: '67', C05: '88', C06: '97', C07: '67', C08: '87', C09: '75', C10: '77', C11: '66', C12: '87', C13: '88', C14: '77', C15: '67', C16: '55', C17: '99', C18: '77', C19: '45', C20: '77', C21: '88', C22: '77', C23: '93', C24: '72', C25: '60', C26: '91', C27: '84', C28: '40', C29: '59', C30: '100', C31: '83'},
+                {DIVISION : 'pkt', GUBUN: 'G2', TARGETOR: '80', LASTMONTHAVG: '80', MONTHAVG: '85', C01: '69', C02: '77', C03: '59', C04: '77', C05: '78', C06: '90', C07: '87', C08: '57', C09: '70', C10: '47', C11: '66', C12: '97', C13: '68', C14: '87', C15: '77', C16: '55', C17: '80', C18: '67', C19: '85', C20: '87', C21: '78', C22: '67', C23: '90', C24: '78', C25: '80', C26: '81', C27: '89', C28: '80', C29: '89', C30: '90', C31: '80'},
+                {DIVISION : 'nbiz', GUBUN: 'G3', TARGETOR: '85', LASTMONTHAVG: '80', MONTHAVG: '85', C01: '77', C02: '67', C03: '79', C04: '67', C05: '88', C06: '97', C07: '67', C08: '87', C09: '75', C10: '77', C11: '66', C12: '87', C13: '88', C14: '77', C15: '67', C16: '55', C17: '99', C18: '77', C19: '45', C20: '77', C21: '88', C22: '77', C23: '93', C24: '72', C25: '60', C26: '91', C27: '84', C28: '40', C29: '59', C30: '100', C31: '83'}
+                ]};
 
 var reportData = null;
 var chartData = new Array();
@@ -39,8 +44,8 @@ var getReportData = function(data){
 		for(var j=0; j<31; j++){
 			chartValues.push({  
 					일별: (j+1) + "", 
-					가동율: reportData[i]["C" + String("0" + (j+1)).slice(-2)],
-					목표가동율: reportData[i].TARGETOR
+					가동율: parseInt(reportData[i]["C" + String("0" + (j+1)).slice(-2)]),
+					목표가동율: parseInt(reportData[i].TARGETOR)
 				});					
 		}
 		
@@ -63,7 +68,7 @@ var getReportData = function(data){
  $(document).ready( function() { 
 	 Ext.onReady(function () {
 	 
-	 $.ajax({
+ 	 $.ajax({
 			url : '../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),
 			data : {},
 			dataType: 'json',
@@ -71,8 +76,8 @@ var getReportData = function(data){
 				getReportData(data);
 				
 			  jQuery("#list").jqGrid({
-			   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
-			         datatype: "json",      //json형태로 데이터 받음.  
+ 			   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
+			         datatype: "local",      //json형태로 데이터 받음.  
 			         height: "auto",
 			         caption: "일별 가동율 현황",
 			         footerrow:false,
@@ -156,11 +161,11 @@ var getReportData = function(data){
 				}
 				
  				for(var i=0; i<chartData.length; i++){
- 					$('.js_work_report_view_page').append('<div>' + chartData[i].title + ' 가동율</div><div id="chart_target' + (i+1) + '"></div>');
+ 					$('.js_work_report_view_page').append('<div id="chart_target' + (i+1) + '"></div>');
 					smartChart.loadWithData(chartData[i], "line", false, "chart_target"+(i+1), chart2FieldName, "line");
  				}
  
-		},
+ 		},
 		error : function(xhr, ajaxOptions, thrownError){
 			
 		}
@@ -171,18 +176,60 @@ var getReportData = function(data){
  
  	$(function() { 
 	   $('#sel_month').change(function() {
-			$("#list").setGridParam(
-			{
-				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $(this).val() ,
-			}).trigger("reloadGrid");
+		   $.ajax({
+				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $("#sel_year").val() + $(this).val(),
+				data : {},
+				dataType: 'json',
+				success : function(data, status, jqXHR) {
+					getReportData(data);
+					for(var i=0; i<reportData.length; i++){
+						$('#list').jqGrid('addRowData', i+1, reportData[i]);
+					}
+					
+					$("#list").setGridParam(
+							{
+								url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $(this).val() ,
+							}).trigger("reloadGrid");
+					
+					$('.js_work_report_view_page').html('');
+	 				for(var i=0; i<chartData.length; i++){
+	 					$('.js_work_report_view_page').append('<div id="chart_target' + (i+1) + '"></div>');
+						smartChart.loadWithData(chartData[i], "line", false, "chart_target"+(i+1), chart2FieldName, "line");
+	 				}
+				},
+				error : function(xhr, ajaxOptions, thrownError){
+					
+				}
+			});
 	   }); 
 	}); 
  	$(function() { 
  	   $('#sel_year').change(function() {
- 			$("#list").setGridParam(
- 			{
- 				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $(this).val() + $('#sel_month').val() ,
- 			}).trigger("reloadGrid");
+		   $.ajax({
+				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $(this).val() + $("#sel_month").val(),
+				data : {},
+				dataType: 'json',
+				success : function(data, status, jqXHR) {
+					getReportData(data);
+					for(var i=0; i<reportData.length; i++){
+						$('#list').jqGrid('addRowData', i+1, reportData[i]);
+					}
+					
+		 			$("#list").setGridParam(
+		 		 			{
+		 		 				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $(this).val() + $('#sel_month').val() ,
+		 		 			}).trigger("reloadGrid");
+		 			
+					$('.js_work_report_view_page').html('');
+	 				for(var i=0; i<chartData.length; i++){
+	 					$('.js_work_report_view_page').append('<div id="chart_target' + (i+1) + '"></div>');
+						smartChart.loadWithData(chartData[i], "line", false, "chart_target"+(i+1), chart2FieldName, "line");
+	 				}
+				},
+				error : function(xhr, ajaxOptions, thrownError){
+					
+				}
+			});
  	   }); 
  	}); 
 </script>
