@@ -7,4 +7,5 @@
 || <a href="./dailyTat.jsp">일별 TAT 현황</a>
 || <a href="./monthlyShippingForYear.jsp">1년간 월별 생산 실적 TREND</a>
 || <a href="./monthlySalesForYear.jsp">1년간 월별 매출 실적 TREND</a>
-|| <a href="./monthlyCapacityForYear.jsp">1년간 Capacity 대비 실적</a>
+|| <a href="./monthlyCapacityForYear.jsp">1년간 Capacity 대비 실적</a><br>
+<a href="./monthlyShipping.jsp">월별 생산 실적 현황</a>

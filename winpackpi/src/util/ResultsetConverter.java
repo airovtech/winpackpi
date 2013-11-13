@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.util.StringUtils;
+
 import model.Data;
 import model.GroupHeader;
 import net.sf.json.JSONObject;
@@ -41,15 +43,17 @@ public class ResultsetConverter {
 			}
 			resultListMap.add(rowMap);
 		}
-		addSummeryRow(operation, resultListMap);
+		if (addSummeryRow(operation, resultListMap) != null) {
+			resultListMap = addSummeryRow(operation, resultListMap);
+		}
 		json.put("rows", resultListMap);
 		return json.toString();
 	}
 	
-	public static void addSummeryRow(String method, List<Map> resultListMap) throws Exception {
+	public static List<Map> addSummeryRow(String method, List<Map> resultListMap) throws Exception {
 		
 		if (resultListMap == null)
-			return;
+			return null;
 		
 		if (method.equalsIgnoreCase("getMonthlyCapacityPkgForYear")) {
 			Map capacityMap = null;
@@ -73,7 +77,7 @@ public class ResultsetConverter {
 				}
 			}
 			if (capacityMap == null)
-				return;
+				return null;
 			Map acheMap = new HashMap();
 			Iterator capaItr = capacityMap.keySet().iterator();
 			while (capaItr.hasNext()) {
@@ -93,20 +97,65 @@ public class ResultsetConverter {
 				acheMap.put(capaKey, result);
 			}
 			resultListMap.add(acheMap);
+			
+			return resultListMap;
+			
+		} else if (method.equalsIgnoreCase("getMonthlyShipping")) {
+			
+			
+			List<Map> returnList = new ArrayList<Map>();
+			
+			for (int i = 0; i < resultListMap.size(); i++) {
+
+				Map<String, String> resultMap = resultListMap.get(i);
+				Iterator itr = resultMap.keySet().iterator();
+				
+				Map planMap = new HashMap();
+				Map forecastMap = new HashMap();
+				Map shippingMap = new HashMap();
+				Map perWithPlanMap = new HashMap();
+				Map perWithForecastMap = new HashMap();
+				
+				while (itr.hasNext()) {
+					String key = (String)itr.next();
+					String value = (String)resultMap.get(key);
+					
+					if (key.equals("DIVISION")) {
+						planMap.put(key, value);
+						planMap.put("GUBUN", "PLAN");
+						
+						forecastMap.put(key, value);
+						forecastMap.put("GUBUN", "Forecast");
+						
+						shippingMap.put(key, value);
+						shippingMap.put("GUBUN", "积魂角利");
+						
+						perWithPlanMap.put(key, value);
+						perWithPlanMap.put("GUBUN", "PLAN vs 角利(%)");
+						
+						perWithForecastMap.put(key, value);
+						perWithForecastMap.put("GUBUN", "Forecast vs 角利(%)");
+						
+					} else {
+						String[] values = StringUtils.tokenizeToStringArray(value, "_");
+						planMap.put(key, values[1]);
+						forecastMap.put(key, values[2]);
+						shippingMap.put(key, values[3]);
+						perWithPlanMap.put(key, values[4]);
+						perWithForecastMap.put(key, values[5]);
+						
+					}
+				}
+				returnList.add(planMap);
+				returnList.add(forecastMap);
+				returnList.add(shippingMap);
+				returnList.add(perWithPlanMap);
+				returnList.add(perWithForecastMap);
+			}
+			return returnList;
 		}
+		return null;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	public static final Map<String, String> dayColumnMapper = new HashMap<String, String>() {
 		{
