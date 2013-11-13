@@ -74,6 +74,11 @@ public class GetKpiWS {
 		String sql = makeQueryString("getMonthlyCapacityPkgForYear", month);
 		return executeQuery("getMonthlyCapacityPkgForYear", sql, month);
 	}
+	//월별생산실적현황
+	public String getMonthlyShipping(String month) throws Exception {
+		String sql = makeQueryString("getMonthlyShipping", month);
+		return executeQuery("getMonthlyShipping", sql, month);
+	}
 	public String getTestChartData(String date) throws Exception {
 		Data data = ResultsetConverter.convertToData(null, null, null);
 		return data.toString();
@@ -543,6 +548,70 @@ public class GetKpiWS {
 			sqlBuff.append("                GROUP  BY division, ");
 			sqlBuff.append("                          collectingmonth) ");
 			sqlBuff.append("        GROUP  BY division ");
+			
+		} else if (method.equalsIgnoreCase("getMonthlyShipping")) {
+			
+			int fromDateStr = Integer.parseInt(month.substring(0, 4) + "0101");
+			int toDateStr = Integer.parseInt(month.substring(0, 4) + "1201");
+			
+			sqlBuff.append("SELECT division ");
+			
+			for (int i = fromDateStr; i <= toDateStr; i = i + 100) {
+				sqlBuff.append("       ,NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.collectingmonth)), 0) ");
+				sqlBuff.append("        ||'_' ");
+				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.planshipping)), 0) ");
+				sqlBuff.append("        ||'_' ");
+				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.focplanshipping)), 0) ");
+				sqlBuff.append("        ||'_' ");
+				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.sumofshipping)), 0) ");
+				sqlBuff.append("        ||'_' ");
+				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.perwithplan)), 0) ");
+				sqlBuff.append("        ||'_' ");
+				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.perwithfocplan)), 0) AS C").append((i+"").substring(4, 6)).append(" ");
+			}
+			
+			sqlBuff.append("FROM   (SELECT pln.* ");
+			sqlBuff.append("               ,foc.focshipping                                               AS focPlanShipping ");
+			sqlBuff.append("               ,ship.sumofshipping ");
+			sqlBuff.append("               ,Round(( ( ship.sumofshipping / pln.planshipping ) * 100 ), 2) perWithPlan ");
+			sqlBuff.append("               ,Round(( ( ship.sumofshipping / foc.focshipping ) * 100 ), 2)  perWithFocPlan ");
+			sqlBuff.append("        FROM   (SELECT division ");
+			sqlBuff.append("                       ,collectingmonth ");
+			sqlBuff.append("                       ,SUM(shippingplanofmonth) planShipping ");
+			sqlBuff.append("                FROM   sw_planofmanagement ");
+			sqlBuff.append("                WHERE collectingMonth >= '").append(fromDateStr).append("' AND collectingMonth <= '").append(toDateStr).append("'");
+			
+			sqlBuff.append("                GROUP  BY division ");
+			sqlBuff.append("                          ,collectingmonth) pln ");
+			sqlBuff.append("               left outer join (SELECT division ");
+			sqlBuff.append("                                       ,collectingmonth ");
+			sqlBuff.append("                                       ,SUM(shippingplanofmonth) focShipping ");
+			sqlBuff.append("                                FROM   sw_planofforecast ");
+
+			sqlBuff.append("                                WHERE collectingMonth >= '").append(fromDateStr).append("' AND collectingMonth <= '").append(toDateStr).append("'");
+			
+			sqlBuff.append("                                GROUP  BY division ");
+			sqlBuff.append("                                          ,collectingmonth) foc ");
+			sqlBuff.append("                            ON pln.division = foc.division ");
+			sqlBuff.append("                               AND pln.collectingmonth = foc.collectingmonth ");
+			sqlBuff.append("               left outer join (SELECT division ");
+			sqlBuff.append("                                       ,collectingmonth ");
+			sqlBuff.append("                                       ,SUM(shipping) AS sumOfShipping ");
+			sqlBuff.append("                                FROM   (SELECT division ");
+			sqlBuff.append("                                               ,Substr(collectingdate, 0, 6) ");
+			sqlBuff.append("                                                || '01' collectingMonth ");
+			sqlBuff.append("                                               ,shipping ");
+			sqlBuff.append("                                        FROM   dailyshippingnsales ");
+			sqlBuff.append("                                        ) ");
+		
+			sqlBuff.append("                                WHERE collectingMonth >= '").append(fromDateStr).append("' AND collectingMonth <= '").append(toDateStr).append("'");
+			
+			sqlBuff.append("                                GROUP  BY division ");
+			sqlBuff.append("                                          ,collectingmonth) ship ");
+			sqlBuff.append("                            ON pln.division = ship.division ");
+			sqlBuff.append("                               AND pln.collectingmonth = ship.collectingmonth ");
+			sqlBuff.append("        ORDER  BY pln.collectingmonth) tbl ");
+			sqlBuff.append("GROUP  BY division ");
 			
 		}
 		return sqlBuff.toString();
