@@ -3,31 +3,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="stylesheet" type="text/css" media="screen" href="../js/jqgrid/themes/redmond/jquery-ui-1.8.2.custom.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="../js/jqgrid/themes/ui.jqgrid.css" />
-<link href="../js/ext/ext-all.css" type="text/css" rel="stylesheet" />
 
-<script src="../js/jqgrid/js/jquery.min.js" type="text/javascript"></script>
-<script src="../js/jqgrid/js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
-<script src="../js/jqgrid/js/jquery.layout.js" type="text/javascript"></script>
-<script src="../js/jqgrid/js/i18n/grid.locale-en.js" type="text/javascript"></script>
-<script src="../js/jqgrid/js/jquery.jqGrid.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="../js/ext/ext-all.js"></script>
-<script type="text/javascript" src="../js/smartChart-sencha.js"></script>
-
-
-<link rel="stylesheet" type="text/css" href="../css/jquery.jqChart.css" />
-<script src="../js/jquery.jqChart.min.js" type="text/javascript"></script>
+<jsp:include page="commons.jsp"/>
 
 <script type="text/javascript">
 
 var method = 'getDailyOperationRatio';
-
-var testData = {rows : [
-                {DIVISION : 'pkg', GUBUN: 'G1', TARGETOR: '90', LASTMONTHAVG: '80', MONTHAVG: '75', C01: '77', C02: '67', C03: '79', C04: '67', C05: '88', C06: '97', C07: '67', C08: '87', C09: '75', C10: '77', C11: '66', C12: '87', C13: '88', C14: '77', C15: '67', C16: '55', C17: '99', C18: '77', C19: '45', C20: '77', C21: '88', C22: '77', C23: '93', C24: '72', C25: '60', C26: '91', C27: '84', C28: '40', C29: '59', C30: '100', C31: '83'},
-                {DIVISION : 'pkt', GUBUN: 'G2', TARGETOR: '80', LASTMONTHAVG: '80', MONTHAVG: '85', C01: '69', C02: '77', C03: '59', C04: '77', C05: '78', C06: '90', C07: '87', C08: '57', C09: '70', C10: '47', C11: '66', C12: '97', C13: '68', C14: '87', C15: '77', C16: '55', C17: '80', C18: '67', C19: '85', C20: '87', C21: '78', C22: '67', C23: '90', C24: '78', C25: '80', C26: '81', C27: '89', C28: '80', C29: '89', C30: '90', C31: '80'},
-                {DIVISION : 'nbiz', GUBUN: 'G3', TARGETOR: '85', LASTMONTHAVG: '80', MONTHAVG: '85', C01: '77', C02: '67', C03: '79', C04: '67', C05: '88', C06: '97', C07: '67', C08: '87', C09: '75', C10: '77', C11: '66', C12: '87', C13: '88', C14: '77', C15: '67', C16: '55', C17: '99', C18: '77', C19: '45', C20: '77', C21: '88', C22: '77', C23: '93', C24: '72', C25: '60', C26: '91', C27: '84', C28: '40', C29: '59', C30: '100', C31: '83'}
-                ]};
 
 var reportData = null;
 var chartData = new Array();

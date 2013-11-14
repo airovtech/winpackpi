@@ -3,21 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="stylesheet" type="text/css" media="screen" href="../js/jqgrid/themes/redmond/jquery-ui-1.8.2.custom.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="../js/jqgrid/themes/ui.jqgrid.css" />
-<link href="../js/ext/ext-all.css" type="text/css" rel="stylesheet" />
 
-<script src="../js/jqgrid/js/jquery.min.js" type="text/javascript"></script>
-<script src="../js/jqgrid/js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
-<script src="../js/jqgrid/js/jquery.layout.js" type="text/javascript"></script>
-<script src="../js/jqgrid/js/i18n/grid.locale-en.js" type="text/javascript"></script>
-<script src="../js/jqgrid/js/jquery.jqGrid.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="../js/ext/ext-all.js"></script>
-<script type="text/javascript" src="../js/smartChart-sencha.js"></script>
-
-
-<link rel="stylesheet" type="text/css" href="../css/jquery.jqChart.css" />
-<script src="../js/jquery.jqChart.min.js" type="text/javascript"></script>
+<jsp:include page="commons.jsp"/>
 
 <script type="text/javascript">
 
