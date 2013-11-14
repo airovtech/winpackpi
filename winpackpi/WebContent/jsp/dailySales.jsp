@@ -20,7 +20,7 @@
  
  var reportData = null;
  var chartData = null;
- var chart2FieldName = "합계";
+ var chart2FieldNames = ["합계"];
 
  var getReportData = function(data){
  	reportData = data.rows;
@@ -49,8 +49,6 @@
  				합계: sum};					
  	}
  	
- 	console.log('chartValues=', chartValues);
- 	
  	chartData = {
  			values : chartValues,
  			xFieldName : "일별",
@@ -61,7 +59,6 @@
  };
  
  $(document).ready( function() { 
-	 Ext.onReady(function () {
 	 
 	 $.ajax({
 			url : '../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),
@@ -163,14 +160,15 @@
 					$('#list').jqGrid('addRowData', i+1, reportData[i]);
 				}
 				
-				smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldName, "line");
+				Ext.onReady(function () {
+					smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldNames, "line");
+				});
 	
 		},
 		error : function(xhr, ajaxOptions, thrownError){
 			
 		}
 	});
-	 });
  });
  
  
@@ -191,7 +189,7 @@
 								url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $(this).val() ,
 							}).trigger("reloadGrid");
 					
-					smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldName, "line");
+					smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldNames, "line");
 				},
 				error : function(xhr, ajaxOptions, thrownError){
 					
@@ -217,7 +215,7 @@
 			 		 				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $(this).val() + $('#sel_month').val() ,
 			 		 			}).trigger("reloadGrid");
 			 			
-						smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldName, "line");
+						smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldNames, "line");
 					},
 					error : function(xhr, ajaxOptions, thrownError){
 						

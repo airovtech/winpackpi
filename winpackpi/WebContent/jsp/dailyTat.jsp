@@ -25,7 +25,7 @@ var method = 'getDailyTat';
 
 var reportData = null;
 var chartData = new Array();
-var chart2FieldName = "TAT";
+var chart2FieldNames = ["고객TAT", "목표TAT"];
 
 var getReportData = function(data){
 	reportData = data.rows;
@@ -38,20 +38,18 @@ var getReportData = function(data){
 		for(var j=0; j<31; j++){
 			chartValues.push({  
 					일별: (j+1) + "", 
-					TAT: parseInt(reportData[i]["C" + String("0" + (j+1)).slice(-2)]),
-					고객TAT: parseInt(reportData[i].고객TAT),
-					목표TAT: parseInt(reportData[i].목표TAT)
+					TAT: parseFloat(reportData[i]["C" + String("0" + (j+1)).slice(-2)]),
+					고객TAT: parseFloat(reportData[i].CUSTOMERTAT),
+					목표TAT: parseFloat(reportData[i].TARGETTAT)
 				});					
 		}
-		
-		console.log('chartValues=', chartValues);
 		
 		chartData.push({
 				title : reportData[i].DEVICEGROUP,
 				values : chartValues,
 				xFieldName : "일별",
 				yValueName : "TAT",
-				groupNames : ["고객TAT", "목표TAT"]
+				groupNames : ["TAT"]
 		});
 	}
 
@@ -63,8 +61,6 @@ var getReportData = function(data){
 
  $(document).ready( function() { 
 	 
-	 Ext.onReady(function () {
-		 
 		 $.ajax({
 				url : '../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),
 				data : {},
@@ -157,16 +153,17 @@ var getReportData = function(data){
 						$('#list').jqGrid('addRowData', i+1, reportData[i]);
 					}
 					
-	 				for(var i=0; i<chartData.length; i++){
-	 					$('.js_work_report_view_page').append('<div id="chart_target' + (i+1) + '"></div>');
-						smartChart.loadWithData(chartData[i], "line", false, "chart_target"+(i+1), chart2FieldName, "line");
-	 				}
+					Ext.onReady(function () {						 
+		 				for(var i=0; i<chartData.length; i++){
+		 					$('.js_work_report_view_page').append('<div id="chart_target' + (i+1) + '"></div>');
+							smartChart.loadWithData(chartData[i], "line", false, "chart_target"+(i+1), chart2FieldNames, "line");
+		 				}
+					});
 
 			},
 			error : function(xhr, ajaxOptions, thrownError){
 				
 			}
-		});
 		});
  });
  
@@ -192,7 +189,7 @@ var getReportData = function(data){
 						$('.js_work_report_view_page').html('');
 		 				for(var i=0; i<chartData.length; i++){
 		 					$('.js_work_report_view_page').append('<div id="chart_target' + (i+1) + '"></div>');
-							smartChart.loadWithData(chartData[i], "line", false, "chart_target"+(i+1), chart2FieldName, "line");
+							smartChart.loadWithData(chartData[i], "line", false, "chart_target"+(i+1), chart2FieldNames, "line");
 		 				}
 
 					},
@@ -223,7 +220,7 @@ var getReportData = function(data){
 						$('.js_work_report_view_page').html('');
 		 				for(var i=0; i<chartData.length; i++){
 		 					$('.js_work_report_view_page').append('<div id="chart_target' + (i+1) + '"></div>');
-							smartChart.loadWithData(chartData[i], "line", false, "chart_target"+(i+1), chart2FieldName, "line");
+							smartChart.loadWithData(chartData[i], "line", false, "chart_target"+(i+1), chart2FieldNames, "line");
 		 				}
 
 					},

@@ -5,11 +5,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" type="text/css" media="screen" href="../js/jqgrid/themes/redmond/jquery-ui-1.8.2.custom.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="../js/jqgrid/themes/ui.jqgrid.css" />
+<link href="../js/ext/ext-all.css" type="text/css" rel="stylesheet" />
+
 <script src="../js/jqgrid/js/jquery.min.js" type="text/javascript"></script>
 <script src="../js/jqgrid/js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
 <script src="../js/jqgrid/js/jquery.layout.js" type="text/javascript"></script>
 <script src="../js/jqgrid/js/i18n/grid.locale-en.js" type="text/javascript"></script>
 <script src="../js/jqgrid/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="../js/ext/ext-all.js"></script>
+<script type="text/javascript" src="../js/smartChart-sencha.js"></script>
 
 
 <link rel="stylesheet" type="text/css" href="../css/jquery.jqChart.css" />
@@ -18,6 +22,52 @@
 <script type="text/javascript">
 
 var method = 'getMonthlySalesForYear';
+
+var colNames = [];
+
+var reportData = null;
+var chartData = null;
+var chart2FieldNames = ["합계"];
+
+var getReportData = function(data){
+	reportData = data.rows;
+	console.log('reportData=', reportData);
+	console.log('colNames=', colNames);
+	var chartValues = Array();
+	for(var i=0; i<12; i++){
+		var pkt = 0;
+		var pkg = 0;
+		var nbiz = 0;
+		var sum = 0;
+		for(var j=0; j<reportData.length; j++){
+			var value = isEmpty(reportData[j]["C" + colNames[i+1] + "01"]) ? 0 : parseInt(reportData[j]["C" + colNames[i+1] + "01"]);
+			if(reportData[j].DIVISION === "pkt"){
+				pkt = value;
+			}else if(reportData[j].DIVISION === "pkg"){
+				pkg = value;
+				
+			}else if(reportData[j].DIVISION === "nbiz"){
+				nbiz = value;
+			}
+			sum += value;
+		}
+		chartValues[i] = {  월별: colNames[i+1], 
+				pkt: pkt,
+				pkg: pkg,
+				nbiz: nbiz,
+				합계: sum};					
+	}
+	
+	chartData = {
+			values : chartValues,
+			xFieldName : "월별",
+			yValueName : "pkt",
+			groupNames : ["pkt", "pkg", "nbiz"]
+	};
+	
+	console.log("chartData=", chartData);
+
+};
 
 function reloadGrid() {
 	 $.ajax({
@@ -28,7 +78,6 @@ function reloadGrid() {
 			data : "",
 			success : function(data, status, jqXHR) {
 
-				var colNames = [];
 				var colModels = [];
 				var selYear = $('#sel_year');
 				var selMonth = $('#sel_month');
@@ -72,11 +121,33 @@ function reloadGrid() {
 				for (var i=0; i < colNamess.length; i++) {
 					$("#list").jqGrid('setLabel', colNamess[i]['name'], colNames[i]);
 				}
-				$("#list").setGridParam(
-				{
-					url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $('#sel_month').val() ,
-				}).trigger("reloadGrid");
+
+				 $.ajax({
+						url : '../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),
+						data : {},
+						dataType: 'json',
+						success : function(data, status, jqXHR) {
+							getReportData(data);
 				
+							$("#list").setGridParam(
+							{
+								url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $('#sel_month').val() ,
+							}).trigger("reloadGrid");
+
+							for(var i=0; i<reportData.length; i++){
+								$('#list').jqGrid('addRowData', i+1, reportData[i]);
+							}
+							
+							 Ext.onReady(function () {
+								smartChart.loadWithData(chartData, "line", false, "chart_target", chart2FieldNames, "area");
+				
+							 });
+						},
+						error : function(xhr, ajaxOptions, thrownError){
+							
+						}
+					});
+							
 				
 			},
 			error : function(xhr, ajaxOptions, thrownError) {
@@ -95,7 +166,6 @@ function reloadGrid() {
 		data : "",
 		success : function(data, status, jqXHR) {
 
-			 var colNames = [];
 			 var colModels = [];
 			 var selYear = $('#sel_year');
 			 var selMonth = $('#sel_month');
@@ -134,31 +204,52 @@ function reloadGrid() {
 				
 			};
 			
-			jQuery("#list").jqGrid({
-		   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
-		         datatype: "json",      //json형태로 데이터 받음.  
-		         height: 100,
-		         caption: "1년간 월별 매출 실적 TREND",
-		         footerrow:false,
-		         grouping:false, //그룹화 하기위한 옵션
-		         autowidth:true,
-		         colNames:colNames,
-		         colModel:colModels,
-		         //객체에 담긴 이름값과 name이 같은 지 확인 잘하길... 나는 대소문자 구별 때문에 행은 늘어나는데 데이터가 나타나지 않아서 한참 헤맴...
-		          gridComplete : function() { 
-
-		          },
-		          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
-		            alert('error'); 
-		          },
-		          jsonReader : {                             //가져온 데이터를 읽을 때 사용
-		             root: "rows",   // json으로 저장 된 객체의 root명
-		             repeatitems: false     //얜 뭐지... 일단 필요한거같은데... 
-		   		},
-		         multiselect: false,         //전체선택 체크박스 유무, 테이블에서 row 체크를 멀티로 할 수 있는 옵션.
-		        // caption: "" //"Manipulating Array Data"    //caption을 달겠다는 거겠지. 
-		     });
+			 $.ajax({
+					url : '../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),
+					data : {},
+					dataType: 'json',
+					success : function(data, status, jqXHR) {
+						getReportData(data);
+						
+						jQuery("#list").jqGrid({
+					   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
+					         datatype: "json",      //json형태로 데이터 받음.  
+					         height: 100,
+					         caption: "1년간 월별 매출 실적 TREND",
+					         footerrow:false,
+					         grouping:false, //그룹화 하기위한 옵션
+					         autowidth:true,
+					         colNames:colNames,
+					         colModel:colModels,
+					         //객체에 담긴 이름값과 name이 같은 지 확인 잘하길... 나는 대소문자 구별 때문에 행은 늘어나는데 데이터가 나타나지 않아서 한참 헤맴...
+					          gridComplete : function() { 
 			
+					          },
+					          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
+					            alert('error'); 
+					          },
+					          jsonReader : {                             //가져온 데이터를 읽을 때 사용
+					             root: "rows",   // json으로 저장 된 객체의 root명
+					             repeatitems: false     //얜 뭐지... 일단 필요한거같은데... 
+					   		},
+					         multiselect: false,         //전체선택 체크박스 유무, 테이블에서 row 체크를 멀티로 할 수 있는 옵션.
+					        // caption: "" //"Manipulating Array Data"    //caption을 달겠다는 거겠지. 
+					     });
+			
+						
+						for(var i=0; i<reportData.length; i++){
+							$('#list').jqGrid('addRowData', i+1, reportData[i]);
+						}
+						
+						 Ext.onReady(function () {
+							smartChart.loadWithData(chartData, "line", false, "chart_target", chart2FieldNames, "area");
+			
+						 });
+					},
+					error : function(xhr, ajaxOptions, thrownError){
+						
+					}
+				});
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
 			alert("통신실패");
@@ -204,5 +295,9 @@ $(function() {
 </select>
 </div>
 <table id="list"></table> 
+<br/><br/>
+<div class="js_work_report_view_page">
+	<div id="chart_target"></div>
+</div>
 </body>
 </html>

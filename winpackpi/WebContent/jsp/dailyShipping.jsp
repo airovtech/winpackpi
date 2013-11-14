@@ -25,7 +25,7 @@ var method = 'getDailyShipping';
 
 var reportData = null;
 var chartData = null;
-var chart2FieldName = "합계";
+var chart2FieldNames = ["합계"];
 
 var getReportData = function(data){
 	reportData = data.rows;
@@ -54,8 +54,6 @@ var getReportData = function(data){
 				합계: sum};					
 	}
 	
-	console.log('chartValues=', chartValues);
-	
 	chartData = {
 			values : chartValues,
 			xFieldName : "일별",
@@ -67,7 +65,6 @@ var getReportData = function(data){
 
 $(document).ready( function() {
 	 
-	 Ext.onReady(function () {
 	 $.ajax({
 			url : '../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),
 			data : {},
@@ -171,13 +168,14 @@ $(document).ready( function() {
 						$('#list').jqGrid('addRowData', i+1, reportData[i]);
 					}
 					
-					smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldName, "line");
+					Ext.onReady(function () {
+						smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldNames, "line");
+					});
 
 			},
 			error : function(xhr, ajaxOptions, thrownError){
 				
 			}
-		});
 		});
  });
  
@@ -194,7 +192,7 @@ $(document).ready( function() {
 							$('#list').jqGrid('addRowData', i+1, reportData[i]);
 						}
 						
-						smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldName, "line");
+						smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldNames, "line");
 					},
 					error : function(xhr, ajaxOptions, thrownError){
 						
@@ -219,7 +217,7 @@ $(document).ready( function() {
 							$('#list').jqGrid('addRowData', i+1, reportData[i]);
 						}
 						
-						smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldName, "line");
+						smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldNames, "line");
 					},
 					error : function(xhr, ajaxOptions, thrownError){
 						

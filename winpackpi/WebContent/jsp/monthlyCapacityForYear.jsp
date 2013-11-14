@@ -23,6 +23,51 @@
 
 var method = 'getMonthlyCapacityPkgForYear';
 
+var colNames = [];
+
+var reportData = null;
+var chartData = null;
+var chart2FieldNames = ["달성율"];
+var y2Field = "달성율";
+
+var getReportData = function(data){
+	reportData = data.rows;
+	console.log('reportData=', reportData);
+	console.log('colNames=', colNames);
+	var chartValues = Array();
+	for(var i=0; i<12; i++){
+		var capacity = 0;
+		var result = 0;
+		var rate = 0;
+		for(var j=0; j<reportData.length; j++){
+			var value = isEmpty(reportData[j]["C" + colNames[i+2] + "01"]) ? 0 : parseFloat(reportData[j]["C" + colNames[i+2] + "01"]);
+			if(reportData[j].GUBUN === "Capacity"){
+				capacity = value;
+			}else if(reportData[j].GUBUN === "생산실적"){
+				result = value;				
+			}else if(reportData[j].GUBUN === "달성율"){
+				rate = value;
+			}
+		}
+		if(rate==0 && capacity>0 && result>0 )
+			rate = result/capacity * 100;
+		chartValues[i] = {  월별: colNames[i+2], 
+				Capacity: capacity,
+				생산실적: result,
+				달성율: rate};
+	}
+	
+	chartData = {
+			values : chartValues,
+			xFieldName : "월별",
+			yValueName : "Capacity",
+			groupNames : ["Capacity", "result"]
+	};
+	
+	console.log("chartData=", chartData);
+
+};
+
 
 function reloadGrid() {
 	 $.ajax({
@@ -33,7 +78,6 @@ function reloadGrid() {
 			data : "",
 			success : function(data, status, jqXHR) {
 
-				var colNames = [];
 				var colModels = [];
 				var selYear = $('#sel_year');
 				var selMonth = $('#sel_month');
@@ -79,11 +123,32 @@ function reloadGrid() {
 				for (var i=0; i < colNamess.length; i++) {
 					$("#list").jqGrid('setLabel', colNamess[i]['name'], colNames[i]);
 				}
-				$("#list").setGridParam(
-				{
-					url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $('#sel_month').val() ,
-				}).trigger("reloadGrid");
+
+				 $.ajax({
+						url : '../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),
+						data : {},
+						dataType: 'json',
+						success : function(data, status, jqXHR) {
+							getReportData(data);
 				
+							$("#list").setGridParam(
+							{
+								url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $('#sel_month').val() ,
+							}).trigger("reloadGrid");
+				
+							for(var i=0; i<reportData.length; i++){
+								$('#list').jqGrid('addRowData', i+1, reportData[i]);
+							}
+							
+							 Ext.onReady(function () {
+								smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldNames, "line", y2Field);
+				
+							 });
+						},
+						error : function(xhr, ajaxOptions, thrownError){
+							
+						}
+					});
 				
 			},
 			error : function(xhr, ajaxOptions, thrownError) {
@@ -102,7 +167,6 @@ function reloadGrid() {
 		data : "",
 		success : function(data, status, jqXHR) {
 
-			 var colNames = [];
 			 var colModels = [];
 			 var selYear = $('#sel_year');
 			 var selMonth = $('#sel_month');
@@ -143,31 +207,51 @@ function reloadGrid() {
 				
 			};
 			
-			jQuery("#list").jqGrid({
-		   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
-		         datatype: "json",      //json형태로 데이터 받음.  
-		         height: "auto",
-		         caption: "1년간 Capacity 대비 실적",
-		         footerrow:false,
-		         grouping:false, //그룹화 하기위한 옵션
-		         autowidth:true,
-		         colNames:colNames,
-		         colModel:colModels,
-		         //객체에 담긴 이름값과 name이 같은 지 확인 잘하길... 나는 대소문자 구별 때문에 행은 늘어나는데 데이터가 나타나지 않아서 한참 헤맴...
-		          gridComplete : function() { 
+			 $.ajax({
+					url : '../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),
+					data : {},
+					dataType: 'json',
+					success : function(data, status, jqXHR) {
+						getReportData(data);
 
-		          },
-		          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
-		            alert('error'); 
-		          },
-		          jsonReader : {                             //가져온 데이터를 읽을 때 사용
-		             root: "rows",   // json으로 저장 된 객체의 root명
-		             repeatitems: false     //얜 뭐지... 일단 필요한거같은데... 
-		   		},
-		         multiselect: false,         //전체선택 체크박스 유무, 테이블에서 row 체크를 멀티로 할 수 있는 옵션.
-		        // caption: "" //"Manipulating Array Data"    //caption을 달겠다는 거겠지. 
-		     });
+						jQuery("#list").jqGrid({
+					   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
+					         datatype: "json",      //json형태로 데이터 받음.  
+					         height: "auto",
+					         caption: "1년간 Capacity 대비 실적",
+					         footerrow:false,
+					         grouping:false, //그룹화 하기위한 옵션
+					         autowidth:true,
+					         colNames:colNames,
+					         colModel:colModels,
+					         //객체에 담긴 이름값과 name이 같은 지 확인 잘하길... 나는 대소문자 구별 때문에 행은 늘어나는데 데이터가 나타나지 않아서 한참 헤맴...
+					          gridComplete : function() { 
 			
+					          },
+					          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
+					            alert('error'); 
+					          },
+					          jsonReader : {                             //가져온 데이터를 읽을 때 사용
+					             root: "rows",   // json으로 저장 된 객체의 root명
+					             repeatitems: false     //얜 뭐지... 일단 필요한거같은데... 
+					   		},
+					         multiselect: false,         //전체선택 체크박스 유무, 테이블에서 row 체크를 멀티로 할 수 있는 옵션.
+					        // caption: "" //"Manipulating Array Data"    //caption을 달겠다는 거겠지. 
+					     });
+			
+						for(var i=0; i<reportData.length; i++){
+							$('#list').jqGrid('addRowData', i+1, reportData[i]);
+						}
+						
+						 Ext.onReady(function () {
+							smartChart.loadWithData(chartData, "column", false, "chart_target", chart2FieldNames, "line", y2Field);
+			
+						 });
+					},
+					error : function(xhr, ajaxOptions, thrownError){
+						
+					}
+				});
 		},
 		error : function(xhr, ajaxOptions, thrownError) {
 			alert("통신실패");
@@ -213,5 +297,9 @@ $(function() {
 </select>
 </div>
 <table id="list"></table> 
+<br/><br/>
+<div class="js_work_report_view_page">
+	<div id="chart_target"></div>
+</div>
 </body>
 </html>

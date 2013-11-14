@@ -46,7 +46,7 @@ function ReportInfo()
 		this.xGroupName = null;
 		this.yGroupName = null;
 		this.groupNames = null;
-		this.chart2FieldName = null;
+		this.chart2FieldNames = null;
 		this.chart2Type = null;
 		this.y2FieldName = null;
 		this.values = null;
@@ -78,8 +78,10 @@ Ext.onReady(function () {
 					fields.push({name: swReportInfo.xGroupName});
 				if(!isEmpty(swReportInfo.yGroupName))
 					fields.push({name: swReportInfo.yGroupName});
-				if(!isEmpty(swReportInfo.chart2FieldName))
-					fields.push({name: swReportInfo.chart2FieldName});
+				if(!isEmpty(swReportInfo.chart2FieldNames)){
+					for(var i=0; i<swReportInfo.chart2FieldNames.length; i++)
+						fields.push({name: swReportInfo.chart2FieldNames[i]});
+				}
 			}
 			for ( var i = 0; i < swReportInfo.groupNames.length; i++)
 				fields.push({name: swReportInfo.groupNames[i]});
@@ -132,8 +134,9 @@ Ext.onReady(function () {
 			var groupNames = new Array();
 			for(var idx=0; idx<swReportInfo.groupNames.length; idx++)
 				groupNames[idx] = swReportInfo.groupNames[idx];
-			if(!isEmpty(swReportInfo.chart2FieldName)){
-				groupNames.push(swReportInfo.chart2FieldName);
+			if(!isEmpty(swReportInfo.chart2FieldNames)){
+				for(var i=0; i<swReportInfo.chart2FieldNames.length; i++)
+					groupNames.push(swReportInfo.chart2FieldNames[i]);
 			}
 			if(chartType === swChartType.BAR
 					|| chartType === swChartType.PIE
@@ -199,7 +202,6 @@ Ext.onReady(function () {
 						position : yAxisPosition,
 						grid : yAxisGrid,
 						fields : groupNames,
-						title : swReportInfo.yValueName,
 						minorTickSteps : 1,
 						label: numericLabel
 					}, {
@@ -216,7 +218,6 @@ Ext.onReady(function () {
 						position : yAxisPosition,
 						grid : yAxisGrid,
 						fields : groupNames,
-						title : swReportInfo.yValueName,
 						minorTickSteps : 1,
 						label: numericLabel
 					},{
@@ -225,7 +226,6 @@ Ext.onReady(function () {
 						position : y2AxisPosition,
 						grid : false,
 						fields : [swReportInfo.y2FieldName],
-						title : swReportInfo.y2FieldName,
 						minorTickSteps : 1,
 						label: numericLabel
 					}, {
@@ -321,19 +321,41 @@ Ext.onReady(function () {
 		                }
 					});
 				}
-				if(!isEmpty(swReportInfo.chart2FieldName) && !isEmpty(swReportInfo.chart2Type)){
-					series.push({
-						type : swReportInfo.chart2Type,
-						axis : axis,
-						xField : swReportInfo.xFieldName,
-						yField : swReportInfo.chart2FieldName,
-						showInLegend: swReportInfo.is3Dimension,
-		                highlight: false,
-		                markerConfig: markerConfigNone,
-		                style:{
-							'stroke-width': 0		                	
-		                },
-					});					
+				if(!isEmpty(swReportInfo.chart2FieldNames) && !isEmpty(swReportInfo.chart2Type)){
+					for(var i=0; i<swReportInfo.chart2FieldNames.length; i++)
+						if(swReportInfo.chart2Type == swChartType.LINE){
+							series.push({
+								type : swReportInfo.chart2Type,
+								axis : axis,
+								xField : swReportInfo.xFieldName,
+								yField : swReportInfo.chart2FieldNames[i],
+								showInLegend: swReportInfo.is3Dimension,
+				                markerConfig: markerConfigNone,
+				                highlight: false,
+				                smooth: true
+							});
+						}else if(swReportInfo.chart2Type == swChartType.AREA){
+							series.push({
+								type : swReportInfo.chart2Type,
+								axis : axis,
+								xField : swReportInfo.xFieldName,
+								yField : swReportInfo.chart2FieldNames[i],
+							    showInLegend: swReportInfo.is3Dimension,
+				                markerConfig: markerConfigNone,
+								smooth: true,
+				                style: {
+				                	opacity: 0.2
+				                },
+				                tips: {
+				                    trackMouse: true,
+				                    height : 32,
+				                    width : 100,
+				                    renderer: function(storeItem, item) {
+				                    	this.setTitle(item.storeField + "<br>" + storeItem.data[item.storeField] );
+				                    }
+				                }
+							});						
+						}
 				}
 				return series;
 			}else if(chartType === swChartType.RADAR){
@@ -432,41 +454,48 @@ Ext.onReady(function () {
 	                }
 				});
 					
-				if(!isEmpty(swReportInfo.chart2FieldName) && !isEmpty(swReportInfo.chart2Type)){
-					if(swReportInfo.chart2Type == swChartType.LINE){
-						series.push({
-							type : swReportInfo.chart2Type,
-							axis : axis,
-							xField : swReportInfo.xFieldName,
-							yField : swReportInfo.chart2FieldName,
-							showInLegend: swReportInfo.is3Dimension,
-			                highlight: false,
-			                smooth: true
-						});
-					}else if(swReportInfo.chart2Type == swChartType.AREA){
-						series.push({
-							type : swReportInfo.chart2Type,
-							axis : axis,
-							xField : swReportInfo.xFieldName,
-							yField : swReportInfo.chart2FieldName,
-						    showInLegend: swReportInfo.is3Dimension,
-							highlight : highlight,
-			                tips: {
-			                    trackMouse: true,
-			                    height : 32,
-			                    width : 100,
-			                    renderer: function(storeItem, item) {
-			                    	this.setTitle(item.storeField + "<br>" + storeItem.data[item.storeField] );
-			                    }
-			                }
-						});						
+				if(!isEmpty(swReportInfo.chart2FieldNames) && !isEmpty(swReportInfo.chart2Type)){
+					for(var i=0; i<swReportInfo.chart2FieldNames.length; i++){
+						if(swReportInfo.chart2Type == swChartType.LINE){
+							series.push({
+								type : swReportInfo.chart2Type,
+								axis : axis,
+								xField : swReportInfo.xFieldName,
+								yField : swReportInfo.chart2FieldNames[i],
+								showInLegend: swReportInfo.is3Dimension,
+				                markerConfig: markerConfigNone,
+				                highlight: false,
+				                smooth: true
+							});
+						}else if(swReportInfo.chart2Type == swChartType.AREA){
+							series.push({
+								type : swReportInfo.chart2Type,
+								axis : axis,
+								xField : swReportInfo.xFieldName,
+								yField : swReportInfo.chart2FieldNames[i],
+							    showInLegend: swReportInfo.is3Dimension,
+				                markerConfig: markerConfigNone,
+								highlight : highlight,
+				                style: {
+				                	opacity: 0.2
+				                },
+				                tips: {
+				                    trackMouse: true,
+				                    height : 32,
+				                    width : 100,
+				                    renderer: function(storeItem, item) {
+				                    	this.setTitle(item.storeField + "<br>" + storeItem.data[item.storeField] );
+				                    }
+				                }
+							});						
+						}
 					}
 				}
 				return series;
 			}
 		},
 	
-		loadWithData : function(data, chartType, isStacked, target, chart2Field, chart2Type, y2Field) {
+		loadWithData : function(data, chartType, isStacked, target, chart2Fields, chart2Type, y2Field) {
 			if(isEmpty(swReportInfo)){
 				reportInfo = new ReportInfo();
 				smartChart.reportInfos[target] = reportInfo;
@@ -478,7 +507,7 @@ Ext.onReady(function () {
 			swReportInfo.isStacked = isStacked;
 			swReportInfo.target = target;
 			$('#'+target).html('');
-			swReportInfo.width = $('#' + target).width();
+			swReportInfo.width = $('#' + target).width()-20;
 			if(data){
 				swReportInfo.title = data.title;
 				swReportInfo.xFieldName = data.xFieldName;
@@ -486,7 +515,7 @@ Ext.onReady(function () {
 				swReportInfo.xGroupName = data.xGroupName;
 				swReportInfo.yGroupName = data.yGroupName;
 				swReportInfo.groupNames = data.groupNames;
-				swReportInfo.chart2FieldName = chart2Field;
+				swReportInfo.chart2FieldNames = chart2Fields;
 				swReportInfo.chart2Type = chart2Type;
 				swReportInfo.y2FieldName = y2Field;
 				swReportInfo.values = data.values;
