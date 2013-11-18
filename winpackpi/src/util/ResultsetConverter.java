@@ -46,8 +46,10 @@ public class ResultsetConverter {
 			}
 			resultListMap.add(rowMap);
 		}
-		if (addSummeryRow(operation, resultListMap) != null) {
-			resultListMap = addSummeryRow(operation, resultListMap);
+		
+		List<Map> tempList = addSummeryRow(operation, resultListMap);
+		if (tempList != null) {
+			resultListMap = tempList;
 		}
 		json.put("rows", resultListMap);
 		return json.toString();
@@ -375,7 +377,7 @@ public class ResultsetConverter {
 						}
 						
 						salesMap.put(key, value);
-						salesMap.put("GUBUN", "생산실적");
+						salesMap.put("GUBUN", "매출실적");
 						if (!salesTotalMap.containsKey(key)) {
 							salesTotalMap.put("DIVISION", "TOTAL");
 							salesTotalMap.put("GUBUN", "매출실적");
