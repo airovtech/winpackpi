@@ -132,8 +132,12 @@ Ext.onReady(function () {
 			}
 			
 			var groupNames = new Array();
-			for(var idx=0; idx<swReportInfo.groupNames.length; idx++)
-				groupNames[idx] = swReportInfo.groupNames[idx];
+			var count = 0;
+			for(var idx=0; idx<swReportInfo.groupNames.length; idx++){
+				if(!isEmpty(swReportInfo.y2FieldName) && swReportInfo.groupNames[idx] == swReportInfo.y2FieldName )
+					continue;
+				groupNames[count++] = swReportInfo.groupNames[idx];
+			}
 			if(!isEmpty(swReportInfo.chart2FieldNames)){
 				for(var i=0; i<swReportInfo.chart2FieldNames.length; i++)
 					groupNames.push(swReportInfo.chart2FieldNames[i]);
