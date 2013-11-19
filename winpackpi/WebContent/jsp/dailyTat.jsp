@@ -15,20 +15,28 @@
 	var chart2FieldNames = ["고객TAT", "목표TAT"];
 	
 	var getReportData = function(reportData){
+		
 		console.log('reportData=', reportData);
 		
 		chartData = new Array();
+		var chartValues = Array();
 		
 		for(var i=0; i<reportData.length; i++){
-			var chartValues = Array();
+			console.log(i);
 			
 			for(var j=0; j<31; j++){
-				chartValues.push({  
-						일별: (j+1) + "", 
-						TAT: parseFloat(reportData[i]["C" + String("0" + (j+1)).slice(-2)]),
-						고객TAT: parseFloat(reportData[i].CUSTOMERTAT),
-						목표TAT: parseFloat(reportData[i].TARGETTAT)
+				if(isEmpty(reportData[i]["C" + String("0" + (j+1)).slice(-2)])){
+					chartValues.push({  
+						일별: (j+1) + "" 
 					});					
+				}else{
+					chartValues.push({  
+							일별: (j+1) + "", 
+							TAT: parseFloat(reportData[i]["C" + String("0" + (j+1)).slice(-2)]),
+							고객TAT: parseFloat(reportData[i].CUSTOMERTAT),
+							목표TAT: parseFloat(reportData[i].TARGETTAT)
+						});
+				}
 			}
 			
 			chartData.push({

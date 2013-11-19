@@ -107,7 +107,7 @@ public class GetKpiWS {
 		int toDay = daycountOfMonth;
 		
 		if (Integer.parseInt(selYear) == toYear && Integer.parseInt(selMonth) == toMonth) {
-			toDay = Calendar.getInstance().get(Calendar.DATE);
+			toDay = Calendar.getInstance().get(Calendar.DATE) -1;
 		}
 			
 		int fromDate = Integer.parseInt(month);
