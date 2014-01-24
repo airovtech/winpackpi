@@ -563,24 +563,47 @@ Ext.onReady(function () {
 			}
 		},
 		
-		resize : function(){
-			$('#'+swReportInfo.target).html('');
-			swReportInfo.width = $('#' + swReportInfo.target).width();
-			if((swReportInfo.stringLabelRotation === "auto" && (swReportInfo.values.length>12 || swReportInfo.width<600)) || swReportInfo.stringLabelRotation === "rotated" ){
-				swReportInfo.labelRotate = {
-	                	rotate : {
-	                		degrees : 45
-	                	},
-						font: smartChart.labelFont
-	                };
+		resize : function(target){
+			if(isEmpty(target)){
+				$('#'+swReportInfo.target).html('');
+				swReportInfo.width = $('#' + swReportInfo.target).width()-20;
+				if((swReportInfo.stringLabelRotation === "auto" && (swReportInfo.values.length>12 || swReportInfo.width<600)) || swReportInfo.stringLabelRotation === "rotated" ){
+					swReportInfo.labelRotate = {
+		                	rotate : {
+		                		degrees : 45
+		                	},
+							font: smartChart.labelFont
+		                };
+				}else{
+					swReportInfo.labelRotate = {
+							font: smartChart.labelFont
+					};
+				}
+				
+				if(swReportInfo.reportType === swReportType.CHART){
+					smartChart.createChart();
+				}
 			}else{
-				swReportInfo.labelRotate = {
-						font: smartChart.labelFont
-				};
-			}
-			
-			if(swReportInfo.reportType === swReportType.CHART){
-				smartChart.createChart();
+				$('#'+ target).html('');
+				swReportInfo = smartChart.reportInfos[target];
+				swReportInfo.width = $('#' + target).width()-20;
+				if((swReportInfo.stringLabelRotation === "auto" && (swReportInfo.values.length>12 || swReportInfo.width<600)) || swReportInfo.stringLabelRotation === "rotated" ){
+					swReportInfo.labelRotate = {
+		                	rotate : {
+		                		degrees : 45
+		                	},
+							font: smartChart.labelFont
+		                };
+				}else{
+					swReportInfo.labelRotate = {
+							font: smartChart.labelFont
+					};
+				}
+				
+				if(swReportInfo.reportType === swReportType.CHART){
+					smartChart.createChart();
+				}
+				
 			}
 		},
 		
@@ -718,21 +741,6 @@ Ext.onReady(function () {
 			$(".js_work_report_view_page text[text='" + swReportInfo.xFieldName + "']").css("font-size", "14px");
 			$(".js_work_report_view_page text[text='" + swReportInfo.yValueName + "']").css("font-size", "14px");
 			$(".js_work_report_view_page text[text='" + swReportInfo.y2FieldName + "']").css("font-size", "14px");
-		    
 		}
 	};
-});
-
-$(function() {
-	$(window).resize(function() {
-		if(swReportResizing) return;
-		
-		if(!isEmpty($('.js_work_report_view_page'))){
-			swReportResizing = true;
-			setTimeout(function(){
-				smartChart.resize();
-				swReportResizing = false;
-			},1000);
-		}
-	});
 });

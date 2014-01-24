@@ -130,6 +130,7 @@
 
 			 			 $(".footrow td").css('background-color', '#E8FFFF');
 			        	  
+						$("#list").setGridWidth($('.js_work_report_view_page').width()-20);				
 			     		 loadChart(jQuery("#list").jqGrid('getRowData'));
 			          },
 			          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
@@ -221,6 +222,17 @@
 		$('.selDate').change(function() { 
 			reloadGrid();	  
 		});   
+		$(window).resize(function() {
+			if(swReportResizing) return;			
+			if(!isEmpty($('.js_work_report_view_page'))){
+				swReportResizing = true;
+				setTimeout(function(){
+					$("#list").setGridWidth($('.js_work_report_view_page').width()-20);				
+		     		loadChart(jQuery("#list").jqGrid('getRowData'));
+					swReportResizing = false;
+				},1000);
+			}
+		});
 	});
 </script>
  

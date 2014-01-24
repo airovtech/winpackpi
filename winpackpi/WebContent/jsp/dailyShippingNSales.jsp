@@ -176,12 +176,22 @@
  				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $(this).val() + $('#sel_month').val() ,
  			}).trigger("reloadGrid");
  	   }); 
+		$(window).resize(function() {
+			if(swReportResizing) return;			
+			if(!isEmpty($('.js_work_report_view_page'))){
+				swReportResizing = true;
+				setTimeout(function(){
+					$("#list").setGridWidth($('.js_work_report_view_page').width()-20);				
+					swReportResizing = false;
+				},1000);
+			}
+		});
  	}); 
 </script>
  
 </head>
 <body>
-<div>
+<div  class="js_work_report_view_page">
 <jsp:include page="./chartMenu.jsp" flush="false"/>
 </div>
 <div>

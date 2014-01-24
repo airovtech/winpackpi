@@ -265,6 +265,7 @@
 	             		, C18:C18SUM, C19:C19SUM, C20:C20SUM, C21:C21SUM, C22:C22SUM, C23:C23SUM, C24:C24SUM, C25:C25SUM, C26:C26SUM, C27:C27SUM, C28:C28SUM
 	             		, C29:C29SUM, C30:C30SUM, C31:C31SUM});
 	        	  
+				$("#list").setGridWidth($('.js_work_report_view_page').width()-20);					        	 
 	     		 loadChart(jQuery("#list").jqGrid('getRowData'));//---데이터를 성공적으로 가져오면 실행 됨
 	          },
 	          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
@@ -304,6 +305,17 @@
 		$('.selDate').change(function() { 
 			reloadGrid();	  
 		});   
+		$(window).resize(function() {
+			if(swReportResizing) return;			
+			if(!isEmpty($('.js_work_report_view_page'))){
+				swReportResizing = true;
+				setTimeout(function(){
+					$("#list").setGridWidth($('.js_work_report_view_page').width()-20);				
+		     		loadChart(jQuery("#list").jqGrid('getRowData'));
+					swReportResizing = false;
+				},1000);
+			}
+		});
 	}); 
 </script>
  
