@@ -23,13 +23,18 @@
 		for(var i=0; i<reportData.length; i++){
 			var chartValues = Array();
 			
-			
 			for(var j=0; j<31; j++){
-				chartValues.push({  
-						일별: (j+1) + "", 
-						가동율: parseInt(reportData[i]["C" + String("0" + (j+1)).slice(-2)]),
-						목표가동율: parseInt(reportData[i].TARGETOR)
+				if(isEmpty(reportData[i]["C" + String("0" + (j+1)).slice(-2)])){
+					chartValues.push({  
+						일별: (j+1) + "" 
 					});					
+				}else{
+					chartValues.push({  
+							일별: (j+1) + "", 
+							가동율: parseInt(reportData[i]["C" + String("0" + (j+1)).slice(-2)]),
+							목표가동율: parseInt(reportData[i].TARGETOR)
+						});
+				}			
 			}
 			
 			chartData.push({

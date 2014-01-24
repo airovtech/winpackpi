@@ -86,19 +86,19 @@
 					colNames[13] = (item[i].C_13);
 					
 					colModels[0] = {name:item[i].C_0, index:item[i].C_0, align: 'center',  sortable:false };
-					colModels[1] = {name:'C'+item[i].C_1 + '01', index:item[i].C_1, align: 'center',  sortable:false };
-					colModels[2] = {name:'C'+item[i].C_2 + '01', index:item[i].C_2, align: 'center',  sortable:false };
-					colModels[3] = {name:'C'+item[i].C_3 + '01', index:item[i].C_3, align: 'center',  sortable:false };
-					colModels[4] = {name:'C'+item[i].C_4 + '01', index:item[i].C_4, align: 'center',  sortable:false };
-					colModels[5] = {name:'C'+item[i].C_5 + '01', index:item[i].C_5, align: 'center',  sortable:false };
-					colModels[6] = {name:'C'+item[i].C_6 + '01', index:item[i].C_6, align: 'center',  sortable:false };
-					colModels[7] = {name:'C'+item[i].C_7 + '01', index:item[i].C_7, align: 'center',  sortable:false };
-					colModels[8] = {name:'C'+item[i].C_8 + '01', index:item[i].C_8, align: 'center',  sortable:false };
-					colModels[9] = {name:'C'+item[i].C_9 + '01', index:item[i].C_9, align: 'center',  sortable:false };
-					colModels[10] = {name:'C'+item[i].C_10 + '01', index:item[i].C_10, align: 'center',  sortable:false };
-					colModels[11] = {name:'C'+item[i].C_11 + '01', index:item[i].C_11, align: 'center',  sortable:false };
-					colModels[12] = {name:'C'+item[i].C_12 + '01', index:item[i].C_12, align: 'center',  sortable:false };
-					colModels[13] = {name:item[i].C_13, index:item[i].C_13, align: 'center',  sortable:false };
+					colModels[1] = {name:'C'+item[i].C_1 + '01', index:item[i].C_1, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[2] = {name:'C'+item[i].C_2 + '01', index:item[i].C_2, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[3] = {name:'C'+item[i].C_3 + '01', index:item[i].C_3, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[4] = {name:'C'+item[i].C_4 + '01', index:item[i].C_4, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[5] = {name:'C'+item[i].C_5 + '01', index:item[i].C_5, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[6] = {name:'C'+item[i].C_6 + '01', index:item[i].C_6, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[7] = {name:'C'+item[i].C_7 + '01', index:item[i].C_7, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[8] = {name:'C'+item[i].C_8 + '01', index:item[i].C_8, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[9] = {name:'C'+item[i].C_9 + '01', index:item[i].C_9, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[10] = {name:'C'+item[i].C_10 + '01', index:item[i].C_10, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[11] = {name:'C'+item[i].C_11 + '01', index:item[i].C_11, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[12] = {name:'C'+item[i].C_12 + '01', index:item[i].C_12, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[13] = {name:item[i].C_13, index:item[i].C_13, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
 					
 				}
 					 
@@ -107,13 +107,28 @@
 			         datatype: "json",      //json형태로 데이터 받음.  
 			         height: "auto",
 			         caption: "1년간 월별 생산 실적 TREND",
-			         footerrow:false,
+			         footerrow:true,
 			         grouping:false, //그룹화 하기위한 옵션
 			         autowidth:true,
 			         colNames:colNames,
 			         colModel:colModels,
 			         //객체에 담긴 이름값과 name이 같은 지 확인 잘하길... 나는 대소문자 구별 때문에 행은 늘어나는데 데이터가 나타나지 않아서 한참 헤맴...
-			          gridComplete : function() { 
+			          gridComplete : function() {
+			        	  
+			        	 var modelValue = {}; 
+			        	 for (var i =0; i < colModels.length; i++) {
+			        		 if (colModels[i].name == 'DIVISION') {
+			        			 modelValue['DIVISION'] = 'Total';      			 
+			        		 } else {
+				        		 var colName = colModels[i].name;
+				         	 	 var value = $("#list").jqGrid('getCol', colName, false, 'sum');
+				         	 	 modelValue[colName] = value;
+			        		 }
+			        	 }
+			        	 jQuery("#list").jqGrid('footerData', 'set', modelValue);
+
+			 			 $(".footrow td").css('background-color', '#E8FFFF');
+			 			
 			     		 loadChart(jQuery("#list").jqGrid('getRowData'));
 			          },
 			          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
@@ -162,19 +177,19 @@
 					colNames[13] = (item[i].C_13);
 					
 					colModels[0] = {name:item[i].C_0, index:item[i].C_0, align: 'center',  sortable:false };
-					colModels[1] = {name:'C'+item[i].C_1 + '01', index:item[i].C_1, align: 'center',  sortable:false };
-					colModels[2] = {name:'C'+item[i].C_2 + '01', index:item[i].C_2, align: 'center',  sortable:false };
-					colModels[3] = {name:'C'+item[i].C_3 + '01', index:item[i].C_3, align: 'center',  sortable:false };
-					colModels[4] = {name:'C'+item[i].C_4 + '01', index:item[i].C_4, align: 'center',  sortable:false };
-					colModels[5] = {name:'C'+item[i].C_5 + '01', index:item[i].C_5, align: 'center',  sortable:false };
-					colModels[6] = {name:'C'+item[i].C_6 + '01', index:item[i].C_6, align: 'center',  sortable:false };
-					colModels[7] = {name:'C'+item[i].C_7 + '01', index:item[i].C_7, align: 'center',  sortable:false };
-					colModels[8] = {name:'C'+item[i].C_8 + '01', index:item[i].C_8, align: 'center',  sortable:false };
-					colModels[9] = {name:'C'+item[i].C_9 + '01', index:item[i].C_9, align: 'center',  sortable:false };
-					colModels[10] = {name:'C'+item[i].C_10 + '01', index:item[i].C_10, align: 'center',  sortable:false };
-					colModels[11] = {name:'C'+item[i].C_11 + '01', index:item[i].C_11, align: 'center',  sortable:false };
-					colModels[12] = {name:'C'+item[i].C_12 + '01', index:item[i].C_12, align: 'center',  sortable:false };
-					colModels[13] = {name:item[i].C_13, index:item[i].C_13, align: 'center',  sortable:false };
+					colModels[1] = {name:'C'+item[i].C_1 + '01', index:item[i].C_1, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[2] = {name:'C'+item[i].C_2 + '01', index:item[i].C_2, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[3] = {name:'C'+item[i].C_3 + '01', index:item[i].C_3, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[4] = {name:'C'+item[i].C_4 + '01', index:item[i].C_4, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[5] = {name:'C'+item[i].C_5 + '01', index:item[i].C_5, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[6] = {name:'C'+item[i].C_6 + '01', index:item[i].C_6, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[7] = {name:'C'+item[i].C_7 + '01', index:item[i].C_7, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[8] = {name:'C'+item[i].C_8 + '01', index:item[i].C_8, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[9] = {name:'C'+item[i].C_9 + '01', index:item[i].C_9, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[10] = {name:'C'+item[i].C_10 + '01', index:item[i].C_10, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[11] = {name:'C'+item[i].C_11 + '01', index:item[i].C_11, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[12] = {name:'C'+item[i].C_12 + '01', index:item[i].C_12, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[13] = {name:item[i].C_13, index:item[i].C_13, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
 					
 				}
 				$("#list").jqGrid('setGridParam', { colModel: colModels});
