@@ -722,3 +722,17 @@ Ext.onReady(function () {
 		}
 	};
 });
+
+$(function() {
+	$(window).resize(function() {
+		if(swReportResizing) return;
+		
+		if(!isEmpty($('.js_work_report_view_page'))){
+			swReportResizing = true;
+			setTimeout(function(){
+				smartChart.resize();
+				swReportResizing = false;
+			},1000);
+		}
+	});
+});
