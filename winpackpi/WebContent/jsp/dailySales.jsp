@@ -265,11 +265,10 @@
 	             		, C18:C18SUM, C19:C19SUM, C20:C20SUM, C21:C21SUM, C22:C22SUM, C23:C23SUM, C24:C24SUM, C25:C25SUM, C26:C26SUM, C27:C27SUM, C28:C28SUM
 	             		, C29:C29SUM, C30:C30SUM, C31:C31SUM});
 	        	  
-				$("#list").setGridWidth($('.js_work_report_view_page').width()-20);					        	 
+				$("#list").setGridWidth($('.js_work_report_view_page').width());					        	 
 	     		 loadChart(jQuery("#list").jqGrid('getRowData'));//---데이터를 성공적으로 가져오면 실행 됨
 	          },
 	          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
-	            alert('error'); 
 	          },
 	          jsonReader : {                             //가져온 데이터를 읽을 때 사용
 	             root: "rows",   // json으로 저장 된 객체의 root명
@@ -292,6 +291,7 @@
 	 
  
 	 $(document).ready( function() { 
+			selectMenuItem('dailySales');
 		 loadGrid();
 	 });
 
@@ -310,7 +310,7 @@
 			if(!isEmpty($('.js_work_report_view_page'))){
 				swReportResizing = true;
 				setTimeout(function(){
-					$("#list").setGridWidth($('.js_work_report_view_page').width()-20);				
+					$("#list").setGridWidth($('.js_work_report_view_page').width());				
 		     		loadChart(jQuery("#list").jqGrid('getRowData'));
 					swReportResizing = false;
 				},1000);
@@ -324,10 +324,11 @@
 <div>
 <jsp:include page="./chartMenu.jsp" flush="false"/>
 </div>
-<div>
+<div style="text-align:right">
 <select id='sel_year' class='selDate'>
 	<option value='2012'>2012년</option>
-	<option selected value='2013'>2013년</option>
+	<option value='2013'>2013년</option>
+	<option selected value='2014'>2014년</option>
 </select>
 <select id='sel_month' class='selDate'>
 	<option selected value='0101'>1월</option>

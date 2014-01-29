@@ -7,6 +7,8 @@
 <link rel="stylesheet" type="text/css" href="../js/jqgrid/themes/redmond/jquery-ui-1.8.2.custom.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="../js/jqgrid/themes/ui.jqgrid.css"  media="screen"/>
 <link rel="stylesheet" type="text/css" href="../js/ext/ext-all.css"  />
+<link rel="stylesheet" type="text/css" href="../css/black/default.css"  />
+<link rel="stylesheet" type="text/css" href="../css/black/kpi.css"  />
 
 <script src="../js/jqgrid/js/jquery.min.js" type="text/javascript"></script>
 <script src="../js/jqgrid/js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
@@ -18,7 +20,6 @@
 
 <link rel="stylesheet" type="text/css" href="../css/jquery.jqChart.css" />
 <script src="../js/jquery.jqChart.min.js" type="text/javascript"></script>
-
 
 
 </head>

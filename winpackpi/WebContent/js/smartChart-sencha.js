@@ -586,7 +586,7 @@ Ext.onReady(function () {
 			}else{
 				$('#'+ target).html('');
 				swReportInfo = smartChart.reportInfos[target];
-				swReportInfo.width = $('#' + target).width()-20;
+				swReportInfo.width = $('#' + target).width();
 				if((swReportInfo.stringLabelRotation === "auto" && (swReportInfo.values.length>12 || swReportInfo.width<600)) || swReportInfo.stringLabelRotation === "rotated" ){
 					swReportInfo.labelRotate = {
 		                	rotate : {
@@ -744,3 +744,12 @@ Ext.onReady(function () {
 		}
 	};
 });
+
+var targetElement = function(e){
+	return (typeof e.target != 'undefined') ? e.target : e.srcElement;
+};
+
+var selectMenuItem = function(menuId){
+	$('.js_chart_menu_items li').removeClass('current');
+	$('.js_chart_menu_items li[menuId="' + menuId + '"]').addClass('current');
+};
