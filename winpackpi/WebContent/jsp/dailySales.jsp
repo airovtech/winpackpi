@@ -170,7 +170,7 @@
 	             {name:'TOTALSUM', width:'70', index:'TOTALSUM', summaryType: 'sum', sortable:false},
 	             {name:'AVGOFDAY', width:'70', index:'AVGOFDAY', summaryType: mitAvgOfDay, sortable:false},
 	             {name:'PERSALES', width:'70', index:'PERSALES',  summaryType: salesRatio, sortable:false},
-	             {name:'WIP', width:'50', index:'WIP', sortable:false },
+	             {name:'WIP', width:'50', index:'WIP', summaryType: 'sum', sortable:false },
 	             {name:'C01', width:'50', index:'C01', summaryType: 'sum', sortable:false},
 	             {name:'C02', width:'50', index:'C02', summaryType: 'sum', sortable:false},
 	             {name:'C03', width:'50', index:'C03', summaryType: 'sum', sortable:false},
@@ -225,6 +225,8 @@
 		            	totalSalesAvgOfDay = (MITTOTALSUM / nalsu[parseInt(month)-1]).toFixed(2);
 		            	perTotalSales = ((MITTOTALSUM / PLANOFSALESSUM) * parseInt(100)).toFixed(2) + '%';
 	        		}
+
+	        		var WIPSUM = $("#list").jqGrid('getCol', 'WIP', false, 'sum');
 	        	 	
 	        	 	var C01SUM = $("#list").jqGrid('getCol', 'C01', false, 'sum');
 	        	 	var C02SUM = $("#list").jqGrid('getCol', 'C02', false, 'sum');
@@ -259,7 +261,7 @@
 	        	 	var C31SUM = $("#list").jqGrid('getCol', 'C31', false, 'sum');
 
 	             	jQuery("#list").jqGrid('footerData', 'set', { DEVICEGROUP: 'Grand Total', PLANOFSALES:PLANOFSALESSUM, TOTALSUM:MITTOTALSUM, AVGPLANOFDAY:totalPlanAvgOfDay
-	             		, AVGOFDAY : totalSalesAvgOfDay, PERSALES: perTotalSales
+	             		, AVGOFDAY : totalSalesAvgOfDay, PERSALES: perTotalSales, WIP: WIPSUM
 	             		, C01:C01SUM, C02:C02SUM, C03:C03SUM, C04:C04SUM, C05:C05SUM, C06:C06SUM
 	             		, C07:C07SUM, C08:C08SUM, C09:C09SUM, C10:C10SUM, C11:C11SUM, C12:C12SUM, C13:C13SUM, C14:C14SUM, C15:C15SUM, C16:C16SUM, C17:C17SUM
 	             		, C18:C18SUM, C19:C19SUM, C20:C20SUM, C21:C21SUM, C22:C22SUM, C23:C23SUM, C24:C24SUM, C25:C25SUM, C26:C26SUM, C27:C27SUM, C28:C28SUM
@@ -314,8 +316,8 @@
 </div>
 <div>
 <select id='sel_year' class='selDate'>
-	<option value='2012'>2012년</option>
-	<option selected value='2013'>2013년</option>
+	<option value='2013'>2013년</option>
+	<option selected value='2014'>2014년</option>
 </select>
 <select id='sel_month' class='selDate'>
 	<option selected value='0101'>1월</option>

@@ -19,10 +19,10 @@
 		console.log('reportData=', reportData);
 		
 		chartData = new Array();
-		var chartValues = Array();
 		
 		for(var i=0; i<reportData.length; i++){
 			console.log(i);
+			var chartValues = Array();
 			
 			for(var j=0; j<31; j++){
 				if(isEmpty(reportData[i]["C" + String("0" + (j+1)).slice(-2)])){
@@ -154,8 +154,8 @@
 </div>
 <div>
 <select id='sel_year' class='selDate'>
-	<option value='2012'>2012년</option>
-	<option selected value='2013'>2013년</option>
+	<option value='2013'>2013년</option>
+	<option selected value='2014'>2014년</option>
 </select>
 <select id='sel_month' class='selDate'>
 	<option selected value='0101'>1월</option>

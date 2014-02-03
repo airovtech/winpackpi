@@ -71,6 +71,13 @@
 			if (yearMonth != null) {
 				inputParams = new String[]{yearMonth};	
 			}
+		} else if (method.equalsIgnoreCase("getMonthlyCapacityPkgForYearByGroup")) {
+			operation = "getMonthlyCapacityPkgForYearByGroup";
+			
+			String yearMonth = (String)request.getParameter("yearMonth");
+			if (yearMonth != null) {
+				inputParams = new String[]{yearMonth};	
+			}
 		} else if (method.equalsIgnoreCase("getMonthlyShipping")) {
 			operation = "getMonthlyShipping";
 			
