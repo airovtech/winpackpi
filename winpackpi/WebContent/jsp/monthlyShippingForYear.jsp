@@ -129,10 +129,10 @@
 
 			 			 $(".footrow td").css('background-color', '#E8FFFF');
 			 			
+						$("#list").setGridWidth($('.js_work_report_view_page').width());				
 			     		 loadChart(jQuery("#list").jqGrid('getRowData'));
 			          },
 			          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
-			            alert('error'); 
 			          },
 			          jsonReader : {                             //가져온 데이터를 읽을 때 사용
 			             root: "rows",   // json으로 저장 된 객체의 root명
@@ -143,7 +143,6 @@
 			     });
 			},
 			error : function(xhr, ajaxOptions, thrownError) {
-				alert("통신실패");
 			}
 		});
 	};
@@ -199,12 +198,12 @@
 				}
 			},
 			error : function(xhr, ajaxOptions, thrownError) {
-				alert("통신실패");
 			}
 		});
 	};
 	
 	$(document).ready( function() { 
+		selectMenuItem('monthlyShippingForYear');
 		loadGrid();
 	});
 
@@ -220,38 +219,49 @@
 		$('.selDate').change(function() { 
 			reloadGrid();	  
 		});   
+		$(window).resize(function() {
+			if(swReportResizing) return;			
+			if(!isEmpty($('.js_work_report_view_page'))){
+				swReportResizing = true;
+				setTimeout(function(){
+					$("#list").setGridWidth($('.js_work_report_view_page').width());				
+		     		loadChart(jQuery("#list").jqGrid('getRowData'));
+					swReportResizing = false;
+				},1000);
+			}
+		});
 	});
 </script>
  
 </head>
-<body>
-<div>
-<jsp:include page="./chartMenu.jsp" flush="false"/>
-</div>
-<div>
-<select id='sel_year' class='selDate'>
-	<option value='2013'>2013년</option>
-	<option selected value='2014'>2014년</option>
-</select>
-<select id='sel_month' class='selDate'>
-	<option selected value='0101'>1월</option>
-	<option value='0201'>2월</option>
-	<option value='0301'>3월</option>
-	<option value='0401'>4월</option>
-	<option value='0501'>5월</option>
-	<option value='0601'>6월</option>
-	<option value='0701'>7월</option>
-	<option value='0801'>8월</option>
-	<option value='0901'>9월</option>
-	<option value='1001'>10월</option>
-	<option value='1101'>11월</option>
-	<option value='1201'>12월</option>
-</select>
-</div>
-<table id="list"></table> 
-<br/><br/>
-<div class="js_work_report_view_page">
-	<div id="chart_target"></div>
-</div>
-</body>
+	<body>
+		<div>
+			<jsp:include page="./chartMenu.jsp" flush="false"/>
+		</div>
+		<div style="text-align:right">
+			<select id='sel_year' class='selDate'>
+				<option value='2013'>2013년</option>
+				<option selected value='2014'>2014년</option>
+			</select>
+			<select id='sel_month' class='selDate'>
+				<option selected value='0101'>1월</option>
+				<option value='0201'>2월</option>
+				<option value='0301'>3월</option>
+				<option value='0401'>4월</option>
+				<option value='0501'>5월</option>
+				<option value='0601'>6월</option>
+				<option value='0701'>7월</option>
+				<option value='0801'>8월</option>
+				<option value='0901'>9월</option>
+				<option value='1001'>10월</option>
+				<option value='1101'>11월</option>
+				<option value='1201'>12월</option>
+			</select>
+		</div>
+		<table id="list"></table> 
+		<br/><br/>
+		<div class="js_work_report_view_page">
+			<div id="chart_target"></div>
+		</div>
+	</body>
 </html>

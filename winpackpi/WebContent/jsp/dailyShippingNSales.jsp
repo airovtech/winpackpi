@@ -78,7 +78,8 @@
 	}
 	 var method = 'getDailyShippingNSales';
 	 $(document).ready( function() { 
-		  jQuery("#list").jqGrid({
+		selectMenuItem('dailyShippingNSales');
+		 jQuery("#list").jqGrid({
 		   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 		         datatype: "json",      //json형태로 데이터 받음.  
 		         height: "auto",
@@ -137,7 +138,6 @@
 	             	jQuery("#list").jqGrid('footerData', 'set', { DEVICEGROUP: 'Grand Total', SUMOFSALES: sumOfSales, SHIPPINGPLAN: shippingPlan, SALESPLAN: salesPlan, SHIPPINGFOCPLAN: shippingFocPlan, SALESFOCPLAN: salesFocPlan, SHIPPINGEXEPLAN: shippingExePlan, SALESEXEPLAN: salesExePlan, BOH: sumOfBoh, SUMOFRECEIVING: sumOfReceiving, SUMOFSHIPPING: sumOfShipping, WIP: sumOfWip, PERSHIPPING: perTotalShipping, PERSALES:perTotalSales});
 		          },
 		          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
-		            alert('error'); 
 		          },
 		          jsonReader : {                             //가져온 데이터를 읽을 때 사용
 		             root: "rows",   // json으로 저장 된 객체의 root명
@@ -176,15 +176,25 @@
  				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $(this).val() + $('#sel_month').val() ,
  			}).trigger("reloadGrid");
  	   }); 
+		$(window).resize(function() {
+			if(swReportResizing) return;			
+			if(!isEmpty($('.js_work_report_view_page'))){
+				swReportResizing = true;
+				setTimeout(function(){
+					$("#list").setGridWidth($('.js_work_report_view_page').width());				
+					swReportResizing = false;
+				},1000);
+			}
+		});
  	}); 
 </script>
  
 </head>
 <body>
-<div>
+<div  class="js_work_report_view_page">
 <jsp:include page="./chartMenu.jsp" flush="false"/>
 </div>
-<div>
+<div style="text-align:right">
 <select id='sel_year'>
 	<option value='2013'>2013년</option>
 	<option selected value='2014'>2014년</option>
