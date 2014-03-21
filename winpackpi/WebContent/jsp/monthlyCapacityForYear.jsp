@@ -1,3 +1,5 @@
+<%@page import="java.util.Calendar"%>
+<%@page import="java.util.Date"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -225,25 +227,35 @@
 <jsp:include page="./chartMenu.jsp" flush="false"/>
 </div>
 <div style="text-align:right">
-<select id='sel_year' class='selDate'>
-	<option value='2012'>2012년</option>
-	<option value='2013'>2013년</option>
-	<option selected value='2014'>2014년</option>
-</select>
-<select id='sel_month' class='selDate'>
-	<option selected value='0101'>1월</option>
-	<option value='0201'>2월</option>
-	<option value='0301'>3월</option>
-	<option value='0401'>4월</option>
-	<option value='0501'>5월</option>
-	<option value='0601'>6월</option>
-	<option value='0701'>7월</option>
-	<option value='0801'>8월</option>
-	<option value='0901'>9월</option>
-	<option value='1001'>10월</option>
-	<option value='1101'>11월</option>
-	<option value='1201'>12월</option>
-</select>
+	<%
+		Date today = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(today);
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH);
+	%>
+	
+		<select id='sel_year' class='selDate'>
+			<%
+			if(year>=2012){
+				for(int i=0; i+2012<=year; i++){
+					int currentYear = i+2012;
+			%>
+					<option <%if(currentYear==year) {%> selected <%} %>value='<%=currentYear%>'><%=currentYear%>년</option>
+			<%
+				}
+			}
+			%>
+		</select>
+	<select id='sel_month' class='selDate'>
+		<%
+		for(int i=0; i<12; i++){
+		%>
+			<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
+		<%
+		}
+		%>
+	 </select>
 </div>
 <table id="list"></table> 
 <br/><br/>
