@@ -105,6 +105,50 @@ public class ResultsetConverter {
 			
 			return resultListMap;
 			
+		} else if(method.equalsIgnoreCase("getMonthlyCapacityPkgForYearByGroup")) { 
+		
+			List<Map> returnList = new ArrayList<Map>();
+			
+			for (int i = 0; i < resultListMap.size(); i++) {
+				Map<String, String> resultMap = resultListMap.get(i);
+				Iterator itr = resultMap.keySet().iterator();
+				
+				Map capaMap = new HashMap();
+				capaMap.put("GUBUN", "capacity");
+				
+				Map shippingMap = new HashMap();
+				shippingMap.put("GUBUN","생산실적");
+				
+				Map perShippingMap = new HashMap();
+				perShippingMap.put("GUBUN", "달성율");
+				
+				while (itr.hasNext()) {
+					String key = (String)itr.next();
+					String value = resultMap.get(key);	
+				
+					if (key.equalsIgnoreCase("DIVISION")) {
+						capaMap.put("DIVISION", value);
+						shippingMap.put("DIVISION", value);
+						perShippingMap.put("DIVISION", value);
+					} else if (key.equalsIgnoreCase("DEVICEGROUP")) {
+						capaMap.put("DEVICEGROUP", value);
+						shippingMap.put("DEVICEGROUP", value);
+						perShippingMap.put("DEVICEGROUP", value);
+					} else {
+						String[] values = StringUtils.tokenizeToStringArray(value, "_");
+						if (values == null)
+							continue;
+						capaMap.put(key, values[0]);
+						shippingMap.put(key, values[1]);
+						perShippingMap.put(key, values[2]);
+					}
+				}
+				returnList.add(capaMap);
+				returnList.add(shippingMap);
+				returnList.add(perShippingMap);
+			}
+			return returnList;
+			
 		} else if (method.equalsIgnoreCase("getMonthlyShipping")) {
 			
 			

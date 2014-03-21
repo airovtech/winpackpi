@@ -1,3 +1,5 @@
+<%@page import="java.util.Calendar"%>
+<%@page import="java.util.Date"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -259,15 +261,6 @@
 					}
 					%>
 				</select>
-			<select id='sel_month' class='selDate'>
-				<%
-				for(int i=0; i<12; i++){
-				%>
-					<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
-				<%
-				}
-				%>
-			 </select>
 		</div>
 		<table id="list"></table> 
 		<br/><br/>

@@ -21,10 +21,10 @@
 		console.log('reportData=', reportData);
 		
 		chartData = new Array();
-		var chartValues = Array();
 		
 		for(var i=0; i<reportData.length; i++){
 			console.log(i);
+			var chartValues = Array();
 			
 			for(var j=0; j<31; j++){
 				if(isEmpty(reportData[i]["C" + String("0" + (j+1)).slice(-2)])){

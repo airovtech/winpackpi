@@ -74,6 +74,11 @@ public class GetKpiWS {
 		String sql = makeQueryString("getMonthlyCapacityPkgForYear", month);
 		return executeQuery("getMonthlyCapacityPkgForYear", sql, month);
 	}
+	//1년간월별Capacity대비실적 패키지 그룹별
+	public String getMonthlyCapacityPkgForYearByGroup(String month) throws Exception {
+		String sql = makeQueryString("getMonthlyCapacityPkgForYearByGroup", month);
+		return executeQuery("getMonthlyCapacityPkgForYearByGroup", sql, month);
+	}
 	//월별생산실적현황
 	public String getMonthlyShipping(String month) throws Exception {
 		String sql = makeQueryString("getMonthlyShipping", month);
@@ -117,7 +122,7 @@ public class GetKpiWS {
 		StringBuffer sqlBuff = new StringBuffer();
 		
 		if (method.equalsIgnoreCase("getDailyShippingNSales")) {
-			sqlBuff.append(" select tbl.* ");
+			/*sqlBuff.append(" select tbl.* ");
 			sqlBuff.append(" ,round(((tbl.sumOfShipping / ((tbl.shippingExePlan/").append(daycountOfMonth).append(")* ").append(toDay).append("))*100) ,2) || '%' as perShipping ");
 			sqlBuff.append(" ,round(((tbl.sumOfSales / ((tbl.salesExePlan/").append(daycountOfMonth).append(")* ").append(toDay).append("))*100) ,2) || '%' as perSales ");
 			sqlBuff.append(" from ");
@@ -191,7 +196,92 @@ public class GetKpiWS {
 			sqlBuff.append("    baseTbl.division = dailySS.division ");
 			sqlBuff.append("     and baseTbl.deviceGroup = dailySS.deviceGroup ");
 			sqlBuff.append(" ) tbl ");
+			sqlBuff.append(" order by division desc, deviceGroup asc ");*/
+			
+			
+			sqlBuff.append(" select tbl.* ");
+			sqlBuff.append(" ,round(((tbl.sumOfShipping / ((tbl.shippingExePlan/").append(daycountOfMonth).append(")* ").append(toDay).append("))*100) ,2) || '%' as perShipping ");
+			sqlBuff.append(" ,round(((tbl.sumOfSales / ((tbl.salesExePlan/").append(daycountOfMonth).append(")* ").append(toDay).append("))*100) ,2) || '%' as perSales ");
+			sqlBuff.append(" from ");
+			sqlBuff.append(" ( ");
+			sqlBuff.append("     select baseTbl.*, dailySS.boh, dailySS.sumOfReceiving, dailySS.sumOfShipping, dailySS.wip, dailySS.sumOfSales ");
+			sqlBuff.append("     from ");
+			sqlBuff.append("     ( ");
+			sqlBuff.append("         select pln.division, pln.deviceGroup, pln.shippingPlan, pln.salesPlan , foc.shippingFocPlan, foc.salesFocPlan, exe.shippingExePlan, exe.salesExePlan ");
+			sqlBuff.append("         from ");
+			sqlBuff.append("         ( ");
+			sqlBuff.append("             select ");
+			sqlBuff.append("                 collectingMonth, division, deviceGroup, sum(shippingPlanOfMonth) as shippingPlan, sum(salesPlanOfMonth) as salesPlan ");
+			sqlBuff.append("             from  ");
+			sqlBuff.append("                 sw_planofmanagement ");
+			sqlBuff.append("             where collectingMonth = '").append(fromDate).append("' ");
+			sqlBuff.append("             group by collectingMonth, division, deviceGroup ");
+			sqlBuff.append("         ) pln ");
+			
+			sqlBuff.append("         left outer join ");
+			
+			sqlBuff.append("         ( ");
+			sqlBuff.append("             select ");
+			sqlBuff.append("                 collectingMonth, division, deviceGroup, sum(shippingPlanOfMonth) as shippingFocPlan, sum(salesPlanOfMonth) as salesFocPlan ");
+			sqlBuff.append("             from  ");
+			sqlBuff.append("                 sw_planOfForecast ");
+			sqlBuff.append("             where collectingMonth = '").append(fromDate).append("' ");
+			sqlBuff.append("             group by collectingMonth, division, deviceGroup ");
+			sqlBuff.append("         ) foc ");
+			
+			sqlBuff.append("         on pln.devicegroup = foc.devicegroup  AND pln.devicegroup = foc.devicegroup ");
+			sqlBuff.append("         left outer join ");
+			
+			sqlBuff.append("         ( ");
+			sqlBuff.append("             select ");
+			sqlBuff.append("                 collectingMonth, division, deviceGroup, sum(shippingPlanOfMonth) as shippingExePlan, sum(salesPlanOfMonth) as salesExePlan ");
+			sqlBuff.append("             from  ");
+			sqlBuff.append("                 PlanOFExecuting ");
+			sqlBuff.append("             where collectingMonth = '").append(fromDate).append("' ");
+			sqlBuff.append("             group by collectingMonth, division, deviceGroup ");
+			sqlBuff.append("         ) exe ");
+			
+			sqlBuff.append("         on pln.division = exe.division AND pln.devicegroup = exe.devicegroup  ");
+			
+			sqlBuff.append("     ) baseTbl ");
+			sqlBuff.append("     left outer join ");
+			sqlBuff.append("     ( ");
+			sqlBuff.append("         select division, deviceGroup, sum(receiving) as sumOfReceiving, sum(shipping) as sumOfShipping, sum(salesOfDay) as sumOfSales ");
+			
+			sqlBuff.append("			,(");
+			sqlBuff.append("				select boh ");
+			sqlBuff.append("				from ( ");
+			sqlBuff.append("					select devicegroup, sum(boh) as boh from dailyShippingNSales  "); 
+			sqlBuff.append("					where collectingDate = '").append(toDate-1).append("'  ");
+			sqlBuff.append("					group by devicegroup  ");
+			sqlBuff.append("				) bohTbl  ");
+			sqlBuff.append("				where bohTbl.devicegroup = daily.deviceGroup ");
+			sqlBuff.append("			) as boh");
+			
+			sqlBuff.append("			,(");
+			sqlBuff.append("				select wip ");
+			sqlBuff.append("				from ( ");
+			sqlBuff.append("					select devicegroup, sum(wip) as wip from dailyShippingNSales  "); 
+			sqlBuff.append("					where collectingDate = '").append(toDate-1).append("'  ");
+			sqlBuff.append("					group by devicegroup  ");
+			sqlBuff.append("				) wipTbl  ");
+			sqlBuff.append("				where wipTbl.devicegroup = daily.deviceGroup ");
+			sqlBuff.append("			) as wip");
+			
+			sqlBuff.append("         from ");
+			sqlBuff.append("             dailyShippingNSales daily");
+			sqlBuff.append("         where  ");
+			sqlBuff.append("             collectingDate >= '").append(fromDate).append("' ");
+			sqlBuff.append(" 			 and collectingDate <= '").append(toDate).append("' ");
+			sqlBuff.append("         group by division, deviceGroup ");
+			sqlBuff.append("     ) dailySS ");
+			sqlBuff.append("     on  ");
+			sqlBuff.append("    baseTbl.division = dailySS.division ");
+			sqlBuff.append("     and baseTbl.deviceGroup = dailySS.deviceGroup ");
+			sqlBuff.append(" ) tbl ");
 			sqlBuff.append(" order by division desc, deviceGroup asc ");
+			
+			
 			
 		} else if (method.equalsIgnoreCase("getDailyShipping")) {
 			
@@ -199,7 +289,16 @@ public class GetKpiWS {
 			sqlBuff.append("        ,dailyShip.totalSum ");
 			sqlBuff.append("        ,dailyShip.avgOfDay ");
 			sqlBuff.append("        ,round(((totalSum / ((exeplan.planOfShipping / ").append(daycountOfMonth).append(") * ").append(toDay).append(")) * 100),2) || '%' as perShipping ");
-			sqlBuff.append("        ,'WIP' as WIP");
+			
+			sqlBuff.append("		,(");
+			sqlBuff.append("			select wip ");
+			sqlBuff.append("			from ( ");
+			sqlBuff.append("				select devicegroup, sum(wip) as wip from dailyShippingNSales  "); 
+			sqlBuff.append("				where collectingDate = '").append(toDate-1).append("'  ");
+			sqlBuff.append("				group by devicegroup  ");
+			sqlBuff.append("			) wipTbl  ");
+			sqlBuff.append("			where wipTbl.devicegroup = exeplan.deviceGroup ");
+			sqlBuff.append("		) as WIP");
 			
 			for (int i = fromDate; i <= toDate; i++) {
 				sqlBuff.append("        ,dailyShip.C").append((i+"").substring(6, 8)).append(" ");
@@ -246,7 +345,16 @@ public class GetKpiWS {
 			sqlBuff.append("        ,dailySales.totalSum ");
 			sqlBuff.append("        ,dailySales.avgOfDay ");
 			sqlBuff.append("        ,round(((totalSum / ((exeplan.planOfSales / ").append(daycountOfMonth).append(") * ").append(toDay).append(")) * 100),2) || '%' as perSales ");
-			sqlBuff.append("        ,'WIP' as WIP");
+			
+			sqlBuff.append("		,(");
+			sqlBuff.append("			select wip ");
+			sqlBuff.append("			from ( ");
+			sqlBuff.append("				select devicegroup, sum(wip) as wip from dailyShippingNSales  "); 
+			sqlBuff.append("				where collectingDate = '").append(toDate-1).append("'  ");
+			sqlBuff.append("				group by devicegroup  ");
+			sqlBuff.append("			) wipTbl  ");
+			sqlBuff.append("			where wipTbl.devicegroup = exeplan.deviceGroup ");
+			sqlBuff.append("		) as WIP");
 			
 			for (int i = fromDate; i <= toDate; i++) {
 				sqlBuff.append("        ,dailySales.C").append((i+"").substring(6, 8)).append(" ");
@@ -371,7 +479,7 @@ public class GetKpiWS {
 			for (int i = fromDate; i <= toDate; i++) {
 				sqlBuff.append("        ,dailyTbl.C").append((i+"").substring(6, 8)).append(" ");
 			}
-			sqlBuff.append("FROM   (SELECT division ");
+			/*sqlBuff.append("FROM   (SELECT division ");
 			sqlBuff.append("               ,devicegroup ");
 			sqlBuff.append("               ,Avg(customertat) AS customerTat ");
 			sqlBuff.append("               ,Avg(targettat)   AS targetTat ");
@@ -406,6 +514,76 @@ public class GetKpiWS {
 			sqlBuff.append("                                       ,devicegroup ");
 			sqlBuff.append("                                       ,collectingdate ");
 			sqlBuff.append("                                       ,round(Avg(tatofday),2) AS tatOfDay ");
+			sqlBuff.append("                                FROM   dailyshippingnsales ");
+			sqlBuff.append("                                WHERE  collectingdate >= '").append(fromDate).append("' ");
+			sqlBuff.append("                                       AND collectingdate <= '").append(toDate).append("' ");
+			sqlBuff.append("                                GROUP  BY division ");
+			sqlBuff.append("                                          ,devicegroup ");
+			sqlBuff.append("                                          ,collectingdate ");
+			sqlBuff.append("                                ORDER  BY collectingdate) ");
+			sqlBuff.append("                        GROUP  BY division ");
+			sqlBuff.append("                                  ,devicegroup) dailyTbl ");
+			sqlBuff.append("                    ON tbl.devicegroup = dailyTbl.devicegroup ");
+			sqlBuff.append("                    ORDER BY tbl.division, tbl.devicegroup ");*/
+			
+			
+			//20131120 일별 TAT 계산식 변경(BOH/SHIPPING)
+			sqlBuff.append("FROM   (SELECT division ");
+			sqlBuff.append("               ,devicegroup ");
+			sqlBuff.append("               ,Avg(customertat) AS customerTat ");
+			sqlBuff.append("               ,Avg(targettat)   AS targetTat ");
+			sqlBuff.append("        FROM   sw_targettatofmonth ");
+			sqlBuff.append("        WHERE  collectingmonth = '").append(month).append("' ");
+			sqlBuff.append("        GROUP  BY division ");
+			sqlBuff.append("                  ,devicegroup) tbl ");
+			
+			sqlBuff.append("       left outer join (");
+			sqlBuff.append("						SELECT division ");
+			sqlBuff.append("       							,devicegroup ");
+			sqlBuff.append("       							,Round(Avg(tatofday), 2) AS lastMonthAvgTat ");
+			sqlBuff.append("						FROM   (SELECT division ");
+			sqlBuff.append("               							,devicegroup ");
+			sqlBuff.append("               							,Substr(collectingdate, 0, 6)           AS collectingdate ");
+			sqlBuff.append("               							,Round(( SUM(boh) / SUM(shipping) ), 2) AS tatOfDay ");
+			sqlBuff.append("        						FROM   dailyshippingnsales ");
+			sqlBuff.append("        						WHERE  collectingdate >= '").append(fromLastMonthStr).append("' ");
+			sqlBuff.append("               						AND collectingdate <= '").append(toLastMonthStr).append("' ");
+			sqlBuff.append("        						GROUP  BY division ");
+			sqlBuff.append("                  						,devicegroup ");
+			sqlBuff.append("                  						,collectingdate ");
+			sqlBuff.append(" 						) GROUP  BY division ");
+			sqlBuff.append("          							,devicegroup ");
+			sqlBuff.append("          							,collectingdate");
+			sqlBuff.append(" 					) lastMonthAvgTatTbl ");
+			sqlBuff.append("                    ON tbl.devicegroup = lastMonthAvgTatTbl.devicegroup ");
+			sqlBuff.append("       left outer join (");
+			sqlBuff.append("						SELECT division ");
+			sqlBuff.append("       							,devicegroup ");
+			sqlBuff.append("       							,Round(Avg(tatofday), 2) AS monthAvgTat ");
+			sqlBuff.append("						FROM   (SELECT division ");
+			sqlBuff.append("               							,devicegroup ");
+			sqlBuff.append("               							,Substr(collectingdate, 0, 6)           AS collectingdate ");
+			sqlBuff.append("               							,Round(( SUM(boh) / SUM(shipping) ), 2) AS tatOfDay ");
+			sqlBuff.append("        						FROM   dailyshippingnsales ");
+			sqlBuff.append("        						WHERE  collectingdate >= '").append(fromDate).append("' ");
+			sqlBuff.append("               						AND collectingdate <= '").append(toDate).append("' ");
+			sqlBuff.append("        						GROUP  BY division ");
+			sqlBuff.append("                  						,devicegroup ");
+			sqlBuff.append("                  						,collectingdate ");
+			sqlBuff.append(" 						) GROUP  BY division ");
+			sqlBuff.append("          							,devicegroup ");
+			sqlBuff.append("          							,collectingdate");
+			sqlBuff.append("					) monthAvgTatTbl ");
+			sqlBuff.append("                    ON tbl.devicegroup = monthAvgTatTbl.devicegroup ");
+			sqlBuff.append("       left outer join (SELECT division ");
+			sqlBuff.append("                               ,devicegroup ");
+			for (int i = fromDate; i <= toDate; i++) {
+				sqlBuff.append("            ,Max(Decode(collectingdate, '").append(i).append("', tatofday)) as \"C").append((i+"").substring(6, 8)).append("\" ");
+			}
+			sqlBuff.append("                        FROM   (SELECT division ");
+			sqlBuff.append("                                       ,devicegroup ");
+			sqlBuff.append("                                       ,collectingdate ");
+			sqlBuff.append("                                       ,round((sum(boh) / SUM(shipping)),2) AS tatOfDay ");
 			sqlBuff.append("                                FROM   dailyshippingnsales ");
 			sqlBuff.append("                                WHERE  collectingdate >= '").append(fromDate).append("' ");
 			sqlBuff.append("                                       AND collectingdate <= '").append(toDate).append("' ");
@@ -553,6 +731,67 @@ public class GetKpiWS {
 			sqlBuff.append("                GROUP  BY division, ");
 			sqlBuff.append("                          collectingmonth) ");
 			sqlBuff.append("        GROUP  BY division ");
+			
+		} else if (method.equalsIgnoreCase("getMonthlyCapacityPkgForYearByGroup")) {
+			
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.YEAR, Integer.parseInt(month.substring(0, 4)));
+			cal.set(Calendar.MONTH, Integer.parseInt(month.substring(4, 6)) -1);
+			cal.set(Calendar.DATE, Integer.parseInt(month.substring(6,8)));
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			String toDateStr = sdf.format(cal.getTime());
+			cal.add(Calendar.MONTH, -12);
+			String fromDateStr = sdf.format(cal.getTime());
+			
+			Calendar fromDateCal = Calendar.getInstance();
+			fromDateCal.set(Calendar.YEAR, Integer.parseInt(fromDateStr.substring(0, 4)));
+			fromDateCal.set(Calendar.MONTH, Integer.parseInt(fromDateStr.substring(4, 6)) -1);
+			fromDateCal.set(Calendar.DATE, Integer.parseInt(fromDateStr.substring(6,8)));
+			
+			sqlBuff.append("SELECT tbl.division ");
+			sqlBuff.append("       ,tbl.gubun as deviceGroup ");
+			
+			for (int i = 0; i < 12; i++) {
+				fromDateCal.add(Calendar.MONTH, 1);
+				String dateStr = sdf.format(fromDateCal.getTime());
+				sqlBuff.append(" ,max(decode(tbl.collectingMonth, ").append(dateStr).append(", capavalue)) as \"C").append(dateStr).append("\" ");
+			}
+			
+			sqlBuff.append("FROM   (SELECT capa.division ");
+			sqlBuff.append("               ,capa.gubun ");
+			sqlBuff.append("               ,capa.collectingmonth ");
+			sqlBuff.append("               ,Nvl(capa.planofshipping, 0) ");
+			sqlBuff.append("                ||'_' ");
+			sqlBuff.append("                || Nvl(shipping.sumofshipping, 0) ");
+			sqlBuff.append("                ||'_' ");
+			sqlBuff.append("                || Nvl(Round(( ( shipping.sumofshipping / capa.planofshipping ) * 100 ), 2), 0) AS capaValue ");
+			sqlBuff.append("        FROM   (SELECT * ");
+			sqlBuff.append("                FROM   planofmonthlycapacity ");
+			sqlBuff.append("                WHERE  division = 'pkg' ");
+			sqlBuff.append("                       AND collectingmonth >= '").append(fromDateStr).append("' ");
+			sqlBuff.append("                       AND collectingmonth <= '").append(toDateStr).append("') capa ");
+			sqlBuff.append("               left outer join (SELECT division ");
+			sqlBuff.append("                                       ,devicegroup ");
+			sqlBuff.append("                                       ,collectingmonth ");
+			sqlBuff.append("                                       ,SUM(shipping) AS sumOfShipping ");
+			sqlBuff.append("                                FROM   (SELECT division ");
+			sqlBuff.append("                                               ,devicegroup ");
+			sqlBuff.append("                                               ,Substr(collectingdate, 0, 6) ");
+			sqlBuff.append("                                                || '01' AS collectingMonth ");
+			sqlBuff.append("                                               ,shipping ");
+			sqlBuff.append("                                        FROM   dailyshippingnsales ");
+			sqlBuff.append("                                        WHERE  division = 'pkg' ");
+			sqlBuff.append("                                               AND collectingdate >= '").append(fromDateStr).append("' ");
+			sqlBuff.append("                                               AND collectingdate <= '").append(toDateStr).append("') ");
+			sqlBuff.append("                                GROUP  BY division ");
+			sqlBuff.append("                                          ,devicegroup ");
+			sqlBuff.append("                                          ,collectingmonth ");
+			sqlBuff.append("                                ORDER  BY collectingmonth) shipping ");
+			sqlBuff.append("                            ON capa.gubun = shipping.devicegroup ");
+			sqlBuff.append("                               AND capa.collectingmonth = shipping.collectingmonth) tbl ");
+			sqlBuff.append("GROUP  BY tbl.division ");
+			sqlBuff.append("          ,tbl.gubun ");
 			
 		} else if (method.equalsIgnoreCase("getMonthlyShipping")) {
 			
