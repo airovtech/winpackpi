@@ -39,42 +39,75 @@
 	
 	function perShippingSum(cellValue, opetions, rowObject)
 	{
-		if (tShippingGroupBy != rowObject.DIVISION) {
+		console.log(cellValue, rowObject);
+		return cellValue;
+//		if (tShippingGroupBy != rowObject.DIVISION) {
 	        shippingSum= 0.0;
 	        shippingPlanSum = 0.0;
 	        tShippingGroupBy= rowObject.DIVISION;
-	        shippingSum= shippingSum + parseFloat(rowObject.SUMOFSHIPPING);
-	        shippingPlanSum = shippingPlanSum + parseFloat(rowObject.SHIPPINGEXEPLAN);
-	    }
+	        shippingSum= shippingSum + parseFloat(rowObject.SUMOFSHIPPING?rowObject.SUMOFSHIPPING:0);
+	        shippingPlanSum = shippingPlanSum + parseFloat(rowObject.SHIPPINGEXEPLAN?rowObject.SHIPPINGEXEPLAN:0);
+/* 	    }
 	    else {
-	        shippingSum= shippingSum + parseFloat(rowObject.SUMOFSHIPPING);
-	        shippingPlanSum = shippingPlanSum + parseFloat(rowObject.SHIPPINGEXEPLAN);
+	        shippingSum= shippingSum + parseFloat(rowObject.SUMOFSHIPPING?rowObject.SUMOFSHIPPING:0);
+	        shippingPlanSum = shippingPlanSum + parseFloat(rowObject.SHIPPINGEXEPLAN?rowObject.SHIPPINGEXEPLAN:0);
 	    }
-	
+ */
+
+		if(shippingSum == 0 || shippingPlanSum == 0 || dayCountOfThisMonth == 0) return (0).toFixed(2);
+		
 		if (($('#sel_year').val() + '' + $('#sel_month').val()) == date) {
-			return ((shippingSum / ((shippingPlanSum/dayCountOfThisMonth)* toDay)) * 100).toFixed(2) + '%';
+			return ((shippingSum / ((shippingPlanSum/dayCountOfThisMonth)* toDay)) * 100).toFixed(2);
 		} else {
-			return ((shippingSum / shippingPlanSum) * 100).toFixed(2) + '%';
+			return ((shippingSum / shippingPlanSum) * 100).toFixed(2);
+		}
+	}
+	function test(cellValue, opetions, rowObject)
+	{
+		console.log(cellValue)
+		return 100;
+//		if (tShippingGroupBy != rowObject.DIVISION) {
+	        shippingSum= 0.0;
+	        shippingPlanSum = 0.0;
+	        tShippingGroupBy= rowObject.DIVISION;
+	        shippingSum= shippingSum + parseFloat(rowObject.SUMOFSHIPPING?rowObject.SUMOFSHIPPING:0);
+	        shippingPlanSum = shippingPlanSum + parseFloat(rowObject.SHIPPINGEXEPLAN?rowObject.SHIPPINGEXEPLAN:0);
+/* 	    }
+	    else {
+	        shippingSum= shippingSum + parseFloat(rowObject.SUMOFSHIPPING?rowObject.SUMOFSHIPPING:0);
+	        shippingPlanSum = shippingPlanSum + parseFloat(rowObject.SHIPPINGEXEPLAN?rowObject.SHIPPINGEXEPLAN:0);
+	    }
+ */
+
+ 
+		if(shippingSum == 0 || shippingPlanSum == 0 || dayCountOfThisMonth == 0) return (0).toFixed(2);
+		
+		if (($('#sel_year').val() + '' + $('#sel_month').val()) == date) {
+			return ((shippingSum / ((shippingPlanSum/dayCountOfThisMonth)* toDay)) * 100).toFixed(2);
+		} else {
+			return ((shippingSum / shippingPlanSum) * 100).toFixed(2);
 		}
 	}
 	function perSalesSum(cellValue, opetions, rowObject)
 	{
-		if (tSalesGroupBy != rowObject.DIVISION) {
+//		if (tSalesGroupBy != rowObject.DIVISION) {
 	        salesSum= 0.0;
 	        salesPlanSum = 0.0;
 	        tSalesGroupBy= rowObject.DIVISION;
-	        salesSum= salesSum + parseFloat(rowObject.SUMOFSALES);
-	        salesPlanSum = salesPlanSum + parseFloat(rowObject.SALESEXEPLAN);
-	    }
+	        salesSum= salesSum + parseFloat(rowObject.SUMOFSALES?rowObject.SUMOFSALES:0);
+	        salesPlanSum = salesPlanSum + parseFloat(rowObject.SALESEXEPLAN?rowObject.SALESEXEPLAN:0);
+/* 	    }
 	    else {
-	    	salesSum= salesSum + parseFloat(rowObject.SUMOFSALES);
-         	salesPlanSum = salesPlanSum + parseFloat(rowObject.SALESEXEPLAN);
+	    	salesSum= salesSum + parseFloat(rowObject.SUMOFSALES?rowObject.SUMOFSALES:0);
+         	salesPlanSum = salesPlanSum + parseFloat(rowObject.SALESEXEPLAN?rowObject.SALESEXEPLAN:0);
 	    }
-	
+ */	
+		if(salesSum == 0 || salesPlanSum == 0 || dayCountOfThisMonth == 0) return (0).toFixed(2);
+		
 		if (($('#sel_year').val() + '' + $('#sel_month').val()) == date) {
-			return ((salesSum / ((salesPlanSum/dayCountOfThisMonth)* toDay)) * 100).toFixed(2) + '%';
+			return ((salesSum / ((salesPlanSum/dayCountOfThisMonth)* toDay)) * 100).toFixed(2);
 		} else {
-			return ((salesSum / salesPlanSum) * 100).toFixed(2) + '%';
+			return ((salesSum / salesPlanSum) * 100).toFixed(2);
 		}
 	}
 	 var method = 'getDailyShippingNSales';
@@ -98,19 +131,19 @@
 		         colModel:[                  
 		             {name:'DIVISION', width:'100', index:'DIVISION', align: 'center' },
 		             {name:'DEVICEGROUP',width:'100', index:'DEVICEGROUP', summaryTpl: '<div><b>total</b></div>', summaryType: function(){}},
-		             {name:'SHIPPINGPLAN',width:'100', index:'SHIPPINGPLAN', summaryType: 'sum'},
-		             {name:'SALESPLAN',width:'100', index:'SALESPLAN', summaryType: 'sum'},
-		             {name:'SHIPPINGFOCPLAN',width:'100', index:'SHIPPINGFOCPLAN', summaryType: 'sum'},
-		             {name:'SALESFOCPLAN',width:'100', index:'SALESFOCPLAN', summaryType: 'sum'},
-		             {name:'SHIPPINGEXEPLAN',width:'100', index:'SHIPPINGEXEPLAN', summaryType: 'sum'},
-		             {name:'SALESEXEPLAN',width:'100', index:'SALESEXEPLAN', summaryType: 'sum'},
-		             {name:'BOH',width:'100', index:'boh', summaryType: 'sum'},
-		             {name:'SUMOFRECEIVING',width:'100', index:'SUMOFRECEIVING', summaryType: 'sum'},
-		             {name:'SUMOFSHIPPING',width:'100', index:'SUMOFSHIPPING', summaryType: 'sum'},
-		             {name:'WIP',width:'100', index:'wip', summaryType: 'sum'},
-		             {name:'PERSHIPPING',width:'100', index:'PERSHIPPING', summaryType:perShippingSum},
-		             {name:'SUMOFSALES',width:'100', index:'SUMOFSALES', summaryType: 'sum', formatter: 'currency', formatoptions: { decimalSeparator: '.', thousandsSeparator: ',', decimalPlaces: 0, prefix: '' }},
-		             {name:'PERSALES',width:'100', index:'PERSALES', summaryType:perSalesSum}
+		             {name:'SHIPPINGPLAN',width:'100', index:'SHIPPINGPLAN', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+		             {name:'SALESPLAN',width:'100', index:'SALESPLAN', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+		             {name:'SHIPPINGFOCPLAN',width:'100', index:'SHIPPINGFOCPLAN', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+		             {name:'SALESFOCPLAN',width:'100', index:'SALESFOCPLAN', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+		             {name:'SHIPPINGEXEPLAN',width:'100', index:'SHIPPINGEXEPLAN', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+		             {name:'SALESEXEPLAN',width:'100', index:'SALESEXEPLAN', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+		             {name:'BOH',width:'100', index:'boh', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+		             {name:'SUMOFRECEIVING',width:'100', index:'SUMOFRECEIVING', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+		             {name:'SUMOFSHIPPING',width:'100', index:'SUMOFSHIPPING', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+		             {name:'WIP',width:'100', index:'wip', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+		             {name:'PERSHIPPING',width:'100', index:'PERSHIPPING', align: 'right', summaryType:test, formatter:perShippingSum},
+		             {name:'SUMOFSALES',width:'100', index:'SUMOFSALES', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+		             {name:'PERSALES',width:'100', index:'PERSALES', align: 'right', summaryType:'avg', formatter:perSalesSum}
 		         ],
 		         //객체에 담긴 이름값과 name이 같은 지 확인 잘하길... 나는 대소문자 구별 때문에 행은 늘어나는데 데이터가 나타나지 않아서 한참 헤맴...
 		          gridComplete : function() {        //---데이터를 성공적으로 가져오면 실행 됨
@@ -129,14 +162,16 @@
 	            	var perTotalShipping = 0;
         			var perTotalSales = 0;
 	        		if (($('#sel_year').val() + '' + $('#sel_month').val()) == date) {
-		            	perTotalShipping = ((sumOfShipping / ((shippingExePlan/dayCountOfThisMonth) * toDay)) * parseInt(100)).toFixed(2) + '%';
-		            	perTotalSales = ((sumOfSales / ((salesExePlan/dayCountOfThisMonth) * toDay)) * parseInt(100)).toFixed(2) + '%';
+		            	perTotalShipping = ((sumOfShipping / ((shippingExePlan/dayCountOfThisMonth) * toDay)) * parseInt(100)).toFixed(2);
+		            	perTotalSales = ((sumOfSales / ((salesExePlan/dayCountOfThisMonth) * toDay)) * parseInt(100)).toFixed(2);
 	        		} else {
-		            	perTotalShipping = ((sumOfShipping / shippingExePlan) * parseInt(100)).toFixed(2) + '%';
-		            	perTotalSales = ((sumOfSales / salesExePlan) * parseInt(100)).toFixed(2) + '%';
+		            	perTotalShipping = ((sumOfShipping / shippingExePlan) * parseInt(100)).toFixed(2);
+		            	perTotalSales = ((sumOfSales / salesExePlan) * parseInt(100)).toFixed(2);
 	        		}
 	            	
 	             	jQuery("#list").jqGrid('footerData', 'set', { DEVICEGROUP: 'Grand Total', SUMOFSALES: sumOfSales, SHIPPINGPLAN: shippingPlan, SALESPLAN: salesPlan, SHIPPINGFOCPLAN: shippingFocPlan, SALESFOCPLAN: salesFocPlan, SHIPPINGEXEPLAN: shippingExePlan, SALESEXEPLAN: salesExePlan, BOH: sumOfBoh, SUMOFRECEIVING: sumOfReceiving, SUMOFSHIPPING: sumOfShipping, WIP: sumOfWip, PERSHIPPING: perTotalShipping, PERSALES:perTotalSales});
+
+	             	$("tr.jqfoot>td").css('background-color', 'floralwhite');
 		          },
 		          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
 		          },
@@ -148,7 +183,7 @@
 		     });
 	  
 		  jQuery("#list").jqGrid('setGroupHeaders', {
-			  useColSpanStyle: true, 
+			  useColSpanStyle: false, 
 			  groupHeaders:[
 				{startColumnName: 'SHIPPINGPLAN', numberOfColumns: 2, titleText: 'PLAN(월)'},
 				{startColumnName: 'SHIPPINGFOCPLAN', numberOfColumns: 2, titleText: 'FORECAST(월)'},
@@ -158,7 +193,9 @@
 			  ]
 			});
 	
-			 $(".footrow td").css('background-color', '#E8FFFF');
+		  	$(".ui-jqgrid-hdiv .jqg-second-row-header th").css('text-align', 'center');
+		  	$(".ui-jqgrid-bdiv").css('overflow-x', 'hidden');
+			$(".footrow td").css('background-color', '#E8FFFF');
 	 });
  
  
@@ -168,6 +205,10 @@
 			{
 				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $(this).val() ,
 			}).trigger("reloadGrid");
+			
+		  	$(".ui-jqgrid-hdiv .jqg-second-row-header th").css('text-align', 'center');
+		  	$(".ui-jqgrid-bdiv").css('overflow-x', 'hidden');
+			$(".footrow td").css('background-color', '#E8FFFF');
 	   }); 
 	}); 
  	$(function() { 
@@ -176,6 +217,10 @@
  			{
  				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $(this).val() + $('#sel_month').val() ,
  			}).trigger("reloadGrid");
+ 			
+		  	$(".ui-jqgrid-hdiv .jqg-second-row-header th").css('text-align', 'center');
+		  	$(".ui-jqgrid-bdiv").css('overflow-x', 'hidden');
+			$(".footrow td").css('background-color', '#E8FFFF');
  	   }); 
 		$(window).resize(function() {
 			if(swReportResizing) return;			
@@ -195,15 +240,16 @@
 <div  class="js_work_report_view_page">
 <jsp:include page="./chartMenu.jsp" flush="false"/>
 </div>
-<div style="text-align:right">
-	<%
-		Date today = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(today);
-		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.MONTH);
-	%>
-	
+<div>
+	<span>
+		<%
+			Date today = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(today);
+			int year = cal.get(Calendar.YEAR);
+			int month = cal.get(Calendar.MONTH);
+		%>
+		
 		<select id='sel_year' class='selDate'>
 			<%
 			if(year>=2012){
@@ -216,15 +262,17 @@
 			}
 			%>
 		</select>
-	<select id='sel_month' class='selDate'>
-		<%
-		for(int i=0; i<12; i++){
-		%>
-			<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
-		<%
-		}
-		%>
-	 </select>
+		<select id='sel_month' class='selDate'>
+			<%
+			for(int i=0; i<12; i++){
+			%>
+				<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
+			<%
+			}
+			%>
+		 </select>
+	</span>
+	<span style="float:right">(단위 : K / 백만원)</span>
 </div>
 <table id="list"></table> 
 </body>

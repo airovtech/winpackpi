@@ -140,6 +140,14 @@
 	   	 			{
 	   	 				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $('#sel_month').val() ,
 	   	 			}).trigger("reloadGrid");
+		if(!isEmpty($('.js_work_report_view_page'))){
+			swReportResizing = true;
+			setTimeout(function(){
+				$("#list").setGridWidth($('.js_work_report_view_page').width());				
+	     		loadChart(jQuery("#list").jqGrid('getRowData'));
+				swReportResizing = false;
+			},1000);
+		}
 	};
 	$(function() { 
 		$('.selDate').change(function() { 

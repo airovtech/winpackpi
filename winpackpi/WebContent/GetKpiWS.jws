@@ -28,63 +28,63 @@ import net.sf.json.JSONObject;
 
 public class GetKpiWS {
 
-	public final String dbUrl = "jdbc:oracle:thin:@193.169.13.41:1523:grbf";
+	public final String dbUrl = "jdbc:oracle:thin:@193.169.13.45:1523:grbf";
 	public final String userId = "swuser";
 	public final String pass = "smartworks";
 	public final String driverClassName = "oracle.jdbc.driver.OracleDriver";
 	public final String returnType = "json";//"data"
 	
-	//´ç¿ù»ý»ê¸ÅÃâ½ÇÀû
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	public String getDailyShippingNSales(String month) throws Exception {
 		String sql = makeQueryString("getDailyShippingNSales", month);
 		return executeQuery("getDailyShippingNSales", sql, month);
 	}
-	//ÀÏº°»ý»ê½ÇÀû
+	//ï¿½Ïºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	public String getDailyShipping(String month) throws Exception {
 		String sql = makeQueryString("getDailyShipping", month);
 		return executeQuery("getDailyShipping", sql, month);
 	}
-	//ÀÏº°¸ÅÃâ½ÇÀû
+	//ï¿½Ïºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	public String getDailySales(String month) throws Exception {
 		String sql = makeQueryString("getDailySales", month);
 		return executeQuery("getDailySales", sql, month);
 	}
-	//ÀÏº°°¡µ¿·üÇöÈ²
+	//ï¿½Ïºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È²
 	public String getDailyOperationRatio(String month) throws Exception {
 		String sql = makeQueryString("getDailyOperationRatio", month);
 		return executeQuery("getDailyOperationRatio", sql, month);
 	}
-	//ÀÏº°TATÇöÈ²
+	//ï¿½Ïºï¿½TATï¿½ï¿½È²
 	public String getDailyTat(String month) throws Exception {
 		String sql = makeQueryString("getDailyTat", month);
 		return executeQuery("getDailyTat", sql, month);
 	}
-	//1³â°£¿ùº°»ý»ê½ÇÀûTREND
+	//1ï¿½â°£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½TREND
 	public String getMonthlyShippingForYear(String month) throws Exception {
 		String sql = makeQueryString("getMonthlyShippingForYear", month);
 		return executeQuery("getMonthlyShippingForYear", sql, month);
 	}
-	//1³â°£¿ùº°¸ÅÃâ½ÇÀûTREND
+	//1ï¿½â°£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½TREND
 	public String getMonthlySalesForYear(String month) throws Exception {
 		String sql = makeQueryString("getMonthlySalesForYear", month);
 		return executeQuery("getMonthlySalesForYear", sql, month);
 	}
-	//1³â°£¿ùº°Capacity´ëºñ½ÇÀû
+	//1ï¿½â°£ï¿½ï¿½Capacityï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	public String getMonthlyCapacityPkgForYear(String month) throws Exception {
 		String sql = makeQueryString("getMonthlyCapacityPkgForYear", month);
 		return executeQuery("getMonthlyCapacityPkgForYear", sql, month);
 	}
-	//1³â°£¿ùº°Capacity´ëºñ½ÇÀû ÆÐÅ°Áö ±×·ìº°
+	//1ï¿½â°£ï¿½ï¿½Capacityï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å°ï¿½ï¿½ ï¿½×·ìº°
 	public String getMonthlyCapacityPkgForYearByGroup(String month) throws Exception {
 		String sql = makeQueryString("getMonthlyCapacityPkgForYearByGroup", month);
 		return executeQuery("getMonthlyCapacityPkgForYearByGroup", sql, month);
 	}
-	//¿ùº°»ý»ê½ÇÀûÇöÈ²
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È²
 	public String getMonthlyShipping(String month) throws Exception {
 		String sql = makeQueryString("getMonthlyShipping", month);
 		return executeQuery("getMonthlyShipping", sql, month);
 	}
-	//¿ùº°¸ÅÃâ½ÇÀûÇöÈ²
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È²
 	public String getMonthlySales(String month) throws Exception {
 		String sql = makeQueryString("getMonthlySales", month);
 		return executeQuery("getMonthlySales", sql, month);
@@ -204,14 +204,14 @@ public class GetKpiWS {
 			sqlBuff.append(" ,round(((tbl.sumOfSales / ((tbl.salesExePlan/").append(daycountOfMonth).append(")* ").append(toDay).append("))*100) ,2) || '%' as perSales ");
 			sqlBuff.append(" from ");
 			sqlBuff.append(" ( ");
-			sqlBuff.append("     select baseTbl.*, dailySS.boh, dailySS.sumOfReceiving, dailySS.sumOfShipping, dailySS.wip, dailySS.sumOfSales ");
+			sqlBuff.append("     select baseTbl.*, round(dailySS.boh/1000,0), round(dailySS.sumOfReceiving/1000,0), round(dailySS.sumOfShipping/1000,0), round(dailySS.wip/1000,0), round(dailySS.sumOfSales/1000000,0) ");
 			sqlBuff.append("     from ");
 			sqlBuff.append("     ( ");
-			sqlBuff.append("         select pln.division, pln.deviceGroup, pln.shippingPlan, pln.salesPlan , foc.shippingFocPlan, foc.salesFocPlan, exe.shippingExePlan, exe.salesExePlan ");
+			sqlBuff.append("         select pln.division, pln.deviceGroup, round(pln.shippingPlan/1000,0), round(pln.salesPlan/1000000,0) , round(foc.shippingFocPlan/1000,0), round(foc.salesFocPlan/1000000,0), round(exe.shippingExePlan/1000,0), round(exe.salesExePlan/1000000,0) ");
 			sqlBuff.append("         from ");
 			sqlBuff.append("         ( ");
 			sqlBuff.append("             select ");
-			sqlBuff.append("                 collectingMonth, division, deviceGroup, sum(shippingPlanOfMonth) as shippingPlan, sum(salesPlanOfMonth) as salesPlan ");
+			sqlBuff.append("                 collectingMonth, division, deviceGroup, sum(shippingPlanOfMonth) as round(shippingPlan/1000,0), sum(salesPlanOfMonth) as round(salesPlan/1000000,0) ");
 			sqlBuff.append("             from  ");
 			sqlBuff.append("                 sw_planofmanagement ");
 			sqlBuff.append("             where collectingMonth = '").append(fromDate).append("' ");
@@ -527,7 +527,7 @@ public class GetKpiWS {
 			sqlBuff.append("                    ORDER BY tbl.division, tbl.devicegroup ");*/
 			
 			
-			//20131120 ÀÏº° TAT °è»ê½Ä º¯°æ(BOH/SHIPPING)
+			//20131120 ï¿½Ïºï¿½ TAT ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(BOH/SHIPPING)
 			sqlBuff.append("FROM   (SELECT division ");
 			sqlBuff.append("               ,devicegroup ");
 			sqlBuff.append("               ,Avg(customertat) AS customerTat ");
@@ -714,7 +714,7 @@ public class GetKpiWS {
 			sqlBuff.append("        GROUP  BY division ");
 			sqlBuff.append("        UNION ALL ");
 			sqlBuff.append("        SELECT division ");
-			sqlBuff.append("               ,'»ý»ê½ÇÀû'                                                  AS gubun ");
+			sqlBuff.append("               ,'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'                                                  AS gubun ");
 			
 			for (int i = 0; i < 12; i++) {
 				fromDateCal2.add(Calendar.MONTH, 1);
@@ -937,7 +937,7 @@ public class GetKpiWS {
 		ResultSet rs = null;
 
 		Object result = null;
-		try {
+		try { 
 			con = DriverManager.getConnection(dbUrl, userId, pass);
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();

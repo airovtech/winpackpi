@@ -160,7 +160,7 @@
 	<div>
 		<jsp:include page="./chartMenu.jsp" flush="false"/>
 	</div>
-	<div style="text-align:right">
+	<div style="text-align:left">
 		<%
 			Date today = new Date();
 			Calendar cal = Calendar.getInstance();

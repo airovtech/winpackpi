@@ -753,3 +753,25 @@ var selectMenuItem = function(menuId){
 	$('.js_chart_menu_items li').removeClass('current');
 	$('.js_chart_menu_items li[menuId="' + menuId + '"]').addClass('current');
 };
+
+var currencyFmatter = function(cellvalue, options, rowObject){
+//	if(cellvalue==null || cellvalue==0) return '0원';
+//	if(cellvalue<1000000) return numberWithCommas(cellvalue) + '원';
+//	return numberWithCommas(Math.round(cellvalue/1000000)) + '백만원';
+	if(cellvalue==null || cellvalue==0) return 0;
+	return numberWithCommas(Math.round(cellvalue/1000000));	
+};
+
+var numberFmatter = function(cellvalue, options, rowObject){
+	if(cellvalue==null || cellvalue==0) return '0';
+	return numberWithCommas(Math.round(cellvalue/1000));
+	
+};
+
+var numberWithCommas = function(x) {
+    x = x.toString();
+    var pattern = /(-?\d+)(\d{3})/;
+    while (pattern.test(x))
+        x = x.replace(pattern, "$1,$2");
+    return x;
+};

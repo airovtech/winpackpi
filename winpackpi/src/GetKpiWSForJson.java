@@ -27,7 +27,7 @@ import net.sf.json.JSONObject;
 
 public class GetKpiWSForJson {
 
-	public final String dbUrl = "jdbc:oracle:thin:@193.169.13.41:1523:grbf";
+	public final String dbUrl = "jdbc:oracle:thin:@193.169.13.45:1523:grbf";
 	public final String userId = "swuser";
 	public final String pass = "smartworks";
 	public final String driverClassName = "oracle.jdbc.driver.OracleDriver";
