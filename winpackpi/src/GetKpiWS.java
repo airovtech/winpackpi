@@ -34,57 +34,57 @@ public class GetKpiWS {
 	public final String driverClassName = "oracle.jdbc.driver.OracleDriver";
 	public final String returnType = "json";//"data"
 	
-	//�����������
+	//占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙占�
 	public String getDailyShippingNSales(String month) throws Exception {
 		String sql = makeQueryString("getDailyShippingNSales", month);
 		return executeQuery("getDailyShippingNSales", sql, month);
 	}
-	//�Ϻ�������
+	//占싹븝옙占쏙옙占쏙옙占쏙옙
 	public String getDailyShipping(String month) throws Exception {
 		String sql = makeQueryString("getDailyShipping", month);
 		return executeQuery("getDailyShipping", sql, month);
 	}
-	//�Ϻ��������
+	//占싹븝옙占쏙옙占쏙옙占쏙옙占�
 	public String getDailySales(String month) throws Exception {
 		String sql = makeQueryString("getDailySales", month);
 		return executeQuery("getDailySales", sql, month);
 	}
-	//�Ϻ���������Ȳ
+	//占싹븝옙占쏙옙占쏙옙占쏙옙占쏙옙황
 	public String getDailyOperationRatio(String month) throws Exception {
 		String sql = makeQueryString("getDailyOperationRatio", month);
 		return executeQuery("getDailyOperationRatio", sql, month);
 	}
-	//�Ϻ�TAT��Ȳ
+	//占싹븝옙TAT占쏙옙황
 	public String getDailyTat(String month) throws Exception {
 		String sql = makeQueryString("getDailyTat", month);
 		return executeQuery("getDailyTat", sql, month);
 	}
-	//1�Ⱓ�������TREND
+	//1占썩간占쏙옙占쏙옙占쏙옙占�TREND
 	public String getMonthlyShippingForYear(String month) throws Exception {
 		String sql = makeQueryString("getMonthlyShippingForYear", month);
 		return executeQuery("getMonthlyShippingForYear", sql, month);
 	}
-	//1�Ⱓ��������TREND
+	//1占썩간占쏙옙占쏙옙占쏙옙占쏙옙TREND
 	public String getMonthlySalesForYear(String month) throws Exception {
 		String sql = makeQueryString("getMonthlySalesForYear", month);
 		return executeQuery("getMonthlySalesForYear", sql, month);
 	}
-	//1�Ⱓ��Capacity������
+	//1占썩간占쏙옙Capacity占쏙옙占쏙옙占쏙옙
 	public String getMonthlyCapacityPkgForYear(String month) throws Exception {
 		String sql = makeQueryString("getMonthlyCapacityPkgForYear", month);
 		return executeQuery("getMonthlyCapacityPkgForYear", sql, month);
 	}
-	//1�Ⱓ��Capacity������ ��Ű�� �׷캰
+	//1占썩간占쏙옙Capacity占쏙옙占쏙옙占쏙옙 占쏙옙키占쏙옙 占쌓룹별
 	public String getMonthlyCapacityPkgForYearByGroup(String month) throws Exception {
 		String sql = makeQueryString("getMonthlyCapacityPkgForYearByGroup", month);
 		return executeQuery("getMonthlyCapacityPkgForYearByGroup", sql, month);
 	}
-	//���������Ȳ
+	//占쏙옙占쏙옙占쏙옙占쏙옙占싫�
 	public String getMonthlyShipping(String month) throws Exception {
 		String sql = makeQueryString("getMonthlyShipping", month);
 		return executeQuery("getMonthlyShipping", sql, month);
 	}
-	//����������Ȳ
+	//占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙황
 	public String getMonthlySales(String month) throws Exception {
 		String sql = makeQueryString("getMonthlySales", month);
 		return executeQuery("getMonthlySales", sql, month);
@@ -122,96 +122,20 @@ public class GetKpiWS {
 		StringBuffer sqlBuff = new StringBuffer();
 		
 		if (method.equalsIgnoreCase("getDailyShippingNSales")) {
-			/*sqlBuff.append(" select tbl.* ");
-			sqlBuff.append(" ,round(((tbl.sumOfShipping / ((tbl.shippingExePlan/").append(daycountOfMonth).append(")* ").append(toDay).append("))*100) ,2) || '%' as perShipping ");
-			sqlBuff.append(" ,round(((tbl.sumOfSales / ((tbl.salesExePlan/").append(daycountOfMonth).append(")* ").append(toDay).append("))*100) ,2) || '%' as perSales ");
-			sqlBuff.append(" from ");
-			sqlBuff.append(" ( ");
-			sqlBuff.append("     select baseTbl.*, dailySS.boh, dailySS.sumOfReceiving, dailySS.sumOfShipping, dailySS.wip, dailySS.sumOfSales ");
-			sqlBuff.append("     from ");
-			sqlBuff.append("     ( ");
-			sqlBuff.append("         select pln.division, pln.deviceGroup, pln.shippingPlan, pln.salesPlan , foc.shippingFocPlan, foc.salesFocPlan, exe.shippingExePlan, exe.salesExePlan ");
-			sqlBuff.append("         from ");
-			sqlBuff.append("         ( ");
-			sqlBuff.append("             select ");
-			sqlBuff.append("                 collectingMonth, division, deviceGroup, sum(shippingPlanOfMonth) as shippingPlan, sum(salesPlanOfMonth) as salesPlan ");
-			sqlBuff.append("             from  ");
-			sqlBuff.append("                 sw_planofmanagement ");
-			sqlBuff.append("             where collectingMonth = '").append(fromDate).append("' ");
-			sqlBuff.append("             group by collectingMonth, division, deviceGroup ");
-			sqlBuff.append("         ) pln, ");
-			sqlBuff.append("         ( ");
-			sqlBuff.append("             select ");
-			sqlBuff.append("                 collectingMonth, division, deviceGroup, sum(shippingPlanOfMonth) as shippingFocPlan, sum(salesPlanOfMonth) as salesFocPlan ");
-			sqlBuff.append("             from  ");
-			sqlBuff.append("                 sw_planOfForecast ");
-			sqlBuff.append("             where collectingMonth = '").append(fromDate).append("' ");
-			sqlBuff.append("             group by collectingMonth, division, deviceGroup ");
-			sqlBuff.append("         ) foc, ");
-			sqlBuff.append("         ( ");
-			sqlBuff.append("             select ");
-			sqlBuff.append("                 collectingMonth, division, deviceGroup, sum(shippingPlanOfMonth) as shippingExePlan, sum(salesPlanOfMonth) as salesExePlan ");
-			sqlBuff.append("             from  ");
-			sqlBuff.append("                 PlanOFExecuting ");
-			sqlBuff.append("             where collectingMonth = '").append(fromDate).append("' ");
-			sqlBuff.append("             group by collectingMonth, division, deviceGroup ");
-			sqlBuff.append("         ) exe ");
-			sqlBuff.append("         where pln.division = foc.division ");
-			sqlBuff.append("         and pln.deviceGroup = foc.deviceGroup ");
-			sqlBuff.append("         and foc.division = exe.division ");
-			sqlBuff.append("         and foc.deviceGroup = exe.deviceGroup ");
-			sqlBuff.append("     ) baseTbl ");
-			sqlBuff.append("     left outer join ");
-			sqlBuff.append("     ( ");
-			sqlBuff.append("         select division, deviceGroup, sum(receiving) as sumOfReceiving, sum(shipping) as sumOfShipping, sum(salesOfDay) as sumOfSales ");
-			
-			sqlBuff.append("			,(");
-			sqlBuff.append("				select boh ");
-			sqlBuff.append("				from ( ");
-			sqlBuff.append("					select devicegroup, sum(boh) as boh from dailyShippingNSales  "); 
-			sqlBuff.append("					where collectingDate = '").append(toDate-1).append("'  ");
-			sqlBuff.append("					group by devicegroup  ");
-			sqlBuff.append("				) bohTbl  ");
-			sqlBuff.append("				where bohTbl.devicegroup = daily.deviceGroup ");
-			sqlBuff.append("			) as boh");
-			
-			sqlBuff.append("			,(");
-			sqlBuff.append("				select wip ");
-			sqlBuff.append("				from ( ");
-			sqlBuff.append("					select devicegroup, sum(wip) as wip from dailyShippingNSales  "); 
-			sqlBuff.append("					where collectingDate = '").append(toDate-1).append("'  ");
-			sqlBuff.append("					group by devicegroup  ");
-			sqlBuff.append("				) wipTbl  ");
-			sqlBuff.append("				where wipTbl.devicegroup = daily.deviceGroup ");
-			sqlBuff.append("			) as wip");
-			
-			sqlBuff.append("         from ");
-			sqlBuff.append("             dailyShippingNSales daily");
-			sqlBuff.append("         where  ");
-			sqlBuff.append("             collectingDate >= '").append(fromDate).append("' ");
-			sqlBuff.append(" 			 and collectingDate <= '").append(toDate).append("' ");
-			sqlBuff.append("         group by division, deviceGroup ");
-			sqlBuff.append("     ) dailySS ");
-			sqlBuff.append("     on  ");
-			sqlBuff.append("    baseTbl.division = dailySS.division ");
-			sqlBuff.append("     and baseTbl.deviceGroup = dailySS.deviceGroup ");
-			sqlBuff.append(" ) tbl ");
-			sqlBuff.append(" order by division desc, deviceGroup asc ");*/
-			
-			
 			sqlBuff.append(" select tbl.* ");
-			sqlBuff.append(" ,round(((tbl.sumOfShipping / ((tbl.shippingExePlan/").append(daycountOfMonth).append(")* ").append(toDay).append("))*100) ,2) || '%' as perShipping ");
-			sqlBuff.append(" ,round(((tbl.sumOfSales / ((tbl.salesExePlan/").append(daycountOfMonth).append(")* ").append(toDay).append("))*100) ,2) || '%' as perSales ");
+			sqlBuff.append(" ,round(((tbl.sumOfShipping / ((tbl.shippingExePlan/").append(daycountOfMonth).append(")* ").append(toDay).append("))*100) ,2) as perShipping ");
+			sqlBuff.append(" ,round(((tbl.sumOfSales / ((tbl.salesExePlan/").append(daycountOfMonth).append(")* ").append(toDay).append("))*100) ,2) as perSales ");
 			sqlBuff.append(" from ");
 			sqlBuff.append(" ( ");
-			sqlBuff.append("     select baseTbl.*, round(dailySS.boh/1000,0), round(dailySS.sumOfReceiving/1000,0), round(dailySS.sumOfShipping/1000,0), round(dailySS.wip/1000,0), round(dailySS.sumOfSales/1000000,0) ");
+			sqlBuff.append("     select baseTbl.*, round(dailySS.boh/1000,0) as boh, round(dailySS.sumOfReceiving/1000,0) as sumOfReceiving, round(dailySS.sumOfShipping/1000,0) as sumOfShipping, round(dailySS.wip/1000,0) as wip, round(dailySS.sumOfSales/1000000,0) as sumOfSales ");
 			sqlBuff.append("     from ");
 			sqlBuff.append("     ( ");
-			sqlBuff.append("         select pln.division, pln.deviceGroup, round(pln.shippingPlan/1000,0), round(pln.salesPlan/1000000,0) , round(foc.shippingFocPlan/1000,0), round(foc.salesFocPlan/1000000,0), round(exe.shippingExePlan/1000,0), round(exe.salesExePlan/1000000,0) ");
+			sqlBuff.append("         select pln.division, pln.deviceGroup, round(pln.shippingPlan/1000,0) as shippingPlan, round(pln.salesPlan/1000000,0) as salesPlan , round(foc.shippingFocPlan/1000,0) shippingFocPlan, round(foc.salesFocPlan/1000000,0) as salesFocPlan, round(exe.shippingExePlan/1000,0) as shippingExePlan, round(exe.salesExePlan/1000000,0) as salesExePlan ");
 			sqlBuff.append("         from ");
 			sqlBuff.append("         ( ");
 			sqlBuff.append("             select ");
-			sqlBuff.append("                 collectingMonth, division, deviceGroup, sum(shippingPlanOfMonth) as round(shippingPlan/1000,0), sum(salesPlanOfMonth) as round(salesPlan/1000000,0) ");
+			sqlBuff.append("                 collectingMonth, division, deviceGroup, round(sum(shippingPlanOfMonth)/1000,0) as shippingPlan, round(sum(salesPlanOfMonth)/1000000,0) as salesPlan ");
+
 			sqlBuff.append("             from  ");
 			sqlBuff.append("                 sw_planofmanagement ");
 			sqlBuff.append("             where collectingMonth = '").append(fromDate).append("' ");
@@ -285,13 +209,13 @@ public class GetKpiWS {
 			
 		} else if (method.equalsIgnoreCase("getDailyShipping")) {
 			
-			sqlBuff.append("    select exeplan.division, exeplan.devicegroup, exeplan.planOfShipping, exeplan.avgPlanOfDay ");
-			sqlBuff.append("        ,dailyShip.totalSum ");
-			sqlBuff.append("        ,dailyShip.avgOfDay ");
-			sqlBuff.append("        ,round(((totalSum / ((exeplan.planOfShipping / ").append(daycountOfMonth).append(") * ").append(toDay).append(")) * 100),2) || '%' as perShipping ");
+			sqlBuff.append("    select exeplan.division, exeplan.devicegroup, round(exeplan.planOfShipping/1000,0), round(exeplan.avgPlanOfDay/1000,0) ");
+			sqlBuff.append("        ,round(dailyShip.totalSum/1000,0) ");
+			sqlBuff.append("        ,round(dailyShip.avgOfDay/1000,0) ");
+			sqlBuff.append("        ,round(((totalSum / ((exeplan.planOfShipping / ").append(daycountOfMonth).append(") * ").append(toDay).append(")) * 100),2) as perShipping ");
 			
 			sqlBuff.append("		,(");
-			sqlBuff.append("			select wip ");
+			sqlBuff.append("			select round(wip/1000,0) ");
 			sqlBuff.append("			from ( ");
 			sqlBuff.append("				select devicegroup, sum(wip) as wip from dailyShippingNSales  "); 
 			sqlBuff.append("				where collectingDate = '").append(toDate-1).append("'  ");
@@ -301,7 +225,7 @@ public class GetKpiWS {
 			sqlBuff.append("		) as WIP");
 			
 			for (int i = fromDate; i <= toDate; i++) {
-				sqlBuff.append("        ,dailyShip.C").append((i+"").substring(6, 8)).append(" ");
+				sqlBuff.append("        ,round(dailyShip.C").append((i+"").substring(6, 8)).append("/1000,0) as C").append((i+"").substring(6, 8) + " ");
 			}
 			
 			sqlBuff.append("    from ");
@@ -341,13 +265,13 @@ public class GetKpiWS {
 			
 		} else if (method.equalsIgnoreCase("getDailySales")) {
 			
-			sqlBuff.append("    select exeplan.division, exeplan.devicegroup, exeplan.planOfSales, exeplan.avgPlanOfDay ");
-			sqlBuff.append("        ,dailySales.totalSum ");
-			sqlBuff.append("        ,dailySales.avgOfDay ");
-			sqlBuff.append("        ,round(((totalSum / ((exeplan.planOfSales / ").append(daycountOfMonth).append(") * ").append(toDay).append(")) * 100),2) || '%' as perSales ");
+			sqlBuff.append("    select exeplan.division, exeplan.devicegroup, round(exeplan.planOfSales/1000000,0), round(exeplan.avgPlanOfDay/1000000,0) ");
+			sqlBuff.append("        ,round(dailySales.totalSum/1000000,2) ");
+			sqlBuff.append("        ,round(dailySales.avgOfDay/1000000,2) ");
+			sqlBuff.append("        ,round(((totalSum / ((exeplan.planOfSales / ").append(daycountOfMonth).append(") * ").append(toDay).append(")) * 100),2) as perSales ");
 			
 			sqlBuff.append("		,(");
-			sqlBuff.append("			select wip ");
+			sqlBuff.append("			select round(wip/1000000,0) ");
 			sqlBuff.append("			from ( ");
 			sqlBuff.append("				select devicegroup, sum(wip) as wip from dailyShippingNSales  "); 
 			sqlBuff.append("				where collectingDate = '").append(toDate-1).append("'  ");
@@ -357,7 +281,7 @@ public class GetKpiWS {
 			sqlBuff.append("		) as WIP");
 			
 			for (int i = fromDate; i <= toDate; i++) {
-				sqlBuff.append("        ,dailySales.C").append((i+"").substring(6, 8)).append(" ");
+				sqlBuff.append("        ,round(dailySales.C").append((i+"").substring(6, 8)).append("/1000000,0) as C").append((i+"").substring(6, 8)).append(" ");
 			}
 			
 			sqlBuff.append("    from ");
@@ -527,7 +451,7 @@ public class GetKpiWS {
 			sqlBuff.append("                    ORDER BY tbl.division, tbl.devicegroup ");*/
 			
 			
-			//20131120 �Ϻ� TAT ���� ����(BOH/SHIPPING)
+			//20131120 占싹븝옙 TAT 占쏙옙占쏙옙 占쏙옙占쏙옙(BOH/SHIPPING)
 			sqlBuff.append("FROM   (SELECT division ");
 			sqlBuff.append("               ,devicegroup ");
 			sqlBuff.append("               ,Avg(customertat) AS customerTat ");
@@ -619,10 +543,10 @@ public class GetKpiWS {
 			for (int i = 0; i < 12; i++) {
 				fromDateCal.add(Calendar.MONTH, 1);
 				String dateStr = sdf.format(fromDateCal.getTime());
-				sqlBuff.append(" ,max(decode(collectingMonth, ").append(dateStr).append(", sumofShipping)) as \"C").append(dateStr).append("\" ");
+				sqlBuff.append(" ,round(max(decode(collectingMonth, ").append(dateStr).append(", sumofShipping))/1000,0) as \"C").append(dateStr).append("\" ");
 			}
 			
-			sqlBuff.append(" ,sum(sumofShipping) as \"TOTAL\" ");
+			sqlBuff.append(" ,round(sum(sumofShipping)/1000,0) as \"TOTAL\" ");
 			sqlBuff.append(" from  ");
 			sqlBuff.append(" ( ");
 			sqlBuff.append("     select division, collectingMonth, sum(sumofshipping) as sumOfShipping ");
@@ -656,10 +580,10 @@ public class GetKpiWS {
 			for (int i = 0; i < 12; i++) {
 				fromDateCal.add(Calendar.MONTH, 1);
 				String dateStr = sdf.format(fromDateCal.getTime());
-				sqlBuff.append(" ,max(decode(collectingMonth, ").append(dateStr).append(", sumOfSales)) as \"C").append(dateStr).append("\" ");
+				sqlBuff.append(" ,round(max(decode(collectingMonth, ").append(dateStr).append(", sumOfSales))/1000000,0) as \"C").append(dateStr).append("\" ");
 			}
 			
-			sqlBuff.append(" ,sum(sumOfSales) as \"TOTAL\" ");
+			sqlBuff.append(" ,round(sum(sumOfSales)/1000000,0) as \"TOTAL\" ");
 			sqlBuff.append(" from  ");
 			sqlBuff.append(" ( ");
 			sqlBuff.append("     select division, collectingMonth, sum(sumOfSales) as sumOfSales ");
@@ -699,10 +623,10 @@ public class GetKpiWS {
 			for (int i = 0; i < 12; i++) {
 				fromDateCal.add(Calendar.MONTH, 1);
 				String dateStr = sdf.format(fromDateCal.getTime());
-				sqlBuff.append(" ,max(decode(collectingMonth, ").append(dateStr).append(", monthlycapashipping)) as \"C").append(dateStr).append("\" ");
+				sqlBuff.append(" ,round(max(decode(collectingMonth, ").append(dateStr).append(", monthlycapashipping))/1000,0) as \"C").append(dateStr).append("\" ");
 			}
 			
-			sqlBuff.append("        ,SUM(monthlyCapaShipping) as TOTAL ");
+			sqlBuff.append("        ,round(SUM(monthlyCapaShipping)/1000,0) as TOTAL ");
 			sqlBuff.append("        FROM   (SELECT division ");
 			sqlBuff.append("                       ,collectingmonth ");
 			sqlBuff.append("                       ,SUM(planofshipping) monthlyCapaShipping ");
@@ -714,7 +638,7 @@ public class GetKpiWS {
 			sqlBuff.append("        GROUP  BY division ");
 			sqlBuff.append("        UNION ALL ");
 			sqlBuff.append("        SELECT division ");
-			sqlBuff.append("               ,'������'                                                  AS gubun ");
+			sqlBuff.append("               ,'占쏙옙占쏙옙占쏙옙'                                                  AS gubun ");
 			
 			for (int i = 0; i < 12; i++) {
 				fromDateCal2.add(Calendar.MONTH, 1);
@@ -755,17 +679,17 @@ public class GetKpiWS {
 			for (int i = 0; i < 12; i++) {
 				fromDateCal.add(Calendar.MONTH, 1);
 				String dateStr = sdf.format(fromDateCal.getTime());
-				sqlBuff.append(" ,max(decode(tbl.collectingMonth, ").append(dateStr).append(", capavalue)) as \"C").append(dateStr).append("\" ");
+				sqlBuff.append(" ,round(max(decode(tbl.collectingMonth, ").append(dateStr).append(", capavalue))/1000,0) as \"C").append(dateStr).append("\" ");
 			}
 			
 			sqlBuff.append("FROM   (SELECT capa.division ");
 			sqlBuff.append("               ,capa.gubun ");
 			sqlBuff.append("               ,capa.collectingmonth ");
-			sqlBuff.append("               ,Nvl(capa.planofshipping, 0) ");
+			sqlBuff.append("               ,round(Nvl(capa.planofshipping, 0) ");
 			sqlBuff.append("                ||'_' ");
 			sqlBuff.append("                || Nvl(shipping.sumofshipping, 0) ");
 			sqlBuff.append("                ||'_' ");
-			sqlBuff.append("                || Nvl(Round(( ( shipping.sumofshipping / capa.planofshipping ) * 100 ), 2), 0) AS capaValue ");
+			sqlBuff.append("                || Nvl(Round(( ( shipping.sumofshipping / capa.planofshipping ) * 100 ), 2), 0)/1000,0) AS capaValue ");
 			sqlBuff.append("        FROM   (SELECT * ");
 			sqlBuff.append("                FROM   planofmonthlycapacity ");
 			sqlBuff.append("                WHERE  division = 'pkg' ");
@@ -801,7 +725,7 @@ public class GetKpiWS {
 			sqlBuff.append("SELECT division ");
 			
 			for (int i = fromDateStr; i <= toDateStr; i = i + 100) {
-				sqlBuff.append("       ,NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.collectingmonth)), 0) ");
+				sqlBuff.append("       ,round(NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.collectingmonth)), 0) ");
 				sqlBuff.append("        ||'_' ");
 				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.planshipping)), 0) ");
 				sqlBuff.append("        ||'_' ");
@@ -811,14 +735,14 @@ public class GetKpiWS {
 				sqlBuff.append("        ||'_' ");
 				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.perwithplan)), 0) ");
 				sqlBuff.append("        ||'_' ");
-				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.perwithfocplan)), 0) AS C").append((i+"").substring(4, 6)).append(" ");
+				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.perwithfocplan)), 0)/1000,0) AS C").append((i+"").substring(4, 6)).append(" ");
 			}
 			
 			sqlBuff.append("FROM   (SELECT pln.* ");
-			sqlBuff.append("               ,foc.focshipping                                               AS focPlanShipping ");
-			sqlBuff.append("               ,ship.sumofshipping ");
-			sqlBuff.append("               ,Round(( ( ship.sumofshipping / pln.planshipping ) * 100 ), 2) perWithPlan ");
-			sqlBuff.append("               ,Round(( ( ship.sumofshipping / foc.focshipping ) * 100 ), 2)  perWithFocPlan ");
+			sqlBuff.append("               ,round(foc.focshipping/1000,0)                                               AS focPlanShipping ");
+			sqlBuff.append("               ,round(ship.sumofshipping/1000,0) as sumofshipping ");
+			sqlBuff.append("               ,round(Round(( ( ship.sumofshipping / pln.planshipping ) * 100 ), 2)/1000,0) as perWithPlan ");
+			sqlBuff.append("               ,round(Round(( ( ship.sumofshipping / foc.focshipping ) * 100 ), 2)/1000,0) as  perWithFocPlan ");
 			sqlBuff.append("        FROM   (SELECT division ");
 			sqlBuff.append("                       ,collectingmonth ");
 			sqlBuff.append("                       ,SUM(shippingplanofmonth) planShipping ");
@@ -865,7 +789,7 @@ public class GetKpiWS {
 			sqlBuff.append("SELECT division ");
 			
 			for (int i = fromDateStr; i <= toDateStr; i = i + 100) {
-				sqlBuff.append("       ,NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.collectingmonth)), 0) ");
+				sqlBuff.append("       ,round(NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.collectingmonth)), 0) ");
 				sqlBuff.append("        ||'_' ");
 				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.plansales)), 0) ");
 				sqlBuff.append("        ||'_' ");
@@ -875,14 +799,14 @@ public class GetKpiWS {
 				sqlBuff.append("        ||'_' ");
 				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.perwithplan)), 0) ");
 				sqlBuff.append("        ||'_' ");
-				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.perwithfocplan)), 0) AS C").append((i+"").substring(4, 6)).append(" ");
+				sqlBuff.append("        || NVL(Max(Decode(tbl.collectingmonth, '").append(i).append("', tbl.perwithfocplan)), 0)/1000000,0) AS C").append((i+"").substring(4, 6)).append(" ");
 			}
 			
 			sqlBuff.append("FROM   (SELECT pln.* ");
-			sqlBuff.append("               ,foc.focsales                                               AS focPlansales ");
-			sqlBuff.append("               ,ship.sumofsales ");
-			sqlBuff.append("               ,Round(( ( ship.sumofsales / pln.plansales ) * 100 ), 2) perWithPlan ");
-			sqlBuff.append("               ,Round(( ( ship.sumofsales / foc.focsales ) * 100 ), 2)  perWithFocPlan ");
+			sqlBuff.append("               ,round(foc.focsales/1000000,0)                                               AS focPlansales ");
+			sqlBuff.append("               ,round(ship.sumofsales/1000000,0) as sumofsales ");
+			sqlBuff.append("               ,round(Round(( ( ship.sumofsales / pln.plansales ) * 100 ), 2)/1000000,0) as perWithPlan ");
+			sqlBuff.append("               ,round(Round(( ( ship.sumofsales / foc.focsales ) * 100 ), 2)/1000000,0) as  perWithFocPlan ");
 			sqlBuff.append("        FROM   (SELECT division ");
 			sqlBuff.append("                       ,collectingmonth ");
 			sqlBuff.append("                       ,SUM(salesplanofmonth) plansales ");

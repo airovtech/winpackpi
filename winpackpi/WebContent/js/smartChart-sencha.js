@@ -755,9 +755,9 @@ var selectMenuItem = function(menuId){
 };
 
 var currencyFmatter = function(cellvalue, options, rowObject){
-//	if(cellvalue==null || cellvalue==0) return '0원';
-//	if(cellvalue<1000000) return numberWithCommas(cellvalue) + '원';
-//	return numberWithCommas(Math.round(cellvalue/1000000)) + '백만원';
+//	if(cellvalue==null || cellvalue==0) return '0���';
+//	if(cellvalue<1000000) return numberWithCommas(cellvalue) + '���';
+//	return numberWithCommas(Math.round(cellvalue/1000000)) + '諛깅�����';
 	if(cellvalue==null || cellvalue==0) return 0;
 	return numberWithCommas(Math.round(cellvalue/1000000));	
 };
@@ -774,4 +774,15 @@ var numberWithCommas = function(x) {
     while (pattern.test(x))
         x = x.replace(pattern, "$1,$2");
     return x;
+};
+
+var zeroPad = function(num, numZeros) {
+	var n = Math.abs(num);
+	var zeros = Math.max(0, numZeros - Math.floor(n).toString().length );
+	var zeroString = Math.pow(10,zeros).toString().substr(1);
+	if( num < 0 ) {
+		zeroString = '-' + zeroString;
+	}
+
+	return zeroString+n;
 };

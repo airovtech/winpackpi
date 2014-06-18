@@ -37,22 +37,19 @@
 	var shippingPlanSum = 0.0;
 	var salesPlanSum = 0.0;
 	
-	function perShippingSum(cellValue, opetions, rowObject)
+	function perShippingSum(cellValue, options, rowObject)
 	{
-		console.log(cellValue, rowObject);
-		return cellValue;
-//		if (tShippingGroupBy != rowObject.DIVISION) {
+		if (tShippingGroupBy != rowObject.DIVISION) {
 	        shippingSum= 0.0;
 	        shippingPlanSum = 0.0;
 	        tShippingGroupBy= rowObject.DIVISION;
 	        shippingSum= shippingSum + parseFloat(rowObject.SUMOFSHIPPING?rowObject.SUMOFSHIPPING:0);
 	        shippingPlanSum = shippingPlanSum + parseFloat(rowObject.SHIPPINGEXEPLAN?rowObject.SHIPPINGEXEPLAN:0);
-/* 	    }
+ 	    }
 	    else {
 	        shippingSum= shippingSum + parseFloat(rowObject.SUMOFSHIPPING?rowObject.SUMOFSHIPPING:0);
 	        shippingPlanSum = shippingPlanSum + parseFloat(rowObject.SHIPPINGEXEPLAN?rowObject.SHIPPINGEXEPLAN:0);
 	    }
- */
 
 		if(shippingSum == 0 || shippingPlanSum == 0 || dayCountOfThisMonth == 0) return (0).toFixed(2);
 		
@@ -62,46 +59,21 @@
 			return ((shippingSum / shippingPlanSum) * 100).toFixed(2);
 		}
 	}
-	function test(cellValue, opetions, rowObject)
-	{
-		console.log(cellValue)
-		return 100;
-//		if (tShippingGroupBy != rowObject.DIVISION) {
-	        shippingSum= 0.0;
-	        shippingPlanSum = 0.0;
-	        tShippingGroupBy= rowObject.DIVISION;
-	        shippingSum= shippingSum + parseFloat(rowObject.SUMOFSHIPPING?rowObject.SUMOFSHIPPING:0);
-	        shippingPlanSum = shippingPlanSum + parseFloat(rowObject.SHIPPINGEXEPLAN?rowObject.SHIPPINGEXEPLAN:0);
-/* 	    }
-	    else {
-	        shippingSum= shippingSum + parseFloat(rowObject.SUMOFSHIPPING?rowObject.SUMOFSHIPPING:0);
-	        shippingPlanSum = shippingPlanSum + parseFloat(rowObject.SHIPPINGEXEPLAN?rowObject.SHIPPINGEXEPLAN:0);
-	    }
- */
 
- 
-		if(shippingSum == 0 || shippingPlanSum == 0 || dayCountOfThisMonth == 0) return (0).toFixed(2);
-		
-		if (($('#sel_year').val() + '' + $('#sel_month').val()) == date) {
-			return ((shippingSum / ((shippingPlanSum/dayCountOfThisMonth)* toDay)) * 100).toFixed(2);
-		} else {
-			return ((shippingSum / shippingPlanSum) * 100).toFixed(2);
-		}
-	}
 	function perSalesSum(cellValue, opetions, rowObject)
 	{
-//		if (tSalesGroupBy != rowObject.DIVISION) {
+		if (tSalesGroupBy != rowObject.DIVISION) {
 	        salesSum= 0.0;
 	        salesPlanSum = 0.0;
 	        tSalesGroupBy= rowObject.DIVISION;
 	        salesSum= salesSum + parseFloat(rowObject.SUMOFSALES?rowObject.SUMOFSALES:0);
 	        salesPlanSum = salesPlanSum + parseFloat(rowObject.SALESEXEPLAN?rowObject.SALESEXEPLAN:0);
-/* 	    }
+ 	    }
 	    else {
 	    	salesSum= salesSum + parseFloat(rowObject.SUMOFSALES?rowObject.SUMOFSALES:0);
          	salesPlanSum = salesPlanSum + parseFloat(rowObject.SALESEXEPLAN?rowObject.SALESEXEPLAN:0);
 	    }
- */	
+		
 		if(salesSum == 0 || salesPlanSum == 0 || dayCountOfThisMonth == 0) return (0).toFixed(2);
 		
 		if (($('#sel_year').val() + '' + $('#sel_month').val()) == date) {
@@ -141,9 +113,9 @@
 		             {name:'SUMOFRECEIVING',width:'100', index:'SUMOFRECEIVING', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
 		             {name:'SUMOFSHIPPING',width:'100', index:'SUMOFSHIPPING', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
 		             {name:'WIP',width:'100', index:'wip', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
-		             {name:'PERSHIPPING',width:'100', index:'PERSHIPPING', align: 'right', summaryType:test, formatter:perShippingSum},
+		             {name:'PERSHIPPING',width:'100', index:'PERSHIPPING', align: 'right', summaryType:perShippingSum, formatter:'integer', formatoptions: {thousandsSeparator: ",", suffix:"%", defaultValue:"0%"}},
 		             {name:'SUMOFSALES',width:'100', index:'SUMOFSALES', align: 'right', summaryType: 'sum', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
-		             {name:'PERSALES',width:'100', index:'PERSALES', align: 'right', summaryType:'avg', formatter:perSalesSum}
+		             {name:'PERSALES',width:'100', index:'PERSALES', align: 'right', summaryType:perSalesSum, formatter:'integer', formatoptions: {thousandsSeparator: ",", suffix:"%", defaultValue:"0%"}}
 		         ],
 		         //객체에 담긴 이름값과 name이 같은 지 확인 잘하길... 나는 대소문자 구별 때문에 행은 늘어나는데 데이터가 나타나지 않아서 한참 헤맴...
 		          gridComplete : function() {        //---데이터를 성공적으로 가져오면 실행 됨
@@ -162,11 +134,15 @@
 	            	var perTotalShipping = 0;
         			var perTotalSales = 0;
 	        		if (($('#sel_year').val() + '' + $('#sel_month').val()) == date) {
-		            	perTotalShipping = ((sumOfShipping / ((shippingExePlan/dayCountOfThisMonth) * toDay)) * parseInt(100)).toFixed(2);
-		            	perTotalSales = ((sumOfSales / ((salesExePlan/dayCountOfThisMonth) * toDay)) * parseInt(100)).toFixed(2);
+		        		if(sumOfShipping == 0 || shippingExePlan == 0 || dayCountOfThisMonth == 0) perTotalShipping = (0).toFixed(2);
+		        		else perTotalShipping = ((sumOfShipping / ((shippingExePlan/dayCountOfThisMonth) * toDay)) * parseInt(100)).toFixed(2);
+		        		if(sumOfSales == 0 || salesExePlan == 0 || dayCountOfThisMonth == 0) perTotalSales = (0).toFixed(2);
+		        		else perTotalSales = ((sumOfSales / ((salesExePlan/dayCountOfThisMonth) * toDay)) * parseInt(100)).toFixed(2);
 	        		} else {
-		            	perTotalShipping = ((sumOfShipping / shippingExePlan) * parseInt(100)).toFixed(2);
-		            	perTotalSales = ((sumOfSales / salesExePlan) * parseInt(100)).toFixed(2);
+		        		if(sumOfShipping == 0 || shippingExePlan == 0 || dayCountOfThisMonth == 0) perTotalShipping = (0).toFixed(2);
+		        		else perTotalShipping = ((sumOfShipping / shippingExePlan) * parseInt(100)).toFixed(2);
+		        		if(sumOfSales == 0 || salesExePlan == 0 || dayCountOfThisMonth == 0) perTotalSales = (0).toFixed(2);
+		        		else perTotalSales = ((sumOfSales / salesExePlan) * parseInt(100)).toFixed(2);
 	        		}
 	            	
 	             	jQuery("#list").jqGrid('footerData', 'set', { DEVICEGROUP: 'Grand Total', SUMOFSALES: sumOfSales, SHIPPINGPLAN: shippingPlan, SALESPLAN: salesPlan, SHIPPINGFOCPLAN: shippingFocPlan, SALESFOCPLAN: salesFocPlan, SHIPPINGEXEPLAN: shippingExePlan, SALESEXEPLAN: salesExePlan, BOH: sumOfBoh, SUMOFRECEIVING: sumOfReceiving, SUMOFSHIPPING: sumOfShipping, WIP: sumOfWip, PERSHIPPING: perTotalShipping, PERSALES:perTotalSales});

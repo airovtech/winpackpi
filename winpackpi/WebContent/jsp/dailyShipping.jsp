@@ -49,6 +49,7 @@
 	    } else {
 	    	planOfShippingSum= planOfShippingSum + parseFloat(rowObject.PLANOFSHIPPING);
 	    }
+		if(planOfShippingSum == 0.0 || isNaN(planOfShippingSum)) return (0).toFixed(2);
 		return (planOfShippingSum/nalsu[parseInt(month)-1]).toFixed(2);
 	}
 	function mitAvgOfDay(cellValue, opetions, rowObject) {
@@ -65,6 +66,8 @@
 	    } else {
 	    	mitAvgOfDaySum= mitAvgOfDaySum + parseFloat(rowObject.TOTALSUM);
 	    }
+		
+		if(mitAvgOfDaySum == 0.0 || isNaN(mitAvgOfDaySum)) return (0).toFixed(2);
 		
 		if (($('#sel_year').val() + '' + $('#sel_month').val()) == date) {
 			return (mitAvgOfDaySum / toDay).toFixed(2);
@@ -92,6 +95,8 @@
 			mitAvgOfDaySum2= mitAvgOfDaySum2 + parseFloat(rowObject.TOTALSUM);
 	    }
 		
+		if(mitAvgOfDaySum2 == 0.0 || planOfShippingSum2 == 0.0 || isNaN(mitAvgOfDaySum2) || isNaN(planOfShippingSum2)) return (0).toFixed(2);
+		
 		if (($('#sel_year').val() + '' + $('#sel_month').val()) == date) {
 			return ((mitAvgOfDaySum2 / ((planOfShippingSum2/dayCountOfThisMonth)* toDay)) * 100).toFixed(2) + '%';
 		} else {
@@ -114,19 +119,19 @@
 			var nbizSum = 0;
 			var sum = 0;
 			for(var j=0; j<reportData.length; j++){
-				if(reportData[j].DIVISION == "pkt"){
+				if(reportData[j].DIVISION == "PKT"){
 					pktSum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
-				}else if(reportData[j].DIVISION == "pkg"){
+				}else if(reportData[j].DIVISION == "PKG"){
 					pkgSum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
-				}else if(reportData[j].DIVISION == "nbiz"){
+				}else if(reportData[j].DIVISION == "NBIZ"){
 					nbizSum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
 				}
 				sum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
 			}
 			chartValues[i] = {  일별: (i+1) + "", 
-					pkt: pktSum,
-					pkg: pkgSum,
-					nbiz: nbizSum,
+					PKT: pktSum,
+					PKG: pkgSum,
+					NBIZ: nbizSum,
 					합계: sum};					
 		}
 		
@@ -134,7 +139,7 @@
 				values : chartValues,
 				xFieldName : "일별",
 				yValueName : "생산 실적",
-				groupNames : ["pkt", "pkg", "nbiz"]
+				groupNames : ["PKT", "PKG", "NBIZ"]
 		};
 	
 	};
@@ -146,8 +151,10 @@
 		});
 	};
 	
+	
 	var loadGrid = function() {
-		jQuery("#list").jqGrid({
+
+        jQuery("#list").jqGrid({
 	   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 	         datatype: "json",      //json형태로 데이터 받음.  
 	         height: 'auto',
@@ -161,70 +168,74 @@
 	             groupColumnShow : [false], //그룹화된 컬럼을 컬럼안에서 다시 표기한다.
 	             groupText : ['<span style="color:blue"><b>{0}</b></span>'] //그룹화된 이름에 <b> 태그를 추가했다.
 	         },
-	         
-	         colNames:['사업부','구분','금월', '일평균','MIT', '일평균','달성률(%)', 'WIP', '1일', '2일','3일', '4일', '5일', '6일'	, '7일'	, '8일'	, '9일'	, '10일', '11일', '12일', '13일', '14일', '15일', '16일', '17일', '18일', '19일', '20일', '21일', '22일', '23일', '24일', '25일', '26일', '27일', '28일', '29일', '30일', '31일'],
+ 	         colNames:['사업부','구분','금월', '일평균','MIT', '일평균','달성률(%)', 'WIP', '1', '2','3', '4', '5', '6'	, '7'	, '8'	, '9'	, '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
 	         colModel:[                  
 	             {name:'DIVISION', index:'DIVISION', align: 'center',  sortable:false },
-	             {name:'DEVICEGROUP', index:'DEVICEGROUP',  sortable:false, summaryTpl: '<div><b>total</b></div>', summaryType: function(){}},
-	             {name:'PLANOFSHIPPING', index:'PLANOFSHIPPING', summaryType: 'sum',  sortable:false},
-	             {name:'AVGPLANOFDAY', index:'AVGPLANOFDAY', summaryType: planShippingAvgOfDay, sortable:false},
-	             {name:'TOTALSUM', index:'TOTALSUM', summaryType: 'sum', sortable:false},
-	             {name:'AVGOFDAY', index:'AVGOFDAY', summaryType: mitAvgOfDay, sortable:false},
-	             {name:'PERSHIPPING', index:'PERSHIPPING', summaryType: shippingRatio,  sortable:false},
-	             {name:'WIP',width:'100', index:'WIP', summaryType: 'sum', sortable:false},
-	             {name:'C01', index:'C01', summaryType: 'sum',  sortable:false},
-	             {name:'C02', index:'C02', summaryType: 'sum',  sortable:false},
-	             {name:'C03', index:'C03', summaryType: 'sum',  sortable:false},
-	             {name:'C04', index:'C04', summaryType: 'sum',  sortable:false},
-	             {name:'C05', index:'C05', summaryType: 'sum',  sortable:false},
-	             {name:'C06', index:'C06', summaryType: 'sum',  sortable:false},
-	             {name:'C07', index:'C07', summaryType: 'sum',  sortable:false},
-	             {name:'C08', index:'C08', summaryType: 'sum',  sortable:false},
-	             {name:'C09', index:'C09', summaryType: 'sum',  sortable:false},
-	             {name:'C10', index:'C10', summaryType: 'sum',  sortable:false},
-	             {name:'C11', index:'C11', summaryType: 'sum',  sortable:false},
-	             {name:'C12', index:'C12', summaryType: 'sum',  sortable:false},
-	             {name:'C13', index:'C13', summaryType: 'sum',  sortable:false},
-	             {name:'C14', index:'C14', summaryType: 'sum',  sortable:false},
-	             {name:'C15', index:'C15', summaryType: 'sum',  sortable:false},
-	             {name:'C16', index:'C16', summaryType: 'sum',  sortable:false},
-	             {name:'C17', index:'C17', summaryType: 'sum',  sortable:false},
-	             {name:'C18', index:'C18', summaryType: 'sum',  sortable:false},
-	             {name:'C19', index:'C19', summaryType: 'sum',  sortable:false},
-	             {name:'C20', index:'C20', summaryType: 'sum',  sortable:false},
-	             {name:'C21', index:'C21', summaryType: 'sum',  sortable:false},
-	             {name:'C22', index:'C22', summaryType: 'sum',  sortable:false},
-	             {name:'C23', index:'C23', summaryType: 'sum',  sortable:false},
-	             {name:'C24', index:'C24', summaryType: 'sum',  sortable:false},
-	             {name:'C25', index:'C25', summaryType: 'sum',  sortable:false},
-	             {name:'C26', index:'C26', summaryType: 'sum',  sortable:false},
-	             {name:'C27', index:'C27', summaryType: 'sum',  sortable:false},
-	             {name:'C28', index:'C28', summaryType: 'sum',  sortable:false},
-	             {name:'C29', index:'C29', summaryType: 'sum',  sortable:false},
-	             {name:'C30', index:'C30', summaryType: 'sum',  sortable:false},
-	             {name:'C31', index:'C31', summaryType: 'sum',  sortable:false}
+	             {name:'DEVICEGROUP', index:'DEVICEGROUP', width: '350',  sortable:false, summaryTpl: '<div><b>total</b></div>', summaryType: function(){}},
+	             {name:'PLANOFSHIPPING', index:'PLANOFSHIPPING', width: '250', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'AVGPLANOFDAY', index:'AVGPLANOFDAY', width: '250', summaryType: planShippingAvgOfDay, sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ",", suffix:"%", defaultValue:"0%"}},
+	             {name:'TOTALSUM', index:'TOTALSUM', width: '250', summaryType: 'sum', sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'AVGOFDAY', index:'AVGOFDAY', width: '250', summaryType: mitAvgOfDay, sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ",", suffix:"%", defaultValue:"0%"}},
+	             {name:'PERSHIPPING', index:'PERSHIPPING', width: '300', summaryType: shippingRatio,  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ",", suffix:"%", defaultValue:"0%"}},
+	             {name:'WIP', index:'WIP', summaryType: 'sum', sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C01', index:'C01', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C02', index:'C02', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C03', index:'C03', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C04', index:'C04', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C05', index:'C05', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C06', index:'C06', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C07', index:'C07', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C08', index:'C08', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C09', index:'C09', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C10', index:'C10', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C11', index:'C11', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C12', index:'C12', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C13', index:'C13', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C14', index:'C14', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C15', index:'C15', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C16', index:'C16', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C17', index:'C17', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C18', index:'C18', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C19', index:'C19', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C20', index:'C20', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C21', index:'C21', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C22', index:'C22', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C23', index:'C23', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C24', index:'C24', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C25', index:'C25', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C26', index:'C26', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C27', index:'C27', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C28', index:'C28', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C29', index:'C29', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C30', index:'C30', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'C31', index:'C31', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}}
 	         ],
-	         //객체에 담긴 이름값과 name이 같은 지 확인 잘하길... 나는 대소문자 구별 때문에 행은 늘어나는데 데이터가 나타나지 않아서 한참 헤맴...
+ 	         //객체에 담긴 이름값과 name이 같은 지 확인 잘하길... 나는 대소문자 구별 때문에 행은 늘어나는데 데이터가 나타나지 않아서 한참 헤맴...
 	         gridComplete : function() { 
 
         	 	var PLANOFSHIPPINGSUM = $("#list").jqGrid('getCol', 'PLANOFSHIPPING', false, 'sum');
         	 	var MITTOTALSUM = $("#list").jqGrid('getCol', 'TOTALSUM', false, 'sum');
-	        	 
+
         	 	var year = $('#sel_year').val();
         		var month = $('#sel_month').val().substr(0,2);
         		var nalsu = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
         		if ((year % 4 === 0) && (year % 100 !== 0) || (year % 400 === 0)) {
         			nalsu[1] = 29; //윤년 체크
         		}
-        	 	var totalPlanAvgOfDay = (PLANOFSHIPPINGSUM/nalsu[parseInt(month)-1]).toFixed(2);;
+       	 	
+        	 	var totalPlanAvgOfDay = PLANOFSHIPPINGSUM==0 ? (0).toFixed(2) : (PLANOFSHIPPINGSUM/nalsu[parseInt(month)-1]).toFixed(2);;
         	 	var totalShippingAvgOfDay = 0;
     			var perTotalShipping = 0;
         		if (($('#sel_year').val() + '' + $('#sel_month').val()) == date) {
-        			totalShippingAvgOfDay = (MITTOTALSUM / toDay).toFixed(2);
-	            	perTotalShipping = ((MITTOTALSUM / ((PLANOFSHIPPINGSUM/dayCountOfThisMonth) * toDay)) * parseInt(100)).toFixed(2) + '%';
+        			if(MITTOTALSUM == 0 ) totalShippingAvgOfDay = (0).toFixed(2);
+        			else totalShippingAvgOfDay = (MITTOTALSUM / toDay).toFixed(2);
+        			if(MITTOTALSUM == 0 || PLANOFSHIPPINGSUM == 0 ) perTotalShipping = (0).toFixed(2);
+        			else perTotalShipping = ((MITTOTALSUM / ((PLANOFSHIPPINGSUM/dayCountOfThisMonth) * toDay)) * parseInt(100)).toFixed(2) + '%';
         		} else {
-	            	totalShippingAvgOfDay = (MITTOTALSUM / nalsu[parseInt(month)-1]).toFixed(2);
-	            	perTotalShipping = ((MITTOTALSUM / PLANOFSHIPPINGSUM) * parseInt(100)).toFixed(2) + '%';
+        			if(MITTOTALSUM == 0 ) totalShippingAvgOfDay = (0).toFixed(2);
+        			else totalShippingAvgOfDay = (MITTOTALSUM / nalsu[parseInt(month)-1]).toFixed(2);
+        			if(MITTOTALSUM == 0 || PLANOFSHIPPINGSUM == 0 ) perTotalShipping = (0).toFixed(2);
+        			else perTotalShipping = ((MITTOTALSUM / PLANOFSHIPPINGSUM) * parseInt(100)).toFixed(2) + '%';
         		}
         	 	
         	 	var WIPSUM = $("#list").jqGrid('getCol', 'WIP', false, 'sum');
@@ -270,6 +281,10 @@
 	        	 
 				$("#list").setGridWidth($('.js_work_report_view_page').width());					        	 
 	     		 loadChart(jQuery("#list").jqGrid('getRowData'));
+	      		$('.ui-jqgrid-hdiv th').css('font-size', '11px');
+	     		$('.ui-jqgrid-bdiv').css('overflow', 'hidden');
+	    		$('.ui-jqgrid-bdiv td').css('font-size', '11px');
+	    		$('.ui-jqgrid-sdiv td').css('font-size', '11px');
 	         },
 	         loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
 	         },
@@ -288,8 +303,8 @@
 				]
 		});
 
-		$(".footrow td").css('background-color', '#E8FFFF');	
-	};
+		$(".footrow td").css('background-color', '#E8FFFF');
+ 	};
 	
 	$(document).ready( function() {
 		selectMenuItem('dailyShipping');
@@ -299,11 +314,11 @@
 	var reloadGrid = function(){
 		 $("#list").setGridParam(
 	   	 			{
-	   	 				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $('#sel_month').val() ,
+	   	 				url : "../getKpi.jsp?method=" + method + "&yearMonth=" +  $('#sel_year').val() + $('#sel_month').val()
 	   	 			}).trigger("reloadGrid");
 	};
 	$(function() { 
-		$('.selDate').change(function() { 
+		$('.selDate').change(function() {
 			reloadGrid();	  
 		});   
 		$(window).resize(function() {
