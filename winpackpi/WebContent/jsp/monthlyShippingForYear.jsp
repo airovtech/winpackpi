@@ -19,8 +19,6 @@
 	var chart2FieldNames = ["합계"];
 	
 	var getReportData = function(reportData){
-		console.log('reportData=', reportData);
-		console.log('colNames=', colNames);
 		var chartValues = Array();
 		for(var i=0; i<12; i++){
 			var pkt = 0;
@@ -29,28 +27,28 @@
 			var sum = 0;
 			for(var j=0; j<reportData.length; j++){
 				var value = isEmpty(reportData[j]["C" + colNames[i+1] + "01"]) ? 0 : parseInt(reportData[j]["C" + colNames[i+1] + "01"]);
-				if(reportData[j].DIVISION === "pkt"){
+				if(reportData[j].DIVISION === "PKT"){
 					pkt = value;
-				}else if(reportData[j].DIVISION === "pkg"){
+				}else if(reportData[j].DIVISION === "PKG"){
 					pkg = value;
 					
-				}else if(reportData[j].DIVISION === "nbiz"){
+				}else if(reportData[j].DIVISION === "NBIZ"){
 					nbiz = value;
 				}
 				sum += value;
 			}
 			chartValues[i] = {  월별: colNames[i+1], 
-					pkt: pkt,
-					pkg: pkg,
-					nbiz: nbiz,
+					PKT: pkt,
+					PKG: pkg,
+					NBIZ: nbiz,
 					합계: sum};					
 		}
 		
 		chartData = {
 				values : chartValues,
 				xFieldName : "월별",
-				yValueName : "pkt",
-				groupNames : ["pkt", "pkg", "nbiz"]
+				yValueName : "PKT",
+				groupNames : ["PKT", "PKG", "NBIZ"]
 		};
 	};
 	
@@ -88,19 +86,19 @@
 					colNames[13] = (item[i].C_13);
 					
 					colModels[0] = {name:item[i].C_0, index:item[i].C_0, align: 'center',  sortable:false };
-					colModels[1] = {name:'C'+item[i].C_1 + '01', index:item[i].C_1, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
-					colModels[2] = {name:'C'+item[i].C_2 + '01', index:item[i].C_2, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
-					colModels[3] = {name:'C'+item[i].C_3 + '01', index:item[i].C_3, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
-					colModels[4] = {name:'C'+item[i].C_4 + '01', index:item[i].C_4, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
-					colModels[5] = {name:'C'+item[i].C_5 + '01', index:item[i].C_5, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
-					colModels[6] = {name:'C'+item[i].C_6 + '01', index:item[i].C_6, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
-					colModels[7] = {name:'C'+item[i].C_7 + '01', index:item[i].C_7, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
-					colModels[8] = {name:'C'+item[i].C_8 + '01', index:item[i].C_8, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
-					colModels[9] = {name:'C'+item[i].C_9 + '01', index:item[i].C_9, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
-					colModels[10] = {name:'C'+item[i].C_10 + '01', index:item[i].C_10, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
-					colModels[11] = {name:'C'+item[i].C_11 + '01', index:item[i].C_11, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
-					colModels[12] = {name:'C'+item[i].C_12 + '01', index:item[i].C_12, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
-					colModels[13] = {name:item[i].C_13, index:item[i].C_13, align: 'center',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[1] = {name:'C'+item[i].C_1 + '01', index:item[i].C_1, align: 'right',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[2] = {name:'C'+item[i].C_2 + '01', index:item[i].C_2, align: 'right',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[3] = {name:'C'+item[i].C_3 + '01', index:item[i].C_3, align: 'right',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[4] = {name:'C'+item[i].C_4 + '01', index:item[i].C_4, align: 'right',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[5] = {name:'C'+item[i].C_5 + '01', index:item[i].C_5, align: 'right',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[6] = {name:'C'+item[i].C_6 + '01', index:item[i].C_6, align: 'right',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[7] = {name:'C'+item[i].C_7 + '01', index:item[i].C_7, align: 'right',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[8] = {name:'C'+item[i].C_8 + '01', index:item[i].C_8, align: 'right',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[9] = {name:'C'+item[i].C_9 + '01', index:item[i].C_9, align: 'right',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[10] = {name:'C'+item[i].C_10 + '01', index:item[i].C_10, align: 'right',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[11] = {name:'C'+item[i].C_11 + '01', index:item[i].C_11, align: 'right',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[12] = {name:'C'+item[i].C_12 + '01', index:item[i].C_12, align: 'right',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
+					colModels[13] = {name:item[i].C_13, index:item[i].C_13, align: 'right',  sortable:false , formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}};
 					
 				}
 					 
@@ -108,7 +106,6 @@
 			   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 			         datatype: "json",      //json형태로 데이터 받음.  
 			         height: "auto",
-			         caption: "1년간 월별 생산 실적 TREND",
 			         footerrow:true,
 			         grouping:false, //그룹화 하기위한 옵션
 			         autowidth:true,
@@ -131,7 +128,7 @@
 
 			 			 $(".footrow td").css('background-color', '#E8FFFF');
 			 			
-						$("#list").setGridWidth($('.js_work_report_view_page').width());				
+						$("#list").setGridWidth($('.js_work_report_view_page').width()-2);				
 			     		 loadChart(jQuery("#list").jqGrid('getRowData'));
 			          },
 			          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
@@ -178,19 +175,19 @@
 					colNames[13] = (item[i].C_13);
 					
 					colModels[0] = {name:item[i].C_0, index:item[i].C_0, align: 'center',  sortable:false };
-					colModels[1] = {name:'C'+item[i].C_1 + '01', index:item[i].C_1, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
-					colModels[2] = {name:'C'+item[i].C_2 + '01', index:item[i].C_2, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
-					colModels[3] = {name:'C'+item[i].C_3 + '01', index:item[i].C_3, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
-					colModels[4] = {name:'C'+item[i].C_4 + '01', index:item[i].C_4, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
-					colModels[5] = {name:'C'+item[i].C_5 + '01', index:item[i].C_5, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
-					colModels[6] = {name:'C'+item[i].C_6 + '01', index:item[i].C_6, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
-					colModels[7] = {name:'C'+item[i].C_7 + '01', index:item[i].C_7, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
-					colModels[8] = {name:'C'+item[i].C_8 + '01', index:item[i].C_8, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
-					colModels[9] = {name:'C'+item[i].C_9 + '01', index:item[i].C_9, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
-					colModels[10] = {name:'C'+item[i].C_10 + '01', index:item[i].C_10, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
-					colModels[11] = {name:'C'+item[i].C_11 + '01', index:item[i].C_11, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
-					colModels[12] = {name:'C'+item[i].C_12 + '01', index:item[i].C_12, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
-					colModels[13] = {name:item[i].C_13, index:item[i].C_13, align: 'center',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[1] = {name:'C'+item[i].C_1 + '01', index:item[i].C_1, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[2] = {name:'C'+item[i].C_2 + '01', index:item[i].C_2, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[3] = {name:'C'+item[i].C_3 + '01', index:item[i].C_3, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[4] = {name:'C'+item[i].C_4 + '01', index:item[i].C_4, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[5] = {name:'C'+item[i].C_5 + '01', index:item[i].C_5, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[6] = {name:'C'+item[i].C_6 + '01', index:item[i].C_6, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[7] = {name:'C'+item[i].C_7 + '01', index:item[i].C_7, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[8] = {name:'C'+item[i].C_8 + '01', index:item[i].C_8, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[9] = {name:'C'+item[i].C_9 + '01', index:item[i].C_9, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[10] = {name:'C'+item[i].C_10 + '01', index:item[i].C_10, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[11] = {name:'C'+item[i].C_11 + '01', index:item[i].C_11, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[12] = {name:'C'+item[i].C_12 + '01', index:item[i].C_12, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					colModels[13] = {name:item[i].C_13, index:item[i].C_13, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
 					
 				}
 				$("#list").jqGrid('setGridParam', { colModel: colModels});
@@ -222,50 +219,59 @@
 			reloadGrid();	  
 		});   
 		$(window).resize(function() {
-			if(swReportResizing) return;			
 			if(!isEmpty($('.js_work_report_view_page'))){
-				swReportResizing = true;
-				setTimeout(function(){
-					$("#list").setGridWidth($('.js_work_report_view_page').width());				
-		     		loadChart(jQuery("#list").jqGrid('getRowData'));
-					swReportResizing = false;
-				},1000);
+				$("#list").setGridWidth($('.js_work_report_view_page').width()-2);				
+	     		loadChart(jQuery("#list").jqGrid('getRowData'));
 			}
 		});
 	});
 </script>
  
 </head>
-	<body>
-		<div>
+<body>
+	<div  class="js_work_report_view_page">
+		<div class="kpi_tab_section">
 			<jsp:include page="./chartMenu.jsp" flush="false"/>
+			<table>
+				<tr style="background-color:#dfeffc;border-left: 1px solid #bbbaba;border-right: 1px solid #bbbaba">
+					<th>
+						<%
+							Date today = new Date();
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(today);
+							int year = cal.get(Calendar.YEAR);
+							int month = cal.get(Calendar.MONTH);
+						%>
+						
+						<select id='sel_year' class='selDate'>
+							<%
+							if(year>=2012){
+								for(int i=0; i+2012<=year; i++){
+									int currentYear = i+2012;
+							%>
+									<option <%if(currentYear==year) {%> selected <%} %>value='<%=currentYear%>'><%=currentYear%>년</option>
+							<%
+								}
+							}
+							%>
+						</select>
+						<select id='sel_month' class='selDate'>
+							<%
+							for(int i=0; i<12; i++){
+							%>
+								<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
+							<%
+							}
+							%>
+						 </select>
+					</th>
+					<th style="float:right">(단위 : K)</th>
+				</tr>
+			</table>
+			<table id="list"></table> 
+			<br/><br/>
+			<div class="js_work_report_view_page"><div id="chart_target"></div></div>
 		</div>
-		<div style="text-align:left">
-			<%
-				Date today = new Date();
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(today);
-				int year = cal.get(Calendar.YEAR);
-				int month = cal.get(Calendar.MONTH);
-			%>
-			
-				<select id='sel_year' class='selDate'>
-					<%
-					if(year>=2012){
-						for(int i=0; i+2012<=year; i++){
-							int currentYear = i+2012;
-					%>
-							<option <%if(currentYear==year) {%> selected <%} %>value='<%=currentYear%>'><%=currentYear%>년</option>
-					<%
-						}
-					}
-					%>
-				</select>
-		</div>
-		<table id="list"></table> 
-		<br/><br/>
-		<div class="js_work_report_view_page">
-			<div id="chart_target"></div>
-		</div>
-	</body>
+	</div>
+</body>
 </html>

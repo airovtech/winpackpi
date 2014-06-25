@@ -89,7 +89,6 @@
 		   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 		         datatype: "json",      //json형태로 데이터 받음.  
 		         height: "auto",
-		         caption: "당월 생산 매출 현황",
 		         footerrow:true,
 		         grouping:true, //그룹화 하기위한 옵션
 		         autowidth:true,
@@ -119,6 +118,8 @@
 		         ],
 		         //객체에 담긴 이름값과 name이 같은 지 확인 잘하길... 나는 대소문자 구별 때문에 행은 늘어나는데 데이터가 나타나지 않아서 한참 헤맴...
 		          gridComplete : function() {        //---데이터를 성공적으로 가져오면 실행 됨
+    				$("#list").setGridWidth($('.js_work_report_view_page').width()-2);
+		          
 	            	var sumOfSales = $("#list").jqGrid('getCol', 'SUMOFSALES', false, 'sum');
 	            	var shippingPlan = $("#list").jqGrid('getCol', 'SHIPPINGPLAN', false, 'sum');
 	            	var salesPlan = $("#list").jqGrid('getCol', 'SALESPLAN', false, 'sum');
@@ -143,10 +144,8 @@
 		        		else perTotalShipping = ((sumOfShipping / shippingExePlan) * parseInt(100)).toFixed(2);
 		        		if(sumOfSales == 0 || salesExePlan == 0 || dayCountOfThisMonth == 0) perTotalSales = (0).toFixed(2);
 		        		else perTotalSales = ((sumOfSales / salesExePlan) * parseInt(100)).toFixed(2);
-	        		}
-	            	
+	        		}	            	
 	             	jQuery("#list").jqGrid('footerData', 'set', { DEVICEGROUP: 'Grand Total', SUMOFSALES: sumOfSales, SHIPPINGPLAN: shippingPlan, SALESPLAN: salesPlan, SHIPPINGFOCPLAN: shippingFocPlan, SALESFOCPLAN: salesFocPlan, SHIPPINGEXEPLAN: shippingExePlan, SALESEXEPLAN: salesExePlan, BOH: sumOfBoh, SUMOFRECEIVING: sumOfReceiving, SUMOFSHIPPING: sumOfShipping, WIP: sumOfWip, PERSHIPPING: perTotalShipping, PERSALES:perTotalSales});
-
 	             	$("tr.jqfoot>td").css('background-color', 'floralwhite');
 		          },
 		          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
@@ -158,11 +157,11 @@
 		         multiselect: false,         //전체선택 체크박스 유무, 테이블에서 row 체크를 멀티로 할 수 있는 옵션.
 		     });
 	  
-		  jQuery("#list").jqGrid('setGroupHeaders', {
+		   jQuery("#list").jqGrid('setGroupHeaders', {
 			  useColSpanStyle: false, 
 			  groupHeaders:[
-				{startColumnName: 'SHIPPINGPLAN', numberOfColumns: 2, titleText: 'PLAN(월)'},
-				{startColumnName: 'SHIPPINGFOCPLAN', numberOfColumns: 2, titleText: 'FORECAST(월)'},
+				{startColumnName: 'SHIPPINGPLAN', numberOfColumns: 2, titleText: 'Plan(월)'},
+				{startColumnName: 'SHIPPINGFOCPLAN', numberOfColumns: 2, titleText: 'Forecast(월)'},
 				{startColumnName: 'SHIPPINGEXEPLAN', numberOfColumns: 2, titleText: '실행계획(월)'},
 				{startColumnName: 'BOH', numberOfColumns: 4, titleText: 'Movement'},
 				{startColumnName: 'PERSHIPPING', numberOfColumns: 3, titleText: '실적'}
@@ -186,8 +185,6 @@
 		  	$(".ui-jqgrid-bdiv").css('overflow-x', 'hidden');
 			$(".footrow td").css('background-color', '#E8FFFF');
 	   }); 
-	}); 
- 	$(function() { 
  	   $('#sel_year').change(function() {
  			$("#list").setGridParam(
  			{
@@ -199,13 +196,8 @@
 			$(".footrow td").css('background-color', '#E8FFFF');
  	   }); 
 		$(window).resize(function() {
-			if(swReportResizing) return;			
 			if(!isEmpty($('.js_work_report_view_page'))){
-				swReportResizing = true;
-				setTimeout(function(){
-					$("#list").setGridWidth($('.js_work_report_view_page').width());				
-					swReportResizing = false;
-				},1000);
+				$("#list").setGridWidth($('.js_work_report_view_page').width()-2);				
 			}
 		});
  	}); 
@@ -213,43 +205,47 @@
  
 </head>
 <body>
-<div  class="js_work_report_view_page">
-<jsp:include page="./chartMenu.jsp" flush="false"/>
-</div>
-<div>
-	<span>
-		<%
-			Date today = new Date();
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(today);
-			int year = cal.get(Calendar.YEAR);
-			int month = cal.get(Calendar.MONTH);
-		%>
-		
-		<select id='sel_year' class='selDate'>
-			<%
-			if(year>=2012){
-				for(int i=0; i+2012<=year; i++){
-					int currentYear = i+2012;
-			%>
-					<option <%if(currentYear==year) {%> selected <%} %>value='<%=currentYear%>'><%=currentYear%>년</option>
-			<%
-				}
-			}
-			%>
-		</select>
-		<select id='sel_month' class='selDate'>
-			<%
-			for(int i=0; i<12; i++){
-			%>
-				<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
-			<%
-			}
-			%>
-		 </select>
-	</span>
-	<span style="float:right">(단위 : K / 백만원)</span>
-</div>
-<table id="list"></table> 
+	<div  class="js_work_report_view_page">
+		<div class="kpi_tab_section">
+			<jsp:include page="./chartMenu.jsp" flush="false"/>
+			<table>
+				<tr style="background-color:#dfeffc;border-left: 1px solid #bbbaba;border-right: 1px solid #bbbaba">
+					<th>
+						<%
+							Date today = new Date();
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(today);
+							int year = cal.get(Calendar.YEAR);
+							int month = cal.get(Calendar.MONTH);
+						%>
+						
+						<select id='sel_year' class='selDate'>
+							<%
+							if(year>=2012){
+								for(int i=0; i+2012<=year; i++){
+									int currentYear = i+2012;
+							%>
+									<option <%if(currentYear==year) {%> selected <%} %>value='<%=currentYear%>'><%=currentYear%>년</option>
+							<%
+								}
+							}
+							%>
+						</select>
+						<select id='sel_month' class='selDate'>
+							<%
+							for(int i=0; i<12; i++){
+							%>
+								<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
+							<%
+							}
+							%>
+						 </select>
+					</th>
+					<th style="float:right">(단위 : K / 백만원)</th>
+				</tr>
+			</table>
+			<table id="list"></table> 
+		</div>
+	</div>
 </body>
 </html>

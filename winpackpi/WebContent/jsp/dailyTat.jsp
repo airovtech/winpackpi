@@ -18,12 +18,9 @@
 	
 	var getReportData = function(reportData){
 		
-		console.log('reportData=', reportData);
-		
 		chartData = new Array();
 		
 		for(var i=0; i<reportData.length; i++){
-			console.log(i);
 			var chartValues = Array();
 			
 			for(var j=0; j<31; j++){
@@ -54,10 +51,11 @@
 	var loadChart = function(data) {
 		getReportData(data);
 		Ext.onReady(function () {						 
-				for(var i=0; i<chartData.length; i++){
-					$('.js_work_report_view_page').append('<div id="chart_target' + (i+1) + '"></div>');
+			$('.js_work_report_view_page .js_chart_target').remove();			
+			for(var i=0; i<chartData.length; i++){
+				$('.js_work_report_view_page').append('<div id="chart_target' + (i+1) + '" class="js_chart_target"></div>');
 				smartChart.loadWithData(chartData[i], "line", false, "chart_target"+(i+1), chart2FieldNames, "line");
-				}
+			}
 		});
 	};
 
@@ -66,7 +64,6 @@
 	   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 	         datatype: "json",      //json형태로 데이터 받음.  
 	         height: "auto",
-	         caption: "일별 TAT 현황",
 	         footerrow:false,
 	         grouping:true, //그룹화 하기위한 옵션
 	         autowidth:true,
@@ -77,50 +74,54 @@
 	             groupText : ['<span style="color:blue"><b>{0}</b></span>'] //그룹화된 이름에 <b> 태그를 추가했다.
 	         },
 	         
-	         colNames:['사업부','구분','고객TAT', '목표TAT','전월평균','금월평균', '1일', '2일','3일', '4일', '5일', '6일', '7일'	, '8일'	, '9일'	, '10일', '11일', '12일', '13일', '14일', '15일', '16일', '17일', '18일', '19일', '20일', '21일', '22일', '23일', '24일', '25일', '26일', '27일', '28일', '29일', '30일', '31일'],
+	         colNames:['사업부','구분','고객TAT', '목표TAT','전월평균','금월평균', '1', '2','3', '4', '5', '6', '7'	, '8'	, '9'	, '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
 	         colModel:[                  
 	             {name:'DIVISION', index:'DIVISION', align: 'center',  sortable:false },
-	             {name:'DEVICEGROUP', index:'DEVICEGROUP',  sortable:false},
-	             {name:'CUSTOMERTAT', index:'CUSTOMERTAT', summaryType: 'sum',  sortable:false},
-	             {name:'TARGETTAT', index:'TARGETTAT', summaryType: 'sum',  sortable:false},
-	             {name:'LASTMONTHAVGTAT', index:'LASTMONTHAVGTAT', summaryType: 'sum',  sortable:false},
-	             {name:'MONTHAVGTAT', index:'MONTHAVGTAT', summaryType: 'sum',  sortable:false},
-	             {name:'C01', index:'C01', summaryType: 'sum',  sortable:false},
-	             {name:'C02', index:'C02', summaryType: 'sum',  sortable:false},
-	             {name:'C03', index:'C03', summaryType: 'sum',  sortable:false},
-	             {name:'C04', index:'C04', summaryType: 'sum',  sortable:false},
-	             {name:'C05', index:'C05', summaryType: 'sum',  sortable:false},
-	             {name:'C06', index:'C06', summaryType: 'sum',  sortable:false},
-	             {name:'C07', index:'C07', summaryType: 'sum',  sortable:false},
-	             {name:'C08', index:'C08', summaryType: 'sum',  sortable:false},
-	             {name:'C09', index:'C09', summaryType: 'sum',  sortable:false},
-	             {name:'C10', index:'C10', summaryType: 'sum',  sortable:false},
-	             {name:'C11', index:'C11', summaryType: 'sum',  sortable:false},
-	             {name:'C12', index:'C12', summaryType: 'sum',  sortable:false},
-	             {name:'C13', index:'C13', summaryType: 'sum',  sortable:false},
-	             {name:'C14', index:'C14', summaryType: 'sum',  sortable:false},
-	             {name:'C15', index:'C15', summaryType: 'sum',  sortable:false},
-	             {name:'C16', index:'C16', summaryType: 'sum',  sortable:false},
-	             {name:'C17', index:'C17', summaryType: 'sum',  sortable:false},
-	             {name:'C18', index:'C18', summaryType: 'sum',  sortable:false},
-	             {name:'C19', index:'C19', summaryType: 'sum',  sortable:false},
-	             {name:'C20', index:'C20', summaryType: 'sum',  sortable:false},
-	             {name:'C21', index:'C21', summaryType: 'sum',  sortable:false},
-	             {name:'C22', index:'C22', summaryType: 'sum',  sortable:false},
-	             {name:'C23', index:'C23', summaryType: 'sum',  sortable:false},
-	             {name:'C24', index:'C24', summaryType: 'sum',  sortable:false},
-	             {name:'C25', index:'C25', summaryType: 'sum',  sortable:false},
-	             {name:'C26', index:'C26', summaryType: 'sum',  sortable:false},
-	             {name:'C27', index:'C27', summaryType: 'sum',  sortable:false},
-	             {name:'C28', index:'C28', summaryType: 'sum',  sortable:false},
-	             {name:'C29', index:'C29', summaryType: 'sum',  sortable:false},
-	             {name:'C30', index:'C30', summaryType: 'sum',  sortable:false},
-	             {name:'C31', index:'C31', summaryType: 'sum',  sortable:false}
+	             {name:'DEVICEGROUP', index:'DEVICEGROUP', width:'250',  sortable:false},
+	             {name:'CUSTOMERTAT', index:'CUSTOMERTAT', width:'250', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'TARGETTAT', index:'TARGETTAT', width:'250', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'LASTMONTHAVGTAT', index:'LASTMONTHAVGTAT', width:'250', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'MONTHAVGTAT', index:'MONTHAVGTAT', width:'250', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C01', index:'C01', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C02', index:'C02', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C03', index:'C03', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C04', index:'C04', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C05', index:'C05', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C06', index:'C06', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C07', index:'C07', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C08', index:'C08', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C09', index:'C09', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C10', index:'C10', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C11', index:'C11', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C12', index:'C12', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C13', index:'C13', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C14', index:'C14', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C15', index:'C15', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C16', index:'C16', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C17', index:'C17', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C18', index:'C18', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C19', index:'C19', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C20', index:'C20', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C21', index:'C21', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C22', index:'C22', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C23', index:'C23', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C24', index:'C24', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C25', index:'C25', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C26', index:'C26', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C27', index:'C27', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C28', index:'C28', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C29', index:'C29', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C30', index:'C30', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}},
+	             {name:'C31', index:'C31', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ",", decimalPlaces: 2}}
 	         ],
 	         //객체에 담긴 이름값과 name이 같은 지 확인 잘하길... 나는 대소문자 구별 때문에 행은 늘어나는데 데이터가 나타나지 않아서 한참 헤맴...
 	          gridComplete : function() { 
-				$("#list").setGridWidth($('.js_work_report_view_page').width());				
+				$("#list").setGridWidth($('.js_work_report_view_page').width()-2);				
 	     		 loadChart(jQuery("#list").jqGrid('getRowData'));
+		      	$('.ui-jqgrid-hdiv th').css('font-size', '11px').css('text-align', 'center');
+	     		$('.ui-jqgrid-bdiv').css('overflow', 'hidden');
+	    		$('.ui-jqgrid-bdiv td').css('font-size', '11px');
+	    		$('.ui-jqgrid-sdiv td').css('font-size', '11px');
 	          },
 	          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
 	          },
@@ -147,14 +148,9 @@
 			reloadGrid();	  
 		});   
 		$(window).resize(function() {
-			if(swReportResizing) return;			
 			if(!isEmpty($('.js_work_report_view_page'))){
-				swReportResizing = true;
-				setTimeout(function(){
-					$("#list").setGridWidth($('.js_work_report_view_page').width());				
-		     		loadChart(jQuery("#list").jqGrid('getRowData'));
-					swReportResizing = false;
-				},1000);
+				$("#list").setGridWidth($('.js_work_report_view_page').width()-2);				
+	     		loadChart(jQuery("#list").jqGrid('getRowData'));
 			}
 		});
 	});
@@ -163,43 +159,48 @@
  
 </head>
 <body>
-<div>
-<jsp:include page="./chartMenu.jsp" flush="false"/>
-</div>
-<div style="text-align:left">
-	<%
-		Date today = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(today);
-		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.MONTH);
-	%>
-	
-		<select id='sel_year' class='selDate'>
-			<%
-			if(year>=2012){
-				for(int i=0; i+2012<=year; i++){
-					int currentYear = i+2012;
-			%>
-					<option <%if(currentYear==year) {%> selected <%} %>value='<%=currentYear%>'><%=currentYear%>년</option>
-			<%
-				}
-			}
-			%>
-		</select>
-	<select id='sel_month' class='selDate'>
-		<%
-		for(int i=0; i<12; i++){
-		%>
-			<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
-		<%
-		}
-		%>
-	 </select>
-</div>
-<table id="list"></table> 
-<br/><br/>
-<div class="js_work_report_view_page">
-</div>
+	<div  class="js_work_report_view_page">
+		<div class="kpi_tab_section">
+			<jsp:include page="./chartMenu.jsp" flush="false"/>
+			<table>
+				<tr style="background-color:#dfeffc;border-left: 1px solid #bbbaba;border-right: 1px solid #bbbaba">
+					<th>
+						<%
+							Date today = new Date();
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(today);
+							int year = cal.get(Calendar.YEAR);
+							int month = cal.get(Calendar.MONTH);
+						%>
+						
+						<select id='sel_year' class='selDate'>
+							<%
+							if(year>=2012){
+								for(int i=0; i+2012<=year; i++){
+									int currentYear = i+2012;
+							%>
+									<option <%if(currentYear==year) {%> selected <%} %>value='<%=currentYear%>'><%=currentYear%>년</option>
+							<%
+								}
+							}
+							%>
+						</select>
+						<select id='sel_month' class='selDate'>
+							<%
+							for(int i=0; i<12; i++){
+							%>
+								<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
+							<%
+							}
+							%>
+						 </select>
+					</th>
+				</tr>
+			</table>
+			<table id="list"></table> 
+			<br/><br/>
+			<div class="js_work_report_view_page"></div>
+		</div>
+	</div>
 </body>
 </html>

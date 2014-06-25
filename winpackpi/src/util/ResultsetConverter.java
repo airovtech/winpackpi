@@ -77,7 +77,9 @@ public class ResultsetConverter {
 				}
 				if (value.equalsIgnoreCase("Capacity")) {
 					capacityMap = resultMap;
-				} else if (value.equalsIgnoreCase("생산실적")) {
+				} else if (value.equalsIgnoreCase("Shipping")) {
+					resultMap.remove(key);
+					resultMap.put(key, "생산실적");
 					shippingMap = resultMap;
 				}
 			}
@@ -96,7 +98,7 @@ public class ResultsetConverter {
 					continue;
 				}
 				String result = null;
-				if (shippingMap != null && shippingMap.get(capaKey) != null && capaValue != null) {
+				if (shippingMap != null && shippingMap.get(capaKey) != null && capaValue != null && Float.parseFloat((String)shippingMap.get(capaKey))>0 && Float.parseFloat(capaValue)>0) {
 					result = ((Float.parseFloat((String)shippingMap.get(capaKey)) / Float.parseFloat(capaValue))*100) + "";
 				}
 				acheMap.put(capaKey, result);
@@ -114,7 +116,7 @@ public class ResultsetConverter {
 				Iterator itr = resultMap.keySet().iterator();
 				
 				Map capaMap = new HashMap();
-				capaMap.put("GUBUN", "capacity");
+				capaMap.put("GUBUN", "Capacity");
 				
 				Map shippingMap = new HashMap();
 				shippingMap.put("GUBUN","생산실적");
@@ -201,37 +203,37 @@ public class ResultsetConverter {
 					
 					if (key.equals("DIVISION")) {
 						planMap.put(key, value);
-						planMap.put("GUBUN", "PLAN");
+						planMap.put("GUBUN", "Plan");
 						if (!planTotalMap.containsKey(key)) {
-							planTotalMap.put("DIVISION", "TOTAL");
-							planTotalMap.put("GUBUN", "PLAN");
+							planTotalMap.put("DIVISION", "Total");
+							planTotalMap.put("GUBUN", "Plan");
 						}
 						
 						forecastMap.put(key, value);
 						forecastMap.put("GUBUN", "Forecast");
 						if (!forecastTotalMap.containsKey(key)) {
-							forecastTotalMap.put("DIVISION", "TOTAL");
+							forecastTotalMap.put("DIVISION", "Total");
 							forecastTotalMap.put("GUBUN", "Forecast");
 						}
 						
 						shippingMap.put(key, value);
 						shippingMap.put("GUBUN", "생산실적");
 						if (!shippingTotalMap.containsKey(key)) {
-							shippingTotalMap.put("DIVISION", "TOTAL");
+							shippingTotalMap.put("DIVISION", "Total");
 							shippingTotalMap.put("GUBUN", "생산실적");
 						}
 						
 						perWithPlanMap.put(key, value);
-						perWithPlanMap.put("GUBUN", "PLAN vs 실적(%)");
+						perWithPlanMap.put("GUBUN", "Plan vs 실적(%)");
 						if (!perWithPlanTotalMap.containsKey(key)) {
-							perWithPlanTotalMap.put("DIVISION", "TOTAL");
-							perWithPlanTotalMap.put("GUBUN", "PLAN vs 실적(%)");
+							perWithPlanTotalMap.put("DIVISION", "Total");
+							perWithPlanTotalMap.put("GUBUN", "Plan vs 실적(%)");
 						}
 						
 						perWithForecastMap.put(key, value);
 						perWithForecastMap.put("GUBUN", "Forecast vs 실적(%)");
 						if (!perWithForecastTotalMap.containsKey(key)) {
-							perWithForecastTotalMap.put("DIVISION", "TOTAL");
+							perWithForecastTotalMap.put("DIVISION", "Total");
 							perWithForecastTotalMap.put("GUBUN", "Forecast vs 실적(%)");
 						}
 						
@@ -310,11 +312,11 @@ public class ResultsetConverter {
 				perWithPlanMap.put("YTD", (df.format(((float)shippingYtdSum/(float)planYtdSum) * 100)) + "");
 				perWithForecastMap.put("YTD", (df.format(((float)shippingYtdSum/(float)forecastYtdSum) * 100)) + "");
 				
-				planMap.put("TOTAL", planTotalSum + "");
-				forecastMap.put("TOTAL", forecastTotalSum + "");
-				shippingMap.put("TOTAL", shippingTotalSum + "");
-				perWithPlanMap.put("TOTAL", (df.format(((float)shippingTotalSum/(float)planTotalSum) * 100)) + "");
-				perWithForecastMap.put("TOTAL", (df.format(((float)shippingTotalSum/(float)forecastTotalSum) * 100)) + "");
+				planMap.put("Total", planTotalSum + "");
+				forecastMap.put("Total", forecastTotalSum + "");
+				shippingMap.put("Total", shippingTotalSum + "");
+				perWithPlanMap.put("Total", (df.format(((float)shippingTotalSum/(float)planTotalSum) * 100)) + "");
+				perWithForecastMap.put("Total", (df.format(((float)shippingTotalSum/(float)forecastTotalSum) * 100)) + "");
 				
 				//사업부 전체 YTD값을 구하기 위한
 				allDivisionPlanYtdSum = allDivisionPlanYtdSum + planYtdSum;
@@ -342,11 +344,11 @@ public class ResultsetConverter {
 			perWithForecastTotalMap.put("YTD", (df.format(((float)allDivisionShippingYtdSum/(float)allDivisionForecastYtdSum) * 100)) + "");
 			
 
-			planTotalMap.put("TOTAL", allDivisionPlanTotalSum);
-			forecastTotalMap.put("TOTAL", allDivisionForecastTotalSum);
-			shippingTotalMap.put("TOTAL", allDivisionShippingTotalSum);
-			perWithPlanTotalMap.put("TOTAL", (df.format(((float)allDivisionShippingTotalSum/(float)allDivisionPlanTotalSum) * 100)) + "");
-			perWithForecastTotalMap.put("TOTAL", (df.format(((float)allDivisionShippingTotalSum/(float)allDivisionForecastTotalSum) * 100)) + "");
+			planTotalMap.put("Total", allDivisionPlanTotalSum);
+			forecastTotalMap.put("Total", allDivisionForecastTotalSum);
+			shippingTotalMap.put("Total", allDivisionShippingTotalSum);
+			perWithPlanTotalMap.put("Total", (df.format(((float)allDivisionShippingTotalSum/(float)allDivisionPlanTotalSum) * 100)) + "");
+			perWithForecastTotalMap.put("Total", (df.format(((float)allDivisionShippingTotalSum/(float)allDivisionForecastTotalSum) * 100)) + "");
 			
 			returnList.add(planTotalMap);
 			returnList.add(forecastTotalMap);
@@ -407,37 +409,37 @@ public class ResultsetConverter {
 					
 					if (key.equals("DIVISION")) {
 						planMap.put(key, value);
-						planMap.put("GUBUN", "PLAN");
+						planMap.put("GUBUN", "Plan");
 						if (!planTotalMap.containsKey(key)) {
-							planTotalMap.put("DIVISION", "TOTAL");
-							planTotalMap.put("GUBUN", "PLAN");
+							planTotalMap.put("DIVISION", "Total");
+							planTotalMap.put("GUBUN", "Plan");
 						}
 						
 						forecastMap.put(key, value);
 						forecastMap.put("GUBUN", "Forecast");
 						if (!forecastTotalMap.containsKey(key)) {
-							forecastTotalMap.put("DIVISION", "TOTAL");
+							forecastTotalMap.put("DIVISION", "Total");
 							forecastTotalMap.put("GUBUN", "Forecast");
 						}
 						
 						salesMap.put(key, value);
 						salesMap.put("GUBUN", "매출실적");
 						if (!salesTotalMap.containsKey(key)) {
-							salesTotalMap.put("DIVISION", "TOTAL");
+							salesTotalMap.put("DIVISION", "Total");
 							salesTotalMap.put("GUBUN", "매출실적");
 						}
 						
 						perWithPlanMap.put(key, value);
-						perWithPlanMap.put("GUBUN", "PLAN vs 실적(%)");
+						perWithPlanMap.put("GUBUN", "Plan vs 실적(%)");
 						if (!perWithPlanTotalMap.containsKey(key)) {
-							perWithPlanTotalMap.put("DIVISION", "TOTAL");
-							perWithPlanTotalMap.put("GUBUN", "PLAN vs 실적(%)");
+							perWithPlanTotalMap.put("DIVISION", "Total");
+							perWithPlanTotalMap.put("GUBUN", "Plan vs 실적(%)");
 						}
 						
 						perWithForecastMap.put(key, value);
 						perWithForecastMap.put("GUBUN", "Forecast vs 실적(%)");
 						if (!perWithForecastTotalMap.containsKey(key)) {
-							perWithForecastTotalMap.put("DIVISION", "TOTAL");
+							perWithForecastTotalMap.put("DIVISION", "Total");
 							perWithForecastTotalMap.put("GUBUN", "Forecast vs 실적(%)");
 						}
 						
@@ -516,11 +518,11 @@ public class ResultsetConverter {
 				perWithPlanMap.put("YTD", (df.format(((float)salesYtdSum/(float)planYtdSum) * 100)) + "");
 				perWithForecastMap.put("YTD", (df.format(((float)salesYtdSum/(float)forecastYtdSum) * 100)) + "");
 				
-				planMap.put("TOTAL", planTotalSum + "");
-				forecastMap.put("TOTAL", forecastTotalSum + "");
-				salesMap.put("TOTAL", salesTotalSum + "");
-				perWithPlanMap.put("TOTAL", (df.format(((float)salesTotalSum/(float)planTotalSum) * 100)) + "");
-				perWithForecastMap.put("TOTAL", (df.format(((float)salesTotalSum/(float)forecastTotalSum) * 100)) + "");
+				planMap.put("Total", planTotalSum + "");
+				forecastMap.put("Total", forecastTotalSum + "");
+				salesMap.put("Total", salesTotalSum + "");
+				perWithPlanMap.put("Total", (df.format(((float)salesTotalSum/(float)planTotalSum) * 100)) + "");
+				perWithForecastMap.put("Total", (df.format(((float)salesTotalSum/(float)forecastTotalSum) * 100)) + "");
 				
 				//사업부 전체 YTD값을 구하기 위한
 				allDivisionPlanYtdSum = allDivisionPlanYtdSum + planYtdSum;
@@ -548,11 +550,11 @@ public class ResultsetConverter {
 			perWithForecastTotalMap.put("YTD", (df.format(((float)allDivisionsalesYtdSum/(float)allDivisionForecastYtdSum) * 100)) + "");
 			
 
-			planTotalMap.put("TOTAL", allDivisionPlanTotalSum);
-			forecastTotalMap.put("TOTAL", allDivisionForecastTotalSum);
-			salesTotalMap.put("TOTAL", allDivisionsalesTotalSum);
-			perWithPlanTotalMap.put("TOTAL", (df.format(((float)allDivisionsalesTotalSum/(float)allDivisionPlanTotalSum) * 100)) + "");
-			perWithForecastTotalMap.put("TOTAL", (df.format(((float)allDivisionsalesTotalSum/(float)allDivisionForecastTotalSum) * 100)) + "");
+			planTotalMap.put("Total", allDivisionPlanTotalSum);
+			forecastTotalMap.put("Total", allDivisionForecastTotalSum);
+			salesTotalMap.put("Total", allDivisionsalesTotalSum);
+			perWithPlanTotalMap.put("Total", (df.format(((float)allDivisionsalesTotalSum/(float)allDivisionPlanTotalSum) * 100)) + "");
+			perWithForecastTotalMap.put("Total", (df.format(((float)allDivisionsalesTotalSum/(float)allDivisionForecastTotalSum) * 100)) + "");
 			
 			returnList.add(planTotalMap);
 			returnList.add(forecastTotalMap);
@@ -577,10 +579,10 @@ public class ResultsetConverter {
 	public static final Map<String, String> getDailyShippingNSalesColumnMapper = new HashMap<String, String>() {
 		{
 			put("DIVISION","사업부");put("DEVICEGROUP","구분");
-			put("SHIPPINGPLAN","PLAN(월).생산");put("SALESPLAN","PLAN(월).매출");
-			put("SHIPPINGFOCPLAN","FORECAST(월).생산");put("SALESFOCPLAN","FORECAST(월).매출");
+			put("SHIPPINGPLAN","Plan(월).생산");put("SALESPLAN","Plan(월).매출");
+			put("SHIPPINGFOCPLAN","Forecast(월).생산");put("SALESFOCPLAN","Forecast(월).매출");
 			put("SHIPPINGEXEPLAN","실행계획(월).생산");put("SALESEXEPLAN","실행계획(월).매출");
-			put("BOH","MOVEMENT.기초");put("SUMOFRECEIVING","MOVEMENT.입고");put("SUMOFSHIPPING","MOVEMENT.출하");put("WIP","MOVEMENT.WIP");
+			put("BOH","Movement.기초");put("SUMOFRECEIVING","Movement.입고");put("SUMOFSHIPPING","Movement.출하");put("WIP","Movement.WIP");
 			put("PERSHIPPING","실적.출하달성율");	put("SUMOFSALES","실적.매출");put("PERSALES","실적.매출달성율");
 		}
 	};
@@ -603,7 +605,7 @@ public class ResultsetConverter {
 	public static final Map<String, String> getDailyOperationRatioColumnMapper = new HashMap<String, String>() {
 		{
 			put("DIVISION","사업부");put("GUBUN","구분");
-			put("TARGETOR","목표가동율");put("LASTMONTHAVG","전월가동율");	put("MONTHAVG","금월누적가동율");
+			put("TARGETOR","목표가동율");put("LASTMONTHAVG","전월가동율");	put("MONTHAVG","금월가동율");
 		}
 	};
 	public static final Map<String, String> getDailyTatColumnMapper = new HashMap<String, String>() {
@@ -619,10 +621,10 @@ public class ResultsetConverter {
 		
 		if (operation.equalsIgnoreCase("getDailyShippingNSales")) {
 			
-			GroupHeader gh1 = new GroupHeader("PLAN(월).생산", 2, 2, "PLAN(월)");
-			GroupHeader gh2 = new GroupHeader("FORECAST(월).생산", 4, 2, "FORECAST(월)" );
+			GroupHeader gh1 = new GroupHeader("Plan(월).생산", 2, 2, "Plan(월)");
+			GroupHeader gh2 = new GroupHeader("Forecast(월).생산", 4, 2, "Forecast(월)" );
 			GroupHeader gh3 = new GroupHeader("실행계획(월).생산", 6, 2, "실행계획(월)");
-			GroupHeader gh4 = new GroupHeader("MOVEMENT.기초", 8, 4, "MOVEMENT");
+			GroupHeader gh4 = new GroupHeader("Movement.기초", 8, 4, "Movement");
 			GroupHeader gh5 = new GroupHeader("실적.출하달성율", 12, 3, "실적");
 			GroupHeader[] groupHeaders = new GroupHeader[]{gh1, gh2, gh3, gh4, gh5};
 			
@@ -799,9 +801,9 @@ public class ResultsetConverter {
 					if (columnName.equalsIgnoreCase("DIVISION")) {
 						rowMap.put("사업부", value);
 						groupNames[i] = "사업부"; 
-					} else if (columnName.equalsIgnoreCase("TOTAL")) {
-						rowMap.put("TOTAL", value);
-						groupNames[i] = "TOTAL"; 
+					} else if (columnName.equalsIgnoreCase("Total")) {
+						rowMap.put("Total", value);
+						groupNames[i] = "Total"; 
 					} else {
 						rowMap.put(columnName.substring(1, 5) + "년" + columnName.substring(5,7) + "월" , value);
 						groupNames[i] = columnName.substring(1, 5) + "년" + columnName.substring(5,7) + "월";
@@ -838,9 +840,9 @@ public class ResultsetConverter {
 					if (columnName.equalsIgnoreCase("DIVISION")) {
 						rowMap.put("사업부", value);
 						groupNames[i] = "사업부"; 
-					} else if (columnName.equalsIgnoreCase("TOTAL")) {
-						rowMap.put("TOTAL", value);
-						groupNames[i] = "TOTAL"; 
+					} else if (columnName.equalsIgnoreCase("Total")) {
+						rowMap.put("Total", value);
+						groupNames[i] = "Total"; 
 					} else {
 						rowMap.put(columnName.substring(1, 5) + "년" + columnName.substring(5,7) + "월" , value);
 						groupNames[i] = columnName.substring(1, 5) + "년" + columnName.substring(5,7) + "월";
