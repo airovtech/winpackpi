@@ -20,8 +20,6 @@
 	var chart2FieldNames = ["합계"];
 	
 	var getReportData = function(reportData){
-		console.log('reportData=', reportData);
-		console.log('colNames=', colNames);
 		var chartValues = Array();
 		for(var i=0; i<12; i++){
 			var pkt = 0;
@@ -109,7 +107,6 @@
 			   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 			         datatype: "json",      //json형태로 데이터 받음.  
 			         height: "auto",
-			         caption: "1년간 월별 매출 실적 TREND",
 			         footerrow:true,
 			         grouping:false, //그룹화 하기위한 옵션
 			         autowidth:true,
@@ -132,7 +129,7 @@
 
 			 			 $(".footrow td").css('background-color', '#E8FFFF');
 			        	  
-						$("#list").setGridWidth($('.js_work_report_view_page').width());				
+						$("#list").setGridWidth($('.js_work_report_view_page').width()-2);				
 			     		 loadChart(jQuery("#list").jqGrid('getRowData'));
 			          },
 			          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
@@ -223,14 +220,9 @@
 			reloadGrid();	  
 		});   
 		$(window).resize(function() {
-			if(swReportResizing) return;			
 			if(!isEmpty($('.js_work_report_view_page'))){
-				swReportResizing = true;
-				setTimeout(function(){
-					$("#list").setGridWidth($('.js_work_report_view_page').width());				
-		     		loadChart(jQuery("#list").jqGrid('getRowData'));
-					swReportResizing = false;
-				},1000);
+				$("#list").setGridWidth($('.js_work_report_view_page').width()-2);				
+	     		loadChart(jQuery("#list").jqGrid('getRowData'));
 			}
 		});
 	});
@@ -238,44 +230,49 @@
  
 </head>
 <body>
-<div>
-<jsp:include page="./chartMenu.jsp" flush="false"/>
-</div>
-<div style="text-align:left">
-	<%
-		Date today = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(today);
-		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.MONTH);
-	%>
-	
-		<select id='sel_year' class='selDate'>
-			<%
-			if(year>=2012){
-				for(int i=0; i+2012<=year; i++){
-					int currentYear = i+2012;
-			%>
-					<option <%if(currentYear==year) {%> selected <%} %>value='<%=currentYear%>'><%=currentYear%>년</option>
-			<%
-				}
-			}
-			%>
-		</select>
-	<select id='sel_month' class='selDate'>
-		<%
-		for(int i=0; i<12; i++){
-		%>
-			<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
-		<%
-		}
-		%>
-	 </select>
-</div>
-<table id="list"></table> 
-<br/><br/>
-<div class="js_work_report_view_page">
-	<div id="chart_target"></div>
-</div>
+	<div  class="js_work_report_view_page">
+		<div class="kpi_tab_section">
+			<jsp:include page="./chartMenu.jsp" flush="false"/>
+			<table>
+				<tr style="background-color:#dfeffc">
+					<th>
+						<%
+							Date today = new Date();
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(today);
+							int year = cal.get(Calendar.YEAR);
+							int month = cal.get(Calendar.MONTH);
+						%>
+						
+						<select id='sel_year' class='selDate'>
+							<%
+							if(year>=2012){
+								for(int i=0; i+2012<=year; i++){
+									int currentYear = i+2012;
+							%>
+									<option <%if(currentYear==year) {%> selected <%} %>value='<%=currentYear%>'><%=currentYear%>년</option>
+							<%
+								}
+							}
+							%>
+						</select>
+						<select id='sel_month' class='selDate'>
+							<%
+							for(int i=0; i<12; i++){
+							%>
+								<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
+							<%
+							}
+							%>
+						 </select>
+					</th>
+					<th style="float:right">(단위 : 백만원)</th>
+				</tr>
+			</table>
+			<table id="list"></table> 
+			<br/><br/>
+			<div class="js_work_report_view_page"><div id="chart_target"></div></div>
+		</div>
+	</div>
 </body>
 </html>

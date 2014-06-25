@@ -229,7 +229,7 @@ Ext.onReady(function () {
 						minimum : 0,
 						position : y2AxisPosition,
 						grid : false,
-						fields : [swReportInfo.y2FieldName],
+						fields : swReportInfo.chart2FieldNames,
 						minorTickSteps : 1,
 						label: numericLabel
 					}, {
@@ -300,6 +300,14 @@ Ext.onReady(function () {
                 };
 			var axis = "left";
 			if(chartType === swChartType.BAR) axis = "bottom";
+
+			var y2AxisPosition = "right";
+			if(chartType === swChartType.BAR){
+				y2AxisPosition = "top";
+			}
+			if(isEmpty(swReportInfo.y2FieldName)){
+				y2AxisPosition = axis;
+			}
 			
 			if(chartType === swChartType.LINE){
 				var series = new Array();
@@ -320,7 +328,7 @@ Ext.onReady(function () {
 		                    height : 32,
 		                    width : 100,
 		                    renderer: function(storeItem, item) {
-		                    	this.setTitle(item.series.yField + "<br>" + item.value[1]);
+		                    	this.setTitle(item.series.yField + "<br>" + Ext.util.Format.number(item.value[1], (item.value[1]%1==0?'0,000':'0,000.00')));
 		                    }
 		                }
 					});
@@ -330,18 +338,26 @@ Ext.onReady(function () {
 						if(swReportInfo.chart2Type == swChartType.LINE){
 							series.push({
 								type : swReportInfo.chart2Type,
-								axis : axis,
+								axis : y2AxisPosition,
 								xField : swReportInfo.xFieldName,
 								yField : swReportInfo.chart2FieldNames[i],
 								showInLegend: swReportInfo.is3Dimension,
 				                markerConfig: markerConfigNone,
-				                highlight: false,
-				                smooth: true
+				                highlight: highlight,
+				                smooth: true,
+				                tips: {
+				                    trackMouse: true,
+				                    height : 32,
+				                    width : 100,
+				                    renderer: function(storeItem, item) {
+				                    	this.setTitle(item.series.yField + "<br>" + Ext.util.Format.number(item.value[1], (item.value[1]%1==0?'0,000':'0,000.00')));
+				                    }
+				                }
 							});
 						}else if(swReportInfo.chart2Type == swChartType.AREA){
 							series.push({
 								type : swReportInfo.chart2Type,
-								axis : axis,
+								axis : y2AxisPosition,
 								xField : swReportInfo.xFieldName,
 								yField : swReportInfo.chart2FieldNames[i],
 							    showInLegend: swReportInfo.is3Dimension,
@@ -355,7 +371,7 @@ Ext.onReady(function () {
 				                    height : 32,
 				                    width : 100,
 				                    renderer: function(storeItem, item) {
-				                    	this.setTitle(item.storeField + "<br>" + storeItem.data[item.storeField] );
+				                    	this.setTitle(item.series.yField + "<br>" + Ext.util.Format.number(storeItem.data[item.series.yField], (storeItem.data[item.series.yField]%1==0?'0,000':'0,000.00')) );
 				                    }
 				                }
 							});						
@@ -377,7 +393,7 @@ Ext.onReady(function () {
 		                    height : 32,
 		                    width : 100,
 		                    renderer: function(storeItem, item) {
-		                    	this.setTitle(item.series.yField + "<br>" + storeItem.data[item.series.yField] );
+		                    	this.setTitle(item.series.yField + "<br>" + Ext.util.Format.number(storeItem.data[item.series.yField], (storeItem.data[item.series.yField]%1==0?'0,000':'0,000.00')) );
 		                    }
 		                },
 						style:{
@@ -404,7 +420,7 @@ Ext.onReady(function () {
 		                    height : 32,
 		                    width : 100,
 		                    renderer: function(storeItem, item) {
-		                    	this.setTitle(item.series.yField + "<br>" + storeItem.data[item.series.yField] );
+		                    	this.setTitle(item.series.yField + "<br>" + Ext.util.Format.number(storeItem.data[item.series.yField], (storeItem.data[item.series.yField]%1==0?'0,000':'0,000.00')) );
 		                    }
 		                },
 		                style : {
@@ -430,7 +446,7 @@ Ext.onReady(function () {
 	                    height : 32,
 	                    width : 100,
 	                    renderer: function(storeItem, item) {
-	                    	this.setTitle(item.storeField + "<br>" + storeItem.data[item.storeField] );
+	                    	this.setTitle(item.storeField + "<br>" + Ext.util.Format.number(storeItem.data[item.storeField], (storeItem.data[item.storeField]%1==0?'0,000':'0,000.00')) );
 	                    }
 	                }
 				}];
@@ -453,7 +469,7 @@ Ext.onReady(function () {
 	                    height : 32,
 	                    width : 100,
 	                    renderer: function(storeItem, item) {
-	                    	this.setTitle(item.yField + "<br>" + item.value[1]);
+	                    	this.setTitle(item.yField + "<br>" + Ext.util.Format.number(item.value[1], (item.value[1]%1==0?'0,000':'0,000.00')));
 	                    }
 	                }
 				});
@@ -463,18 +479,26 @@ Ext.onReady(function () {
 						if(swReportInfo.chart2Type == swChartType.LINE){
 							series.push({
 								type : swReportInfo.chart2Type,
-								axis : axis,
+								axis : y2AxisPosition,
 								xField : swReportInfo.xFieldName,
 								yField : swReportInfo.chart2FieldNames[i],
 								showInLegend: swReportInfo.is3Dimension,
 				                markerConfig: markerConfigNone,
-				                highlight: false,
-				                smooth: true
+				                highlight: highlight,
+				                smooth: true,
+				                tips: {
+				                    trackMouse: true,
+				                    height : 32,
+				                    width : 100,
+				                    renderer: function(storeItem, item) {
+				                    	this.setTitle(item.series.yField + "<br>" + Ext.util.Format.number(item.value[1], (item.value[1]%1==0?'0,000':'0,000.00')));
+				                    }
+				                }
 							});
 						}else if(swReportInfo.chart2Type == swChartType.AREA){
 							series.push({
 								type : swReportInfo.chart2Type,
-								axis : axis,
+								axis : y2AxisPosition,
 								xField : swReportInfo.xFieldName,
 								yField : swReportInfo.chart2FieldNames[i],
 							    showInLegend: swReportInfo.is3Dimension,
@@ -488,7 +512,7 @@ Ext.onReady(function () {
 				                    height : 32,
 				                    width : 100,
 				                    renderer: function(storeItem, item) {
-				                    	this.setTitle(item.storeField + "<br>" + storeItem.data[item.storeField] );
+				                    	this.setTitle(item.series.yField + "<br>" + Ext.util.Format.number(storeItem.data[item.series.yField], (storeItem.data[item.series.yField]%1==0?'0,000':'0,000.00')) );
 				                    }
 				                }
 							});						
@@ -738,9 +762,9 @@ Ext.onReady(function () {
 					series : smartChart.getSeries(swReportInfo.chartType, target)
 				});
 			}
-			$(".js_work_report_view_page text[text='" + swReportInfo.xFieldName + "']").css("font-size", "14px");
-			$(".js_work_report_view_page text[text='" + swReportInfo.yValueName + "']").css("font-size", "14px");
-			$(".js_work_report_view_page text[text='" + swReportInfo.y2FieldName + "']").css("font-size", "14px");
+			$(".js_work_report_view_page text[text='" + swReportInfo.xFieldName + "']").css("font-size", "13px");
+			$(".js_work_report_view_page text[text='" + swReportInfo.yValueName + "']").css("font-size", "13px");
+			$(".js_work_report_view_page text[text='" + swReportInfo.y2FieldName + "']").css("font-size", "13px");
 		}
 	};
 });
@@ -750,8 +774,8 @@ var targetElement = function(e){
 };
 
 var selectMenuItem = function(menuId){
-	$('.js_chart_menu_items li').removeClass('current');
-	$('.js_chart_menu_items li[menuId="' + menuId + '"]').addClass('current');
+	$('.js_chart_menu_items th').removeClass('current');
+	$('.js_chart_menu_items th[menuId="' + menuId + '"]').addClass('current');
 };
 
 var currencyFmatter = function(cellvalue, options, rowObject){

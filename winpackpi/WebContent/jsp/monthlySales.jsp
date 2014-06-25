@@ -14,16 +14,14 @@
 	
 	var reportData = null;
 	var chartData = null;
-	var chart2FieldNames = ["PLAN vs 실적(%)", "Forecast vs 실적(%)"];
-	var y2Field = "PLAN vs 실적(%)";
+	var chart2FieldNames = ["Plan vs 실적(%)", "Forecast vs 실적(%)"];
+	var y2Field = "Plan vs 실적 (%)";
 	
 	var getReportData = function(reportData){
 		
-		console.log('reportData=', reportData);
-		
 		chartData = new Array();
 		
-		var divisions = ['pkt', 'pkg', 'nbiz', 'TOTAL'];
+		var divisions = ['PKT', 'PKG', 'NBIZ', 'Total'];
 		for(var idx=0; idx<divisions.length; idx++){
 			var chartValues = Array();
 		 	for(var i=0; i<12; i++){
@@ -35,32 +33,31 @@
 		 		for(var j=0; j<reportData.length; j++){
 		 			if(reportData[j].DIVISION != divisions[idx] ) continue;
 		 			
-		 			if(reportData[j].GUBUN == "PLAN"){
+		 			if(reportData[j].GUBUN == "Plan"){
 		 				plan = parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
 		 			}else if(reportData[j].GUBUN == "Forecast"){
 		 				forecast = parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
 		 			}else if(reportData[j].GUBUN == "매출실적"){
 		 				result = parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
-		 			}else if(reportData[j].GUBUN == "PLAN vs 실적(%)"){
+		 			}else if(reportData[j].GUBUN == "Plan vs 실적(%)"){
 		 				planResult = parseFloat(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
 		 			}else if(reportData[j].GUBUN == "Forecast vs 실적(%)"){
-		 				forecastResult = parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
+		 				forecastResult = parseFloat(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
 		 			}
 		 		}
 		 		chartValues[i] = {  월별: (i+1) + "", 
-		 				PLAN: plan,
+		 				Plan: plan,
 		 				Forecast: forecast,
 		 				매출실적: result,
-		 				'PLAN vs 실적(%)': planResult,
+		 				'Plan vs 실적(%)': planResult,
 		 				'Forecast vs 실적(%)': forecastResult};					
 		 	}
-			
 			chartData.push({
 					title : divisions[idx],
 					values : chartValues,
 					xFieldName : "월별",
-					yValueName : "PLAN",
-					groupNames : ["PLAN", "Forecast", "매출실적"]
+					yValueName : "Plan",
+					groupNames : ["Plan", "Forecast", "매출실적"]
 			});
 		}
 	};
@@ -68,10 +65,10 @@
 	var loadChart = function(data) {
 		getReportData(data);
 		Ext.onReady(function () {
+			$('.js_work_report_view_page .js_chart_target').remove();			
 			for(var i=0; i<chartData.length; i++){
-				$('.js_work_report_view_page').append('<div id="chart_target' + (i+1) + '"></div>');
+				$('.js_work_report_view_page').append('<div id="chart_target' + (i+1) + '" class="js_chart_target"></div>');
 				smartChart.loadWithData(chartData[i], "column", false, "chart_target"+(i+1), chart2FieldNames, "line", y2Field);
-				console.log('chartData', chartData[i]);
 			}
 		});
 	};
@@ -81,7 +78,6 @@
 	   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 	         datatype: "json",      //json형태로 데이터 받음.  
 	         height: 'auto',
-	         caption: "월별 매출 실적 현황",
 	         footerrow:false,
 	         grouping:true, //그룹화 하기위한 옵션
 	         autowidth:true,
@@ -92,28 +88,28 @@
 	             groupText : ['<span style="color:blue"><b>{0}</b></span>'] //그룹화된 이름에 <b> 태그를 추가했다.
 	         },
 	         
-	         colNames:['사업부','구분', '1월', '2월','3월', '4월', '5월', '6월', '7월'	, '8월'	, '9월'	, '10월', '11월', '12월', 'YTD', 'TOTAL'],
+	         colNames:['사업부','구분', '1월', '2월','3월', '4월', '5월', '6월', '7월'	, '8월'	, '9월'	, '10월', '11월', '12월', 'YTD', 'Total'],
 	         colModel:[                  
 	             {name:'DIVISION', index:'DIVISION', align: 'center',  sortable:false },
-	             {name:'GUBUN', index:'GUBUN', align: 'center',  sortable:false },
-	             {name:'C01', index:'C01', summaryType: 'sum',  sortable:false},
-	             {name:'C02', index:'C02', summaryType: 'sum',  sortable:false},
-	             {name:'C03', index:'C03', summaryType: 'sum',  sortable:false},
-	             {name:'C04', index:'C04', summaryType: 'sum',  sortable:false},
-	             {name:'C05', index:'C05', summaryType: 'sum',  sortable:false},
-	             {name:'C06', index:'C06', summaryType: 'sum',  sortable:false},
-	             {name:'C07', index:'C07', summaryType: 'sum',  sortable:false},
-	             {name:'C08', index:'C08', summaryType: 'sum',  sortable:false},
-	             {name:'C09', index:'C09', summaryType: 'sum',  sortable:false},
-	             {name:'C10', index:'C10', summaryType: 'sum',  sortable:false},
-	             {name:'C11', index:'C11', summaryType: 'sum',  sortable:false},
-	             {name:'C12', index:'C12', summaryType: 'sum',  sortable:false},
-	             {name:'YTD', index:'YTD', summaryType: 'sum',  sortable:false},
-	             {name:'TOTAL', index:'TOTAL', summaryType: 'sum',  sortable:false}
+	             {name:'GUBUN', index:'GUBUN', width:'250', align: 'center',  sortable:false },
+	             {name:'C01', index:'C01', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
+	             {name:'C02', index:'C02', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
+	             {name:'C03', index:'C03', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
+	             {name:'C04', index:'C04', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
+	             {name:'C05', index:'C05', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
+	             {name:'C06', index:'C06', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
+	             {name:'C07', index:'C07', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
+	             {name:'C08', index:'C08', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
+	             {name:'C09', index:'C09', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
+	             {name:'C10', index:'C10', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
+	             {name:'C11', index:'C11', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
+	             {name:'C12', index:'C12', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
+	             {name:'YTD', index:'YTD', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
+	             {name:'TOTAL', index:'TOTAL', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}}
 	         ],
 	         //객체에 담긴 이름값과 name이 같은 지 확인 잘하길... 나는 대소문자 구별 때문에 행은 늘어나는데 데이터가 나타나지 않아서 한참 헤맴...
 	          gridComplete : function() { 
-				$("#list").setGridWidth($('.js_work_report_view_page').width());				
+				$("#list").setGridWidth($('.js_work_report_view_page').width()-2);				
 	     		 loadChart(jQuery("#list").jqGrid('getRowData'));
 	          },
 	          loadError:function(xhr, status, error) {          //---데이터 못가져오면 실행 됨
@@ -124,7 +120,8 @@
 	   		},
 	         multiselect: false,         //전체선택 체크박스 유무, 테이블에서 row 체크를 멀티로 할 수 있는 옵션.
 	     });
-	};
+	  	$(".ui-jqgrid-bdiv").css('overflow-x', 'hidden');
+};
 	
 	$(document).ready( function() { 
 		selectMenuItem('monthlySales');
@@ -141,14 +138,9 @@
 			reloadGrid();	  
 		});   
 		$(window).resize(function() {
-			if(swReportResizing) return;			
 			if(!isEmpty($('.js_work_report_view_page'))){
-				swReportResizing = true;
-				setTimeout(function(){
-					$("#list").setGridWidth($('.js_work_report_view_page').width());				
-		     		loadChart(jQuery("#list").jqGrid('getRowData'));
-					swReportResizing = false;
-				},1000);
+				$("#list").setGridWidth($('.js_work_report_view_page').width()-2);				
+	     		loadChart(jQuery("#list").jqGrid('getRowData'));
 			}
 		});
 	});
@@ -156,43 +148,49 @@
  
 </head>
 <body>
-<div>
-<jsp:include page="./chartMenu.jsp" flush="false"/>
-</div>
-<div style="text-align:left">
-	<%
-		Date today = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(today);
-		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.MONTH);
-	%>
-	
-		<select id='sel_year' class='selDate'>
-			<%
-			if(year>=2012){
-				for(int i=0; i+2012<=year; i++){
-					int currentYear = i+2012;
-			%>
-					<option <%if(currentYear==year) {%> selected <%} %>value='<%=currentYear%>'><%=currentYear%>년</option>
-			<%
-				}
-			}
-			%>
-		</select>
-	<select id='sel_month' class='selDate'>
-		<%
-		for(int i=0; i<12; i++){
-		%>
-			<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
-		<%
-		}
-		%>
-	 </select>
-</div>
-<table id="list"></table> 
-<br/><br/>
-<div class="js_work_report_view_page">
-</div>
+	<div  class="js_work_report_view_page">
+		<div class="kpi_tab_section">
+			<jsp:include page="./chartMenu.jsp" flush="false"/>
+			<table>
+				<tr style="background-color:#dfeffc;border-left: 1px solid #bbbaba;border-right: 1px solid #bbbaba">
+					<th>
+						<%
+							Date today = new Date();
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(today);
+							int year = cal.get(Calendar.YEAR);
+							int month = cal.get(Calendar.MONTH);
+						%>
+						
+						<select id='sel_year' class='selDate'>
+							<%
+							if(year>=2012){
+								for(int i=0; i+2012<=year; i++){
+									int currentYear = i+2012;
+							%>
+									<option <%if(currentYear==year) {%> selected <%} %>value='<%=currentYear%>'><%=currentYear%>년</option>
+							<%
+								}
+							}
+							%>
+						</select>
+						<select id='sel_month' class='selDate' style="display:none">
+							<%
+							for(int i=0; i<12; i++){
+							%>
+								<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
+							<%
+							}
+							%>
+						 </select>
+					</th>
+					<th style="float:right">(단위 : 백만원)</th>
+				</tr>
+			</table>
+			<table id="list"></table> 
+			<br/><br/>
+			<div class="js_work_report_view_page"></div>
+		</div>
+	</div>
 </body>
 </html>

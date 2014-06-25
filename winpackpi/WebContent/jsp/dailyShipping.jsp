@@ -49,8 +49,8 @@
 	    } else {
 	    	planOfShippingSum= planOfShippingSum + parseFloat(rowObject.PLANOFSHIPPING);
 	    }
-		if(planOfShippingSum == 0.0 || isNaN(planOfShippingSum)) return (0).toFixed(2);
-		return (planOfShippingSum/nalsu[parseInt(month)-1]).toFixed(2);
+		if(planOfShippingSum == 0.0 || isNaN(planOfShippingSum)) return 0;
+		return (planOfShippingSum/nalsu[parseInt(month)-1]).toFixed(0);
 	}
 	function mitAvgOfDay(cellValue, opetions, rowObject) {
 		var year = $('#sel_year').val();
@@ -67,12 +67,12 @@
 	    	mitAvgOfDaySum= mitAvgOfDaySum + parseFloat(rowObject.TOTALSUM);
 	    }
 		
-		if(mitAvgOfDaySum == 0.0 || isNaN(mitAvgOfDaySum)) return (0).toFixed(2);
+		if(mitAvgOfDaySum == 0.0 || isNaN(mitAvgOfDaySum)) return 0;
 		
 		if (($('#sel_year').val() + '' + $('#sel_month').val()) == date) {
-			return (mitAvgOfDaySum / toDay).toFixed(2);
+			return (mitAvgOfDaySum / toDay).toFixed(0);
 		} else {
-			return (mitAvgOfDaySum / nalsu[parseInt(month)-1]).toFixed(2);
+			return (mitAvgOfDaySum / nalsu[parseInt(month)-1]).toFixed(0);
 		}
 	}
 	function shippingRatio(cellValue, opetions, rowObject) {
@@ -98,9 +98,9 @@
 		if(mitAvgOfDaySum2 == 0.0 || planOfShippingSum2 == 0.0 || isNaN(mitAvgOfDaySum2) || isNaN(planOfShippingSum2)) return (0).toFixed(2);
 		
 		if (($('#sel_year').val() + '' + $('#sel_month').val()) == date) {
-			return ((mitAvgOfDaySum2 / ((planOfShippingSum2/dayCountOfThisMonth)* toDay)) * 100).toFixed(2) + '%';
+			return ((mitAvgOfDaySum2 / ((planOfShippingSum2/dayCountOfThisMonth)* toDay)) * 100).toFixed(2);
 		} else {
-			return ((mitAvgOfDaySum2 / planOfShippingSum2) * 100).toFixed(2) + '%';
+			return ((mitAvgOfDaySum2 / planOfShippingSum2) * 100).toFixed(2);
 		}
 	}
 	
@@ -110,7 +110,6 @@
 	var chart2FieldNames = ["합계"];
 	
 	var getReportData = function(reportData){
-		console.log('reportData=', reportData);
 	
 		var chartValues = Array();
 		for(var i=0; i<31; i++){
@@ -158,7 +157,6 @@
 	   		 url:'../getKpi.jsp?method=' + method + '&yearMonth=' + $('#sel_year').val() + $('#sel_month').val(),        //데이터를 요청 할 주소...  
 	         datatype: "json",      //json형태로 데이터 받음.  
 	         height: 'auto',
-	         caption: "일별 생산 실적 현황",
 	         footerrow:true,
 	         grouping:true, //그룹화 하기위한 옵션
 	         autowidth:true,
@@ -168,15 +166,15 @@
 	             groupColumnShow : [false], //그룹화된 컬럼을 컬럼안에서 다시 표기한다.
 	             groupText : ['<span style="color:blue"><b>{0}</b></span>'] //그룹화된 이름에 <b> 태그를 추가했다.
 	         },
- 	         colNames:['사업부','구분','금월', '일평균','MIT', '일평균','달성률(%)', 'WIP', '1', '2','3', '4', '5', '6'	, '7'	, '8'	, '9'	, '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
+ 	         colNames:['사업부','구분','금월', '일평균','MIT', '일평균','달성률', 'WIP', '1', '2','3', '4', '5', '6'	, '7'	, '8'	, '9'	, '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
 	         colModel:[                  
 	             {name:'DIVISION', index:'DIVISION', align: 'center',  sortable:false },
 	             {name:'DEVICEGROUP', index:'DEVICEGROUP', width: '350',  sortable:false, summaryTpl: '<div><b>total</b></div>', summaryType: function(){}},
 	             {name:'PLANOFSHIPPING', index:'PLANOFSHIPPING', width: '250', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
-	             {name:'AVGPLANOFDAY', index:'AVGPLANOFDAY', width: '250', summaryType: planShippingAvgOfDay, sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ",", suffix:"%", defaultValue:"0%"}},
+	             {name:'AVGPLANOFDAY', index:'AVGPLANOFDAY', width: '250', summaryType: planShippingAvgOfDay, sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
 	             {name:'TOTALSUM', index:'TOTALSUM', width: '250', summaryType: 'sum', sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
-	             {name:'AVGOFDAY', index:'AVGOFDAY', width: '250', summaryType: mitAvgOfDay, sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ",", suffix:"%", defaultValue:"0%"}},
-	             {name:'PERSHIPPING', index:'PERSHIPPING', width: '300', summaryType: shippingRatio,  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ",", suffix:"%", defaultValue:"0%"}},
+	             {name:'AVGOFDAY', index:'AVGOFDAY', width: '250', summaryType: mitAvgOfDay, sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'PERSHIPPING', index:'PERSHIPPING', width: '250', summaryType: shippingRatio,  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ",", suffix:"%", defaultValue:"0%"}},
 	             {name:'WIP', index:'WIP', summaryType: 'sum', sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
 	             {name:'C01', index:'C01', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
 	             {name:'C02', index:'C02', summaryType: 'sum',  sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
@@ -223,19 +221,19 @@
         			nalsu[1] = 29; //윤년 체크
         		}
        	 	
-        	 	var totalPlanAvgOfDay = PLANOFSHIPPINGSUM==0 ? (0).toFixed(2) : (PLANOFSHIPPINGSUM/nalsu[parseInt(month)-1]).toFixed(2);;
+        	 	var totalPlanAvgOfDay = PLANOFSHIPPINGSUM==0 ? (0).toFixed(0) : (PLANOFSHIPPINGSUM/nalsu[parseInt(month)-1]).toFixed(0);;
         	 	var totalShippingAvgOfDay = 0;
     			var perTotalShipping = 0;
         		if (($('#sel_year').val() + '' + $('#sel_month').val()) == date) {
-        			if(MITTOTALSUM == 0 ) totalShippingAvgOfDay = (0).toFixed(2);
-        			else totalShippingAvgOfDay = (MITTOTALSUM / toDay).toFixed(2);
+        			if(MITTOTALSUM == 0 ) totalShippingAvgOfDay = 0;
+        			else totalShippingAvgOfDay = (MITTOTALSUM / toDay).toFixed(0);
         			if(MITTOTALSUM == 0 || PLANOFSHIPPINGSUM == 0 ) perTotalShipping = (0).toFixed(2);
-        			else perTotalShipping = ((MITTOTALSUM / ((PLANOFSHIPPINGSUM/dayCountOfThisMonth) * toDay)) * parseInt(100)).toFixed(2) + '%';
+        			else perTotalShipping = ((MITTOTALSUM / ((PLANOFSHIPPINGSUM/dayCountOfThisMonth) * toDay)) * parseInt(100)).toFixed(2);
         		} else {
-        			if(MITTOTALSUM == 0 ) totalShippingAvgOfDay = (0).toFixed(2);
-        			else totalShippingAvgOfDay = (MITTOTALSUM / nalsu[parseInt(month)-1]).toFixed(2);
+        			if(MITTOTALSUM == 0 ) totalShippingAvgOfDay = 0;
+        			else totalShippingAvgOfDay = (MITTOTALSUM / nalsu[parseInt(month)-1]).toFixed(0);
         			if(MITTOTALSUM == 0 || PLANOFSHIPPINGSUM == 0 ) perTotalShipping = (0).toFixed(2);
-        			else perTotalShipping = ((MITTOTALSUM / PLANOFSHIPPINGSUM) * parseInt(100)).toFixed(2) + '%';
+        			else perTotalShipping = ((MITTOTALSUM / PLANOFSHIPPINGSUM) * parseInt(100)).toFixed(2);
         		}
         	 	
         	 	var WIPSUM = $("#list").jqGrid('getCol', 'WIP', false, 'sum');
@@ -279,9 +277,9 @@
              		, C18:C18SUM, C19:C19SUM, C20:C20SUM, C21:C21SUM, C22:C22SUM, C23:C23SUM, C24:C24SUM, C25:C25SUM, C26:C26SUM, C27:C27SUM, C28:C28SUM
              		, C29:C29SUM, C30:C30SUM, C31:C31SUM});
 	        	 
-				$("#list").setGridWidth($('.js_work_report_view_page').width());					        	 
+				$("#list").setGridWidth($('.js_work_report_view_page').width()-2);					        	 
 	     		 loadChart(jQuery("#list").jqGrid('getRowData'));
-	      		$('.ui-jqgrid-hdiv th').css('font-size', '11px');
+		      	$('.ui-jqgrid-hdiv th').css('font-size', '11px').css('text-align', 'center');
 	     		$('.ui-jqgrid-bdiv').css('overflow', 'hidden');
 	    		$('.ui-jqgrid-bdiv td').css('font-size', '11px');
 	    		$('.ui-jqgrid-sdiv td').css('font-size', '11px');
@@ -322,14 +320,9 @@
 			reloadGrid();	  
 		});   
 		$(window).resize(function() {
-			if(swReportResizing) return;			
 			if(!isEmpty($('.js_work_report_view_page'))){
-				swReportResizing = true;
-				setTimeout(function(){
-					$("#list").setGridWidth($('.js_work_report_view_page').width());				
-		     		loadChart(jQuery("#list").jqGrid('getRowData'));
-					swReportResizing = false;
-				},1000);
+				$("#list").setGridWidth($('.js_work_report_view_page').width()-2);				
+	     		loadChart(jQuery("#list").jqGrid('getRowData'));
 			}
 		});
 	}); 
@@ -338,44 +331,49 @@
  
 </head>
 <body>
-<div>
-<jsp:include page="./chartMenu.jsp" flush="false"/>
-</div>
-<div style="text-align:left">
-	<%
-		Date today = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(today);
-		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.MONTH);
-	%>
-	
-		<select id='sel_year' class='selDate'>
-			<%
-			if(year>=2012){
-				for(int i=0; i+2012<=year; i++){
-					int currentYear = i+2012;
-			%>
-					<option <%if(currentYear==year) {%> selected <%} %>value='<%=currentYear%>'><%=currentYear%>년</option>
-			<%
-				}
-			}
-			%>
-		</select>
-	<select id='sel_month' class='selDate'>
-		<%
-		for(int i=0; i<12; i++){
-		%>
-			<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
-		<%
-		}
-		%>
-	 </select>
-</div>
-<table id="list"></table>
-<br/><br/>
-<div class="js_work_report_view_page">
-	<div id="chart_target"></div>
-</div>
+	<div  class="js_work_report_view_page">
+		<div class="kpi_tab_section">
+			<jsp:include page="./chartMenu.jsp" flush="false"/>
+			<table>
+				<tr style="background-color:#dfeffc;border-left: 1px solid #bbbaba;border-right: 1px solid #bbbaba">
+					<th>
+						<%
+							Date today = new Date();
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(today);
+							int year = cal.get(Calendar.YEAR);
+							int month = cal.get(Calendar.MONTH);
+						%>
+						
+						<select id='sel_year' class='selDate'>
+							<%
+							if(year>=2012){
+								for(int i=0; i+2012<=year; i++){
+									int currentYear = i+2012;
+							%>
+									<option <%if(currentYear==year) {%> selected <%} %>value='<%=currentYear%>'><%=currentYear%>년</option>
+							<%
+								}
+							}
+							%>
+						</select>
+						<select id='sel_month' class='selDate'>
+							<%
+							for(int i=0; i<12; i++){
+							%>
+								<option <%if(month==i) {%>selected<%} %> value='<%=String.format("%02d", i+1)%>01'><%=i+1 %>월</option>
+							<%
+							}
+							%>
+						 </select>
+					</th>
+					<th style="float:right">(단위 : K)</th>
+				</tr>
+			</table>
+			<table id="list"></table> 
+			<br/><br/>
+			<div class="js_work_report_view_page"><div id="chart_target"></div></div>
+		</div>
+	</div>
 </body>
 </html>
