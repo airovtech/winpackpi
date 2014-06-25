@@ -1,0 +1,38 @@
+select formfieldname, tablecolname, formfieldtype from swdomainfield where domainid = (
+    select id from swdomain where formname='경영계획'
+)
+union
+select tblname, tblname, tblname from swdomain where formname='경영계획'
+
+create or replace force view SW_PLANOFMANAGEMENT as
+select c0 as DIVISION, c1 as CUSTOMER, c2 as DEVICEGROUP, c5 as COLLECTINGMONTH, c6 as SHIPPINGPLANOFMONTH, c7 as SALESPLANOFMONTH from dt_1403082551978
+
+---------------------------------------------------------------------------------------------------------
+select formfieldname, tablecolname, formfieldtype from swdomainfield where domainid = (
+    select id from swdomain where formname='예상계획'
+)
+union
+select tblname, tblname, tblname from swdomain where formname='예상계획'
+
+create or replace force view SW_PLANOFFORECAST as
+select c0 as DIVISION, c1 as CUSTOMER, c2 as DEVICEGROUP, c8 as DEVICE, c5 as COLLECTINGMONTH, c6 as SHIPPINGPLANOFMONTH, c7 as SALESPLANOFMONTH from dt_1403082578840
+
+-----------------------------------------------------------------------------------------------------------
+select formfieldname, tablecolname, formfieldtype from swdomainfield where domainid = (
+    select id from swdomain where formname='월별목표가동율'
+)
+union
+select tblname, tblname, tblname from swdomain where formname='월별목표가동율'
+
+create or replace force view SW_MONTHLYTARGETOPERATIONRATIO as
+select c0 as DIVISION, c1 as CUSTOMER, c2 as GUBUN, c3 as COLLECTINGMONTH, c4 as TARGETOPERATIONRATIO from dt_1403082636783
+
+-------------------------------------------------------------------------------------------------------------
+select formfieldname, tablecolname, formfieldtype from swdomainfield where domainid = (
+    select id from swdomain where formname='월별TAT관리'
+)
+union
+select tblname, tblname, tblname from swdomain where formname='월별TAT관리'
+
+create or replace force view SW_TARGETTATOFMONTH as
+select c0 as DIVISION, c1 as CUSTOMER, c2 as DEVICEGROUP, c3 as DEVICE, c5 as COLLECTINGMONTH, c6 as CUSTOMERTAT, c7 as TARGETTAT from dt_1403082604160
