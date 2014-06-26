@@ -28,64 +28,53 @@ import net.sf.json.JSONObject;
 
 public class GetKpiWS {
 
-//	public final String dbUrl = "jdbc:oracle:thin:@193.169.13.45:1523:grbf";
-	public final String dbUrl = "jdbc:oracle:thin:@192.168.0.62:1521:smartworks";
+	public final String dbUrl = "jdbc:oracle:thin:@193.169.13.45:1523:grbf";
+//	public final String dbUrl = "jdbc:oracle:thin:@193.169.13.41:1523:grbf";
 	public final String userId = "swuser";
 	public final String pass = "smartworks";
 	public final String driverClassName = "oracle.jdbc.driver.OracleDriver";
 	public final String returnType = "json";//"data"
 	
-	//������������������������������������������������占�
 	public String getDailyShippingNSales(String month) throws Exception {
 		String sql = makeQueryString("getDailyShippingNSales", month);
 		return executeQuery("getDailyShippingNSales", sql, month);
 	}
-	//�����밸��������������������������������
 	public String getDailyShipping(String month) throws Exception {
 		String sql = makeQueryString("getDailyShipping", month);
 		return executeQuery("getDailyShipping", sql, month);
 	}
-	//�����밸�����������������������������������占�
 	public String getDailySales(String month) throws Exception {
 		String sql = makeQueryString("getDailySales", month);
 		return executeQuery("getDailySales", sql, month);
 	}
-	//�����밸��������������������������������������������
 	public String getDailyOperationRatio(String month) throws Exception {
 		String sql = makeQueryString("getDailyOperationRatio", month);
 		return executeQuery("getDailyOperationRatio", sql, month);
 	}
-	//�����밸�����TAT������������
 	public String getDailyTat(String month) throws Exception {
 		String sql = makeQueryString("getDailyTat", month);
 		return executeQuery("getDailyTat", sql, month);
 	}
-	//1�����⑷��������������������������������占�TREND
 	public String getMonthlyShippingForYear(String month) throws Exception {
 		String sql = makeQueryString("getMonthlyShippingForYear", month);
 		return executeQuery("getMonthlyShippingForYear", sql, month);
 	}
-	//1�����⑷��������������������������������������TREND
 	public String getMonthlySalesForYear(String month) throws Exception {
 		String sql = makeQueryString("getMonthlySalesForYear", month);
 		return executeQuery("getMonthlySalesForYear", sql, month);
 	}
-	//1�����⑷�����������Capacity���������������������������
 	public String getMonthlyCapacityPkgForYear(String month) throws Exception {
 		String sql = makeQueryString("getMonthlyCapacityPkgForYear", month);
 		return executeQuery("getMonthlyCapacityPkgForYear", sql, month);
 	}
-	//1�����⑷�����������Capacity��������������������������� �����������ㅵ�������� ������猷밸��
 	public String getMonthlyCapacityPkgForYearByGroup(String month) throws Exception {
 		String sql = makeQueryString("getMonthlyCapacityPkgForYearByGroup", month);
 		return executeQuery("getMonthlyCapacityPkgForYearByGroup", sql, month);
 	}
-	//�����������������������������������������ワ옙
 	public String getMonthlyShipping(String month) throws Exception {
 		String sql = makeQueryString("getMonthlyShipping", month);
 		return executeQuery("getMonthlyShipping", sql, month);
 	}
-	//������������������������������������������������
 	public String getMonthlySales(String month) throws Exception {
 		String sql = makeQueryString("getMonthlySales", month);
 		return executeQuery("getMonthlySales", sql, month);
@@ -419,7 +408,6 @@ public class GetKpiWS {
 			for (int i = fromDate; i <= toDate; i++) {
 				sqlBuff.append("        ,dailyTbl.C").append((i+"").substring(6, 8)).append(" ");
 			}
-			//20131120 �����밸����� TAT ������������������ ������������������(BOH/SHIPPING)
 			sqlBuff.append("FROM   (SELECT division ");
 			sqlBuff.append("               ,devicegroup ");
 			sqlBuff.append("               ,Avg(customertat) AS customerTat ");
