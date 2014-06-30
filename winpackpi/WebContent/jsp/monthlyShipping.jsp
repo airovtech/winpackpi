@@ -106,7 +106,7 @@
 	             {name:'C11', index:'C11', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
 	             {name:'C12', index:'C12', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
 	             {name:'YTD', index:'YTD', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}},
-	             {name:'TOTAL', index:'TOTAL', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}}
+	             {name:'Total', index:'Total', summaryType: 'sum',  align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}}
 	         ],
 	         //객체에 담긴 이름값과 name이 같은 지 확인 잘하길... 나는 대소문자 구별 때문에 행은 늘어나는데 데이터가 나타나지 않아서 한참 헤맴...
 	          gridComplete : function() { 
