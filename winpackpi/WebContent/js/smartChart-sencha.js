@@ -765,6 +765,11 @@ Ext.onReady(function () {
 			$(".js_work_report_view_page text[text='" + swReportInfo.xFieldName + "']").css("font-size", "13px");
 			$(".js_work_report_view_page text[text='" + swReportInfo.yValueName + "']").css("font-size", "13px");
 			$(".js_work_report_view_page text[text='" + swReportInfo.y2FieldName + "']").css("font-size", "13px");
+			 setTimeout(function(){
+				 try{
+				 	window.parent.doIframeAutoHeight();
+				 }catch(e){}
+			}, 100);
 		}
 	};
 });
@@ -810,3 +815,42 @@ var zeroPad = function(num, numZeros) {
 
 	return zeroString+n;
 };
+
+try{
+	var doIframeAutoHeight = function (){
+	    o = document.getElementsByTagName('iframe');
+
+	    for(var i=0;i<o.length;i++){  
+	        if (/\bautoHeight\b/.test(o[i].className)){
+	            setHeight(o[i]);
+	            addEvent(o[i],'load', doIframeAutoHeight);
+	        }
+	    }
+	};
+
+	var setHeight = function(e){
+		try{
+		    if(e.contentDocument){
+	    		e.height = e.contentDocument.body.scrollHeight; //������ 議곗��        
+		    } else {
+		//        e.height = e.contentWindow.document.body.scrollHeight + 35;
+		        e.height = e.contentWindow.document.body.scrollHeight;
+		    }
+		}catch(e){
+	        e.height = e.contentWindow.document.body.scrollHeight;		
+		}
+	};
+
+	var addEvent = function(obj, evType, fn){
+	    if(obj.addEventListener)
+	    {
+	    obj.addEventListener(evType, fn,false);
+	    return true;
+	    } else if (obj.attachEvent){
+	    var r = obj.attachEvent("on"+evType, fn);
+	    return r;
+	    } else {
+	    return false;
+	    }
+	};
+}catch(e){}
