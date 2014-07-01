@@ -139,7 +139,9 @@
 			reloadGrid();	  
 		}); 
 		
+		var prevWidth = $(window).width();
 		$(window).resize(function() {
+			if($(window).width() == prevWidth) return;
 			if(!isEmpty($('.js_work_report_view_page'))){
 				$("#list").setGridWidth($('.js_work_report_view_page').width()-2);				
 	     		loadChart(jQuery("#list").jqGrid('getRowData'));
