@@ -10,7 +10,7 @@
 .kpi_tab_area th.current {background: url("../../images/kpi_tab_hover.jpg") repeat-x scroll 0 0 ;height:15px; background-color:#dfeffc ; border-bottom:1px solid #dfeffc}
 .kpi_tab_area th a { display:inline-block}
 .kpi_tab_area th a:hover {color:#3a729b}
-.kpi_tab_area th.current a {color:blue;font-size:15px;font-weight:bold}
+.kpi_tab_area th.current a {color:blue;font-size:13px;font-weight:bold}
 .kpi_arr a {width:8px; height:15px;}
 .kpi_arr.prev a {background:url(../../images/kpi_arr.png) 0 0; display:inline-block; position: absolute; top: 7px}
 .kpi_arr.next a {background:url(../../images/kpi_arr.png) -90px 0; display:inline-block; margin: 6px 0 0 7px}
