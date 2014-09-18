@@ -326,7 +326,7 @@ public class WinpacKenSik {
 		} else if (kenCd.equalsIgnoreCase("출산") || kenCd.equalsIgnoreCase("돌")) {
 			return "37";
 		} else if (kenCd.equalsIgnoreCase("수연")) {
-			return null;
+			return "36";
 		} else if (kenCd.equalsIgnoreCase("사망")) {
 			return "45";
 		}

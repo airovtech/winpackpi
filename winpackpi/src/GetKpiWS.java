@@ -264,7 +264,9 @@ public class GetKpiWS {
 			sqlBuff.append("		,round(exeplan.avgPlanOfDay/1000000,0) as avgPlanOfDay ");
 			sqlBuff.append("        ,round(dailySales.totalSum/1000000,0) as totalSum ");
 			sqlBuff.append("        ,round(dailySales.avgOfDay/1000000,0) as avgOfDay ");
-			sqlBuff.append("        ,round(((totalSum / ((exeplan.planOfSales / ").append(daycountOfMonth).append(") * ").append(toDay).append(")) * 100),2) as perSales ");
+			//exeplan.planOfSales 값이 0이 나올수 있음
+			//sqlBuff.append("        ,round(((totalSum / ((exeplan.planOfSales / ").append(daycountOfMonth).append(") * ").append(toDay).append(")) * 100),2) as perSales ");
+			sqlBuff.append("        ,decode(exeplan.planofsales,0,0, round(((totalSum / ((exeplan.planOfSales / ").append(daycountOfMonth).append(") * ").append(toDay).append(")) * 100),2)) as perSales ");
 			
 			sqlBuff.append("		,(");
 			sqlBuff.append("			select round(wip/1000000,0) ");
