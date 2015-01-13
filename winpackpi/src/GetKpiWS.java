@@ -29,7 +29,6 @@ import net.sf.json.JSONObject;
 public class GetKpiWS {
 
 	public final String dbUrl = "jdbc:oracle:thin:@193.169.13.45:1523:grbf";
-//	public final String dbUrl = "jdbc:oracle:thin:@192.168.0.62:1521:smartworks";
 	public final String userId = "swuser";
 	public final String pass = "smartworks";
 	public final String driverClassName = "oracle.jdbc.driver.OracleDriver";
@@ -86,6 +85,7 @@ public class GetKpiWS {
 	
 	public String makeQueryString(String method, String month) throws Exception {
 		
+		String today_yyyyMMdd = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
 		if (month == null) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
 			String yearMonth = sdf.format(Calendar.getInstance().getTime());
@@ -129,7 +129,7 @@ public class GetKpiWS {
 			sqlBuff.append("         from ");
 			sqlBuff.append("         ( ");
 			sqlBuff.append("             select ");
-			sqlBuff.append("                 collectingMonth, division, deviceGroup, round(sum(shippingPlanOfMonth)/1000,0) as shippingPlan, round(sum(salesPlanOfMonth)/1000000,0) as salesPlan ");
+			sqlBuff.append("                 collectingMonth, division, deviceGroup, sum(shippingPlanOfMonth) as shippingPlan, sum(salesPlanOfMonth) as salesPlan ");
 
 			sqlBuff.append("             from  ");
 			sqlBuff.append("                 sw_planofmanagement ");
@@ -171,7 +171,9 @@ public class GetKpiWS {
 			sqlBuff.append("				select boh ");
 			sqlBuff.append("				from ( ");
 			sqlBuff.append("					select devicegroup, sum(boh) as boh from dailyShippingNSales  "); 
-			sqlBuff.append("					where collectingDate = '").append(toDate-1).append("'  ");
+			//sqlBuff.append("					where collectingDate = '").append(toDate-1).append("'  ");
+			//조회하는 달의 첫번째 날
+			sqlBuff.append("					where collectingDate = '").append(fromDate).append("'  ");
 			sqlBuff.append("					group by devicegroup  ");
 			sqlBuff.append("				) bohTbl  ");
 			sqlBuff.append("				where bohTbl.devicegroup = daily.deviceGroup ");
@@ -181,7 +183,14 @@ public class GetKpiWS {
 			sqlBuff.append("				select wip ");
 			sqlBuff.append("				from ( ");
 			sqlBuff.append("					select devicegroup, sum(wip) as wip from dailyShippingNSales  "); 
-			sqlBuff.append("					where collectingDate = '").append(toDate-1).append("'  ");
+			//sqlBuff.append("					where collectingDate = '").append(toDate-1).append("'  ");
+			
+			if (toYear == Integer.parseInt(selYear) && toMonth == Integer.parseInt(selMonth)) {
+				sqlBuff.append("					where collectingDate = '").append(today_yyyyMMdd).append("'  ");
+			} else {
+				sqlBuff.append("					where collectingDate = '").append(toDate).append("'  ");
+			}
+			
 			sqlBuff.append("					group by devicegroup  ");
 			sqlBuff.append("				) wipTbl  ");
 			sqlBuff.append("				where wipTbl.devicegroup = daily.deviceGroup ");
@@ -212,7 +221,12 @@ public class GetKpiWS {
 			sqlBuff.append("			select round(wip/1000,0) ");
 			sqlBuff.append("			from ( ");
 			sqlBuff.append("				select devicegroup, sum(wip) as wip from dailyShippingNSales  "); 
-			sqlBuff.append("				where collectingDate = '").append(toDate-1).append("'  ");
+			//sqlBuff.append("				where collectingDate = '").append(toDate-1).append("'  ");\
+			if (toYear == Integer.parseInt(selYear) && toMonth == Integer.parseInt(selMonth)) {
+				sqlBuff.append("					where collectingDate = '").append(today_yyyyMMdd).append("'  ");
+			} else {
+				sqlBuff.append("					where collectingDate = '").append(toDate).append("'  ");
+			}
 			sqlBuff.append("				group by devicegroup  ");
 			sqlBuff.append("			) wipTbl  ");
 			sqlBuff.append("			where wipTbl.devicegroup = exeplan.deviceGroup ");
@@ -272,7 +286,12 @@ public class GetKpiWS {
 			sqlBuff.append("			select round(wip/1000000,0) ");
 			sqlBuff.append("			from ( ");
 			sqlBuff.append("				select devicegroup, sum(wip) as wip from dailyShippingNSales  "); 
-			sqlBuff.append("				where collectingDate = '").append(toDate-1).append("'  ");
+			//sqlBuff.append("				where collectingDate = '").append(toDate-1).append("'  ");
+			if (toYear == Integer.parseInt(selYear) && toMonth == Integer.parseInt(selMonth)) {
+				sqlBuff.append("					where collectingDate = '").append(today_yyyyMMdd).append("'  ");
+			} else {
+				sqlBuff.append("					where collectingDate = '").append(toDate).append("'  ");
+			}
 			sqlBuff.append("				group by devicegroup  ");
 			sqlBuff.append("			) wipTbl  ");
 			sqlBuff.append("			where wipTbl.devicegroup = exeplan.deviceGroup ");
@@ -597,7 +616,8 @@ public class GetKpiWS {
 			for (int i = 0; i < 12; i++) {
 				fromDateCal.add(Calendar.MONTH, 1);
 				String dateStr = sdf.format(fromDateCal.getTime());
-				sqlBuff.append(" ,round(max(decode(collectingMonth, ").append(dateStr).append(", monthlycapashipping))/1000,0) as \"C").append(dateStr).append("\" ");
+				//sqlBuff.append(" ,round(max(decode(collectingMonth, ").append(dateStr).append(", monthlycapashipping))/1000,0) as \"C").append(dateStr).append("\" ");
+				sqlBuff.append(" ,max(decode(collectingMonth, ").append(dateStr).append(", monthlycapashipping)) as \"C").append(dateStr).append("\" ");
 			}
 			
 			sqlBuff.append("        ,round(SUM(monthlyCapaShipping)/1000,0) as TOTAL ");

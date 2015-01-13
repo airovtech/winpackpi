@@ -84,7 +84,7 @@
 					colNames[10] = (item[i].C_10);
 					colNames[11] = (item[i].C_11);
 					colNames[12] = (item[i].C_12);
-					colNames[13] = (item[i].C_13);
+					//colNames[13] = (item[i].C_13);
 					
 					colModels[0] = {name:item[i].C_0, index:item[i].C_0, align: 'center',  sortable:false };
 					colModels[1] = {name:'C'+item[i].C_1 + '01', index:item[i].C_1, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","} };
@@ -99,7 +99,7 @@
 					colModels[10] = {name:'C'+item[i].C_10 + '01', index:item[i].C_10, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","} };
 					colModels[11] = {name:'C'+item[i].C_11 + '01', index:item[i].C_11, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","} };
 					colModels[12] = {name:'C'+item[i].C_12 + '01', index:item[i].C_12, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","} };
-					colModels[13] = {name:item[i].C_13, index:item[i].C_13, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","} };
+					//colModels[13] = {name:item[i].C_13, index:item[i].C_13, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","} };
 					
 				}
 					 
@@ -173,7 +173,7 @@
 					colNames[10] = (item[i].C_10);
 					colNames[11] = (item[i].C_11);
 					colNames[12] = (item[i].C_12);
-					colNames[13] = (item[i].C_13);
+					//colNames[13] = (item[i].C_13);
 					
 					colModels[0] = {name:item[i].C_0, index:item[i].C_0, align: 'center',  sortable:false };
 					colModels[1] = {name:'C'+item[i].C_1 + '01', index:item[i].C_1, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
@@ -188,7 +188,7 @@
 					colModels[10] = {name:'C'+item[i].C_10 + '01', index:item[i].C_10, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
 					colModels[11] = {name:'C'+item[i].C_11 + '01', index:item[i].C_11, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
 					colModels[12] = {name:'C'+item[i].C_12 + '01', index:item[i].C_12, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
-					colModels[13] = {name:item[i].C_13, index:item[i].C_13, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
+					//colModels[13] = {name:item[i].C_13, index:item[i].C_13, align: 'right',  sortable:false, formatter:'integer',  formatoptions:{defaultValue:'0', thousandsSeparator: ","}  };
 					
 				}
 				$("#list").jqGrid('setGridParam', { colModel: colModels});

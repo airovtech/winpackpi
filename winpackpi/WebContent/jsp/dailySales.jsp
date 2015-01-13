@@ -58,6 +58,9 @@
 		if ((year % 4 === 0) && (year % 100 !== 0) || (year % 400 === 0)) {
 			nalsu[1] = 29; //윤년 체크
 		}
+		if (isNaN(rowObject.TOTALSUM) || rowObject.TOTALSUM == null)
+			rowObject.TOTALSUM = 0;			
+			
 		if (mitAvgOfDayGroupBy != rowObject.DIVISION) {
 			mitAvgOfDaySum= 0.0;
 			mitAvgOfDayGroupBy= rowObject.DIVISION;
@@ -65,10 +68,10 @@
 	    } else {
 	    	mitAvgOfDaySum= mitAvgOfDaySum + parseFloat(rowObject.TOTALSUM);
 	    }
-		
+
 		if(mitAvgOfDaySum == 0.0 || isNaN(mitAvgOfDaySum)) return (0).toFixed(0);
 		if (($('#sel_year').val() + '' + $('#sel_month').val()) == date) {
-			return (mitAvgOfDaySum / toDay).toFixed(0);
+			return (mitAvgOfDaySum / toDay);
 		} else {
 			return (mitAvgOfDaySum / nalsu[parseInt(month)-1]).toFixed(0);
 		}
@@ -169,7 +172,8 @@
 	             {name:'PLANOFSALES', width:'250', index:'PLANOFSALES', summaryType: 'sum', sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
 	             {name:'AVGPLANOFDAY', width:'250', index:'AVGPLANOFDAY', summaryType: planSalesAvgOfDay, sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
 	             {name:'TOTALSUM', width:'250', index:'TOTALSUM', summaryType: 'sum', sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
-	             {name:'AVGOFDAY', width:'250', index:'AVGOFDAY', summaryType: mitAvgOfDay, sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             //{name:'AVGOFDAY', width:'250', index:'AVGOFDAY', summaryType: mitAvgOfDay, sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
+	             {name:'AVGOFDAY', width:'250', index:'AVGOFDAY', summaryType: 'sum', sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
 	             {name:'PERSALES', width:'250', index:'PERSALES',  summaryType: salesRatio, sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ",", suffix:"%", defaultValue:"0%"}},
 	             {name:'WIP', index:'WIP', summaryType: 'sum', sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},
 	             {name:'C01', index:'C01', summaryType: 'sum', sortable:false, align: 'right', formatter:'integer', formatoptions: {thousandsSeparator: ","}},

@@ -8,7 +8,8 @@
 	try {
 		String method = (String)request.getParameter("method");
 		
-		String targetEndpointAddress = "http://localhost:8080/winpackpi/GetKpiWS.jws?wsdl";
+		String targetEndpointAddress = "http://sw.winpac.co.kr/winpackpi/GetKpiWS.jws?wsdl";
+		//String targetEndpointAddress = "http://localhost/winpackpi/GetKpiWS.jws?wsdl";
 		String returnType = "string";
 		String operation = null;
 		String[] inputParams = null; 
