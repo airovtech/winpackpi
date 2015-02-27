@@ -28,20 +28,20 @@
 			var sum = 0;
 			for(var j=0; j<reportData.length; j++){
 				var value = isEmpty(reportData[j]["C" + colNames[i+1] + "01"]) ? 0 : parseInt(reportData[j]["C" + colNames[i+1] + "01"]);
-				if(reportData[j].DIVISION === "PKT"){
+				if(reportData[j].DIVISION === "TEST"){
 					pkt = value;
 				}else if(reportData[j].DIVISION === "PKG"){
 					pkg = value;
 					
-				}else if(reportData[j].DIVISION === "NBIZ"){
+				}else if(reportData[j].DIVISION === "SOC"){
 					nbiz = value;
 				}
 				sum += value;
 			}
 			chartValues[i] = {  월별: colNames[i+1], 
-					PKT: pkt,
+					TEST: pkt,
 					PKG: pkg,
-					NBIZ: nbiz,
+					SOC: nbiz,
 					합계: sum};					
 		}
 		
@@ -49,7 +49,7 @@
 				values : chartValues,
 				xFieldName : "월별",
 				yValueName : "PKT",
-				groupNames : ["PKT", "PKG", "NBIZ"]
+				groupNames : ["TEST", "PKG", "SOC"]
 		};
 	};
 	

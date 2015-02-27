@@ -21,7 +21,7 @@
 		
 		chartData = new Array();
 		
-		var divisions = ['PKT', 'PKG', 'NBIZ', 'Total'];
+		var divisions = ['TEST', 'PKG', 'SOC', 'Total'];
 		for(var idx=0; idx<divisions.length; idx++){
 			var chartValues = Array();
 		 	for(var i=0; i<12; i++){

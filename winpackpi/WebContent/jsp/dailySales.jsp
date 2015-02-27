@@ -119,19 +119,19 @@
 	 		var nbizSum = 0;
 	 		var sum = 0;
 	 		for(var j=0; j<reportData.length; j++){
-	 			if(reportData[j].DIVISION == "PKT"){
+	 			if(reportData[j].DIVISION == "TEST"){
 	 				pktSum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
 	 			}else if(reportData[j].DIVISION == "PKG"){
 	 				pkgSum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
-	 			}else if(reportData[j].DIVISION == "NBIZ"){
+	 			}else if(reportData[j].DIVISION == "SOC"){
 	 				nbizSum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
 	 			}
 	 			sum += parseInt(reportData[j]["C" + String("0" + (i+1)).slice(-2)]);
 	 		}
 	 		chartValues[i] = {  일별: (i+1) + "", 
-	 				PKT: pktSum,
+	 				TEST: pktSum,
 	 				PKG: pkgSum,
-	 				NBIZ: nbizSum,
+	 				SOC: nbizSum,
 	 				합계: sum};					
 	 	}
 	 	
@@ -139,7 +139,7 @@
 	 			values : chartValues,
 	 			xFieldName : "일별",
 	 			yValueName : "매출 실적",
-	 			groupNames : ["PKT", "PKG", "NBIZ"]
+	 			groupNames : ["TEST", "PKG", "SOC"]
 	 	};
 	
 	 };
